@@ -1,0 +1,12 @@
+Package: im_eiv
+Type: Package
+Title: im for measurement error models
+Version: 1.0
+Date: 2022-04-18
+Author: Nicholas Syring
+Maintainer: Nicholas Syring <nasyrin@gmail.com>
+Description:  im for measurement error models  
+License: GPL (>= 3) 
+Imports: Rcpp (>= 0.12.16), RcppParallel (>= 4.4.0), RcppArmadillo
+LinkingTo: Rcpp, RcppArmadillo, RcppParallel
+SystemRequirements: GNU make
