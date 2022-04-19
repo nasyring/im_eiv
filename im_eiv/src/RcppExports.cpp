@@ -7,7 +7,7 @@ using namespace std;
 
 // randsetsMCMC
 Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector truebz);
-RcppExport SEXP im_eiv_plauscontour(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP propsdSEXP, SEXP truebxSEXP, SEXP truebzSEXP){
+RcppExport SEXP imeiv_plauscontour(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP propsdSEXP, SEXP truebxSEXP, SEXP truebzSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
