@@ -23,7 +23,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector bz(1,0.0); bz[0] = par[1];	
 	NumericVector mux(1,0.0); mux[0] = par[2];
 	NumericVector sx(1,0.0); sx[0] = par[3];
-	NumericVector se(1,0.0); sz[0] = par[4];
+	NumericVector se(1,0.0); se[0] = par[4];
 
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
@@ -104,6 +104,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 
 	/*  Begin MCMC  */
 	
+	NumericVector zeroes(50000,0.0);
 	NumericMatrix samples = NumericMatrix(10000, 5, zeroes.begin());
 	NumericVector sampdens(10000,0.0);
 	NumericVector densdiff(1,0.0);
@@ -116,15 +117,15 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	for(int j=0; j<100000; j++) {
 		if(j>0){
 			for(int i=0; i<4; i++){
-				propsamp[i] = samples[j-1,i];
-				currsamp[i] = samples[j-1,i];
+				propsamp[i] = samples(j-1,i);
+				currsamp[i] = samples(j-1,i);
 			}
 		}
 		for(int i=0; i<4; i++){
 			if(i>2){
 				currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
 			}else {
-				currsamp[i] = Rcpp::rgamma( 1, propsamp[i]/propsd[i], propsd[i] )
+				currsamp[i] = R::rgamma( 1, propsamp[i]/propsd[i], propsd[i] )
 			}
 			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
@@ -193,7 +194,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			if(i>2){
 				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);	
 			}else {
-				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0] + Rcpp::dgamma(currsamp[i], propsamp[i]/propsd[i], propsd[i], true )  - Rcpp::dgamma(propsamp[i], currsamp[i]/propsd[i], propsd[i], true )), 1.0);
+				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0] + R::dgamma(currsamp[i], propsamp[i]/propsd[i], propsd[i], true )  - R::dgamma(propsamp[i], currsamp[i]/propsd[i], propsd[i], true )), 1.0);
 			}	
 			if(uu[0] < densdiff[0]){
 				propsamp[i] = currsamp[i];
@@ -203,7 +204,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 		}
 		if( (j % 10) == 0 ){
 			for(int i=0; i<4; i++){
-				sample[j, i] = propsamp[i];
+				samples(j, i) = propsamp[i];
 				sampdens[j] = propdens[0];
 			}
 		}
@@ -218,8 +219,8 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 		unifs[0] = R::runif(0.0,1.0);
 		unifs_hi[i] = 0.5 + fabs(unifs[0] - 0.5); 
 		unifs_lo[i] = 1.0-unifs_hi[i];
-		bxs[i] = sample[i, 0];
-		bzs[i] = sample[i, 1];
+		bxs[i] = samples(i, 0);
+		bzs[i] = samples(i, 1);
 	}
 	std::sort(bxs.begin(), bxs.end());
 	std::sort(bzs.begin(), bzs.end());
