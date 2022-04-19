@@ -125,7 +125,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			if(i>2){
 				currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
 			}else {
-				currsamp[i] = R::rgamma( 1, propsamp[i]/propsd[i], propsd[i] );
+				currsamp[i] = R::rgamma( propsamp[i]/propsd[i], propsd[i] );
 			}
 			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
