@@ -236,20 +236,20 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector plausesx(501,0.0);NumericVector plausesz(501,0.0);
 	for(int i=0; i<500; i++){
 		for(int j=0; j<10000; j++){
-			if(   (bxseq[i] < bxs[floor(9999*unifs_lo[j])]) & (bxseq[i] > bxs[ceil(9999*unifs_hi[j])])   ){
+			if(   (bxseq[i] > bxs[floor(9999*unifs_lo[j])]) & (bxseq[i] < bxs[ceil(9999*unifs_hi[j])])   ){
 				plausesx[i] = plausesx[i]+0.0001;
 			}			
-			if(   (bzseq[i] < bzs[floor(9999*unifs_lo[j])]) & (bzseq[i] > bzs[ceil(9999*unifs_hi[j])])   ){
+			if(   (bzseq[i] > bzs[floor(9999*unifs_lo[j])]) & (bzseq[i] < bzs[ceil(9999*unifs_hi[j])])   ){
 				plausesz[i] = plausesz[i]+0.0001;
 			}
 		}
 	}
 	NumericVector plausestrux(1,0.0);NumericVector plausestruz(1,0.0);
 	for(int j=0; j<10000; j++){
-		if(   (truebx[0] < bxs[floor(9999*unifs_lo[j])]) & (truebx[0] > bxs[ceil(9999*unifs_hi[j])])   ){
+		if(   (truebx[0] > bxs[floor(9999*unifs_lo[j])]) & (truebx[0] < bxs[ceil(9999*unifs_hi[j])])   ){
 			plausestrux[0] = plausestrux[0]+0.0001;
 		}			
-		if(   (truebz[0] < bzs[floor(9999*unifs_lo[j])]) & (truebz[0] > bzs[ceil(9999*unifs_hi[j])])   ){
+		if(   (truebz[0] > bzs[floor(9999*unifs_lo[j])]) & (truebz[0] < bzs[ceil(9999*unifs_hi[j])])   ){
 			plausestruz[0] = plausestruz[0]+0.0001;
 		}
 	}
