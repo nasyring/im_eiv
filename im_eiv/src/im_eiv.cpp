@@ -107,8 +107,8 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	
 		//  Begin MCMC  
 	
-	NumericVector zeroes(5,0.0);
-	NumericMatrix samples = NumericMatrix(1, 5, zeroes.begin());
+	NumericVector zeroes(50,0.0);
+	NumericMatrix samples = NumericMatrix(10, 5, zeroes.begin());
 	samples(0,0) = bx[0];samples(0,1) = bz[0];samples(0,2) = mux[0];samples(0,3) = sx[0];samples(0,4) = se[0];
 	NumericVector sampdens(1,0.0);
 	NumericVector densdiff(1,0.0);
@@ -118,9 +118,9 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	currsamp[0] = bx[0];currsamp[1] = bz[0];currsamp[2] = mux[0];currsamp[3] = sx[0];currsamp[4] = se[0];
 	NumericVector currdens(1,0.0);NumericVector propdens(1,0.0); propdens[0] = logdens[0];
 	
-	NumericVector tempsamp(5,0.0);NumericVector tempdens(5,0.0);
+	NumericMatrix tempsamp= NumericMatrix(10, 5, zeroes.begin());NumericMatrix tempdens= NumericMatrix(10, 5, zeroes.begin());
 	
-	for(int j=0; j<1; j++) {
+	for(int j=0; j<10; j++) {
 		for(int i=0; i<5; i++){
 			for(int k=0; k<5; k++){
 				currsamp[k] = propsamp[k];
@@ -130,7 +130,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			}else {
 				currsamp[i] = R::rgamma( propsamp[i]/propsd[i], propsd[i] );
 			}
-			tempsamp[i] = currsamp[i];
+			tempsamp(j,i) = currsamp[i];
 			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
 			L12[0] = sx[0]*bx[0]/L11[0];
@@ -190,7 +190,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 
 				currdens[0] = detJ[0] + (n[0]-2.0)*log(v1[0])-0.5*(v1[0]*v1[0]) + (n[0]-3.0)*log(v3[0])-0.5*(v3[0]*v3[0]) - 0.5*n[0]*(z1[0]*z1[0] + z2[0]*z2[0]) -  0.5*v2[0]*v2[0];
 			}
-			tempdens[i] = currdens[0];
+			tempdens(j,i) = currdens[0];
 			if(currdens[0] == -99.0){
 				uu[0] = 1.0;
 			}else {
