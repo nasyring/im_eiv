@@ -110,7 +110,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector zeroes(50,0.0);
 	NumericMatrix samples = NumericMatrix(10, 5, zeroes.begin());
 	samples(0,0) = bx[0];samples(0,1) = bz[0];samples(0,2) = mux[0];samples(0,3) = sx[0];samples(0,4) = se[0];
-	NumericVector sampdens(1,0.0);
+	NumericVector sampdens(10,0.0);
 	NumericVector densdiff(1,0.0);
 	NumericVector propsamp(5,0.0);
 	propsamp[0] = bx[0];propsamp[1] = bz[0];propsamp[2] = mux[0];propsamp[3] = sx[0];propsamp[4] = se[0];
