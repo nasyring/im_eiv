@@ -17,7 +17,7 @@ using namespace std;
 Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector truebz) {
 
 	List result;
-	
+	NumericVector tempdens(1,0.0);
 	NumericVector uu(1,0.0);
 	NumericVector ct(5,0.0);
 	NumericVector bx(1,0.0); bx[0] = par[0];
@@ -105,7 +105,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	
 	//logdens[0] = detJ[0] + (n[0]-2.0)*log(v1[0])-0.5*(v1[0]*v1[0]) + (n[0]-3.0)*log(v3[0])-0.5*(v3[0]*v3[0]) - 0.5*n[0]*(z1[0]*z1[0] + z2[0]*z2[0]) -  0.5*v2[0]*v2[0];
 	logdens[0] = detJ[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1) + R::dnorm(z1[0],0.0,sd[0],1) + R::dnorm(z2[0],0.0,sd[0],1);
-
+	tempdens[0] = logdens[0]; 
 	//  Begin MCMC  
 	
 	NumericVector zeroes(50000,0.0);
@@ -216,7 +216,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 		ct[i]=ct[i]/100000.0;
 	}
 	
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples, Rcpp::Named("logdens") = sampdens);
+	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples, Rcpp::Named("logdens") = sampdens, Rcpp::Named("tempdens") = tempdens);
 
 	return result;
 	
