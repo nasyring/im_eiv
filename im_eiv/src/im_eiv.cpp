@@ -25,7 +25,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector mux(1,0.0); mux[0] = par[2];
 	NumericVector sx(1,0.0); sx[0] = par[3];
 	NumericVector se(1,0.0); se[0] = par[4];
-	NumericVector sd(1,0.0);  sd[0] = std::sqrt(1.0/n);
+	NumericVector sd(1,0.0);  sd[0] = std::sqrt(1.0/n[0]);
 	
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
