@@ -112,6 +112,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	
 	NumericVector zeroes(50000,0.0);
 	NumericMatrix samples = NumericMatrix(10000, 5, zeroes.begin());
+	samples(0,0) = bx[0];samples(0,1) = bz[0];samples(0,2) = mux[0];samples(0,3) = sx[0];samples(0,4) = se[0];
 	NumericVector sampdens(10000,0.0);
 	NumericVector densdiff(1,0.0);
 	NumericVector propsamp(5,0.0);
@@ -122,13 +123,10 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	
 	
 	for(int j=0; j<100000; j++) {
-		if(j>0){
-			for(int i=0; i<4; i++){
-				propsamp[i] = samples(j-1,i);
-				currsamp[i] = samples(j-1,i);
-			}
-		}
 		for(int i=0; i<4; i++){
+			for(int k=0; k<4; k++){
+				currsamp[k] = propsamp[k];
+			}
 			if(i>2){
 				currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
 			}else {
