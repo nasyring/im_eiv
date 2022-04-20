@@ -25,7 +25,8 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector mux(1,0.0); mux[0] = par[2];
 	NumericVector sx(1,0.0); sx[0] = par[3];
 	NumericVector se(1,0.0); se[0] = par[4];
-
+	NumericVector sd(1,0.0);  sd[0] = std::sqrt(1.0/n);
+	
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
 	NumericVector s22(1,0.0); s22[0] = stat[2];
@@ -117,7 +118,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector currsamp(5,0.0);
 	currsamp[0] = bx[0];currsamp[1] = bz[0];currsamp[2] = mux[0];currsamp[3] = sx[0];currsamp[4] = se[0];
 	NumericVector currdens(1,0.0);NumericVector propdens(1,0.0); propdens[0] = logdens[0];
-	NumericVector sd(1,0.0);  sd[0] = std::sqrt(1.0/n)
+	
 	
 	for(int j=0; j<100000; j++) {
 		for(int i=0; i<5; i++){
