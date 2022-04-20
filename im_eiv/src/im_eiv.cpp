@@ -127,7 +127,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			for(int k=0; k<4; k++){
 				currsamp[k] = propsamp[k];
 			}
-			if(i>2){
+			if(i<3){
 				currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
 			}else {
 				currsamp[i] = R::rgamma( propsamp[i]/propsd[i], propsd[i] );
@@ -196,7 +196,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			}else {
 				uu[0] = R::runif(0.0,1.0);
 			}
-			if(i>2){
+			if(i<3){
 				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);	
 			}else {
 				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0] + R::dgamma(currsamp[i], propsamp[i]/propsd[i], propsd[i], true )  - R::dgamma(propsamp[i], currsamp[i]/propsd[i], propsd[i], true )), 1.0);
