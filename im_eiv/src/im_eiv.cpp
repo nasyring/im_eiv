@@ -104,124 +104,6 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	
 	logdens[0] = detJ[0] + (n[0]-2.0)*log(v1[0])-0.5*(v1[0]*v1[0]) + (n[0]-3.0)*log(v3[0])-0.5*(v3[0]*v3[0]) - 0.5*n[0]*(z1[0]*z1[0] + z2[0]*z2[0]) -  0.5*v2[0]*v2[0];
 
-	
-		//  Begin MCMC  
-	
-	NumericVector zeroes(50,0.0);
-	NumericMatrix samples = NumericMatrix(10, 5, zeroes.begin());
-	samples(0,0) = bx[0];samples(0,1) = bz[0];samples(0,2) = mux[0];samples(0,3) = sx[0];samples(0,4) = se[0];
-	NumericVector sampdens(10,0.0);
-	NumericVector densdiff(1,0.0);
-	NumericVector propsamp(5,0.0);
-	propsamp[0] = bx[0];propsamp[1] = bz[0];propsamp[2] = mux[0];propsamp[3] = sx[0];propsamp[4] = se[0];
-	NumericVector currsamp(5,0.0);
-	currsamp[0] = bx[0];currsamp[1] = bz[0];currsamp[2] = mux[0];currsamp[3] = sx[0];currsamp[4] = se[0];
-	NumericVector currdens(1,0.0);NumericVector propdens(1,0.0); propdens[0] = logdens[0];
-	
-	NumericMatrix tempsamp= NumericMatrix(10, 5, zeroes.begin());NumericMatrix tempdens= NumericMatrix(10, 5, zeroes.begin());
-	
-	for(int j=0; j<10; j++) {
-		for(int i=0; i<5; i++){
-			for(int k=0; k<5; k++){
-				currsamp[k] = propsamp[k];
-			}
-			if(i<3){
-				currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
-			}else {
-				currsamp[i] = R::rgamma( propsamp[i]/propsd[i], propsd[i] );
-			}
-			tempsamp(j,i) = currsamp[i];
-			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
-			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
-			L12[0] = sx[0]*bx[0]/L11[0];
-			if(  ((sx[0]/del[0]) < (L12[0]*L12[0])) || (sx[0]<=0.0) || (se[0]<=0.0) ){
-				currdens[0] = -99.0;
-			}else{ 	
-				L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
-				v1[0] = s11[0]/L11[0];
-				v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
-				v3[0] = s22[0]/L22[0];
-				z1[0] = (ybar[0] - bz[0] - bx[0]*mux[0])/L11[0];
-				z2[0] = (wbar[0] - mux[0] - L12[0]*z1[0])/L22[0];
-	
-				dL11dbx[0] = bx[0]*sx[0]/L11[0];	
-				dL11dsx[0] = 0.5*bx[0]*bx[0]/L11[0];	
-				dL11dse[0] = 0.5/L11[0];	
-	
-				dL12dbx[0] = (sx[0]*L11[0]-bx[0]*sx[0]*dL11dbx[0])/(L11[0]*L11[0]);	
-				dL12dsx[0] = (bx[0]*L11[0]-bx[0]*sx[0]*dL11dsx[0])/(L11[0]*L11[0]);
-				dL12dse[0] = (-bx[0]*sx[0]*dL11dse[0])/(L11[0]*L11[0]);
-	
-				dL22dbx[0] = -L12[0]*dL12dbx[0]/L22[0];
-				dL22dsx[0] = (0.5/L22[0])*((1/del[0]) - 2.0*L12[0]*dL12dsx[0]);
-				dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
-	
-				dv1dbx[0] = -s11[0]*dL11dbx[0]/(L11[0]*L11[0]);
-				dv1dsx[0] = -s11[0]*dL11dsx[0]/(L11[0]*L11[0]);
-				dv1dse[0] = -s11[0]*dL11dse[0]/(L11[0]*L11[0]);
-	
-				dv2dbx[0] = ((-L12[0]*dv1dbx[0]-v1[0]*dL12dbx[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dbx[0])/(L22[0]*L22[0]);
-				dv2dsx[0] = ((-L12[0]*dv1dsx[0]-v1[0]*dL12dsx[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dsx[0])/(L22[0]*L22[0]);
-				dv2dse[0] = ((-L12[0]*dv1dse[0]-v1[0]*dL12dse[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dse[0])/(L22[0]*L22[0]);
-	
-				dv3dbx[0] = -s22[0]*dL22dbx[0]/(L22[0]*L22[0]);
-				dv3dsx[0] = -s22[0]*dL22dsx[0]/(L22[0]*L22[0]);
-				dv3dse[0] = -s22[0]*dL22dse[0]/(L22[0]*L22[0]);
-	
-				dz1dbx[0] = (-mux[0]-z1[0]*dL11dbx[0])/L11[0];
-				dz1dbz[0] = -1/L11[0];
-				dz1dmux[0] = -bx[0]/L11[0];
-				dz1dsx[0] = -z1[0]*dL11dsx[0]/L11[0];
-				dz1dse[0] = -z1[0]*dL11dse[0]/L11[0];
-	
-				dz2dbx[0] = (-z1[0]*dL12dbx[0]-L12[0]*dz1dbx[0])/L22[0] - z2[0]*dL22dbx[0]/L22[0];
-				dz2dbz[0] = -L12[0]*dz1dbz[0]/L22[0];
-				dz2dmux[0] = (-1-L12[0]*dz1dmux[0])/L22[0];
-				dz2dsx[0] = (-z1[0]*dL12dsx[0]-L12[0]*dz1dsx[0])/L22[0] - z2[0]*dL22dsx[0]/L22[0];
-				dz2dse[0] = (-z1[0]*dL12dse[0]-L12[0]*dz1dse[0])/L22[0] - z2[0]*dL22dse[0]/L22[0];
-	
-				J = { { dv1dbx[0], dv1dbz[0], dv1dmux[0], dv1dsx[0], dv1dse[0] },
-			            { dv2dbx[0], dv2dbz[0], dv2dmux[0], dv2dsx[0], dv2dse[0] },
-  			 	         { dv3dbx[0], dv3dbz[0], dv3dmux[0], dv3dsx[0], dv3dse[0] },
-  				          { dz1dbx[0], dz1dbz[0], dz1dmux[0], dz1dsx[0], dz1dse[0] },
-     				       { dz2dbx[0], dz2dbz[0], dz2dmux[0], dz2dsx[0], dz2dse[0] } };
-	
-				detJ[0] = log(std::abs(arma::det(J)));
-
-				currdens[0] = detJ[0] + (n[0]-2.0)*log(v1[0])-0.5*(v1[0]*v1[0]) + (n[0]-3.0)*log(v3[0])-0.5*(v3[0]*v3[0]) - 0.5*n[0]*(z1[0]*z1[0] + z2[0]*z2[0]) -  0.5*v2[0]*v2[0];
-			}
-			tempdens(j,i) = currdens[0];
-			if(currdens[0] == -99.0){
-				uu[0] = 1.0;
-			}else {
-				uu[0] = R::runif(0.0,1.0);
-			}
-			if(i<3){
-				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);	
-			}else {
-				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0] + R::dgamma(currsamp[i], propsamp[i]/propsd[i], propsd[i], true )  - R::dgamma(propsamp[i], currsamp[i]/propsd[i], propsd[i], true )), 1.0);
-			}	
-			if((uu[0] < 1.0) & (uu[0] < densdiff[0])){
-				propsamp[i] = currsamp[i];
-				propdens[0] = currdens[0];
-				ct[i] = ct[i]+1.0;
-			}
-		}
-		for(int i=0; i<5; i++){
-			samples(j, i) = propsamp[i];
-			sampdens[j] = propdens[0];
-		}
-		
-	}
-
-	
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples, Rcpp::Named("logdens") = sampdens, Rcpp::Named("tempsamp") = tempsamp, Rcpp::Named("propsamp") = propsamp, Rcpp::Named("currsamp") = currsamp, Rcpp::Named("tempdens") = tempdens);
-
-	return result;
-
-	
-/*
-
 	//  Begin MCMC  
 	
 	NumericVector zeroes(50000,0.0);
@@ -244,7 +126,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			if(i<3){
 				currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
 			}else {
-				currsamp[i] = R::rgamma( propsamp[i]/propsd[i], propsd[i] );
+				currsamp[i] = R::rgamma(propsd[i] + propsamp[i]/propsd[i], propsd[i] );
 			}
 			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
@@ -313,9 +195,9 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			if(i<3){
 				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);	
 			}else {
-				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0] + R::dgamma(currsamp[i], propsamp[i]/propsd[i], propsd[i], true )  - R::dgamma(propsamp[i], currsamp[i]/propsd[i], propsd[i], true )), 1.0);
+				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0] + R::dgamma(currsamp[i], propsd[i]+propsamp[i]/propsd[i], propsd[i], true )  - R::dgamma(propsamp[i], propsd[i]+currsamp[i]/propsd[i], propsd[i], true )), 1.0);
 			}	
-			if(uu[0] < 1.0 & uu[0] < densdiff[0]){
+			if((uu[0] < 1.0) & (uu[0] < densdiff[0])){
 				propsamp[i] = currsamp[i];
 				propdens[0] = currdens[0];
 				ct[i] = ct[i]+1.0;
