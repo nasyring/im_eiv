@@ -215,7 +215,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	}
 
 	
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples, Rcpp::Named("logdens") = sampdens, Rcpp::Named("tempsamp") = tempsamp, Rcpp::Named("propsamp") = propsamp, Rcpp::Named("currsamp") = currsamp);
+	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples, Rcpp::Named("logdens") = sampdens, Rcpp::Named("tempsamp") = tempsamp, Rcpp::Named("propsamp") = propsamp, Rcpp::Named("currsamp") = currsamp, Rcpp::Named("tempdens") = tempdens);
 
 	return result;
 
