@@ -24,7 +24,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector mux(1,0.0); mux[0] = par[2];
 	NumericVector sx(1,0.0); sx[0] = par[3];
 	NumericVector se(1,0.0); se[0] = par[4];
-
+/*
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
 	NumericVector s22(1,0.0); s22[0] = stat[2];
@@ -86,7 +86,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector dz2dsx(1, 0.0); dz2dsx[0] = (-z1[0]*dL12dsx[0]-L12[0]*dz1dsx[0])/L22[0] - z2[0]*dL22dsx[0]/L22[0];
 	NumericVector dz2dse(1, 0.0); dz2dse[0] = (-z1[0]*dL12dse[0]-L12[0]*dz1dse[0])/L22[0] - z2[0]*dL22dse[0]/L22[0];
 	
-	/*
+	
 	mat J(5,5,fill::zeros);
 	
 	J = { { dv1dbx[0], dv1dbz[0], dv1dmux[0], dv1dsx[0], dv1dse[0] },
