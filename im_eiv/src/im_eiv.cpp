@@ -136,7 +136,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
 			L12[0] = sx[0]*bx[0]/L11[0];
 			if(  ((sx[0]/del[0]) > (L12[0]*L12[0]))  ){
-				L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
+				L22[0] = std::sqrt((sx[0]/del[0]) - (L12[0]*L12[0]));
 				v1[0] = s11[0]/L11[0];
 				v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
 				v3[0] = s22[0]/L22[0];
@@ -217,16 +217,10 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 		ct[i]=ct[i]/100000.0;
 	}
 	
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples, Rcpp::Named("logdens") = sampdens, Rcpp::Named("tempdens") = tempdens);
-	}	
-	return result;
-	
-	
-	/*
 	
 	NumericVector unifs(1,0.0);NumericVector unifs_hi(10000,0.0);NumericVector unifs_lo(10000,0.0);
 	NumericVector bxs(10000,0.0);NumericVector bzs(10000,0.0);
-	for(int i=0; i<9999; i++){
+	for(int i=0; i<10000; i++){
 		unifs[0] = R::runif(0.0,1.0);
 		unifs_hi[i] = 0.5 + fabs(unifs[0] - 0.5); 
 		unifs_lo[i] = 1.0-unifs_hi[i];
@@ -236,13 +230,13 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	std::sort(bxs.begin(), bxs.end());
 	std::sort(bzs.begin(), bzs.end());
 	NumericVector bxseq(501,0.0);NumericVector bzseq(501,0.0);
-	for(int i=0; i<499; i++){
+	for(int i=0; i<500; i++){
 		bxseq[i] = bxs[i*20];bzseq[i] = bzs[i*20];
 	}
 	bxseq[500] = bx[9999]; bxseq[500] = bx[9999];
 	NumericVector plausesx(501,0.0);NumericVector plausesz(501,0.0);
 	for(int i=0; i<500; i++){
-		for(int j=0; j<9999; j++){
+		for(int j=0; j<10000; j++){
 			if(   (bxseq[i] < bxs[floor(9999*unifs_lo[j])]) & (bxseq[i] > bxs[ceil(9999*unifs_hi[j])])   ){
 				plausesx[i] = plausesx[i]+0.0001;
 			}			
@@ -252,7 +246,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 		}
 	}
 	NumericVector plausestrux(1,0.0);NumericVector plausestruz(1,0.0);
-	for(int j=0; j<9999; j++){
+	for(int j=0; j<10000; j++){
 		if(   (truebx[0] < bxs[floor(9999*unifs_lo[j])]) & (truebx[0] > bxs[ceil(9999*unifs_hi[j])])   ){
 			plausestrux[0] = plausestrux[0]+0.0001;
 		}			
@@ -262,9 +256,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	}
 	
 	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("beta_x_seq") = bxseq, Rcpp::Named("beta_z_seq") = bzseq);
-
 	return result;
-	*/
 }
 	
 	
