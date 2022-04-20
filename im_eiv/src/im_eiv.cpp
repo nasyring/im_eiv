@@ -46,6 +46,8 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector z1(1, 0.0); z1[0] = (ybar[0] - bz[0] - bx[0]*mux[0])/L11[0];
 	NumericVector z2(1, 0.0); z2[0] = (wbar[0] - mux[0] - L12[0]*z1[0])/L22[0];
 	
+	if(((sx[0]/del[0]) > (L12[0]*L12[0])) & (v1[0] > 0) & (v3[0] > 0)){
+	
 	NumericVector dL11dbx(1, 0.0); dL11dbx[0] = bx[0]*sx[0]/L11[0];	
 	NumericVector dL11dsx(1, 0.0); dL11dsx[0] = 0.5*bx[0]*bx[0]/L11[0];	
 	NumericVector dL11dse(1, 0.0); dL11dse[0] = 0.5/L11[0];	
@@ -133,9 +135,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
 			L12[0] = sx[0]*bx[0]/L11[0];
-			if(  ((sx[0]/del[0]) < (L12[0]*L12[0])) || (sx[0]<=0.0) || (se[0]<=0.0) ){
-				currdens[0] = -99.0;
-			}else{ 	
+			if(  ((sx[0]/del[0]) > (L12[0]*L12[0]))  ){
 				L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
 				v1[0] = s11[0]/L11[0];
 				v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
@@ -191,18 +191,16 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 				}else {
 					currdens[0]  = -1000000;
 				}
-		}
-			if(currdens[0] == -99.0){
-				uu[0] = 1.0;
 			}else {
-				uu[0] = R::runif(0.0,1.0);
+				currdens[0]  = -1000000;
 			}
+			uu[0] = R::runif(0.0,1.0);
 			if(i<3){
 				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);	
 			}else {
 				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0] + R::dgamma(currsamp[i], propsd[i]+propsamp[i]/propsd[i], propsd[i], true )  - R::dgamma(propsamp[i], propsd[i]+currsamp[i]/propsd[i], propsd[i], true )), 1.0);
 			}	
-			if((uu[0] < 1.0) & (uu[0] < densdiff[0])){
+			if(uu[0] < densdiff[0]){
 				propsamp[i] = currsamp[i];
 				propdens[0] = currdens[0];
 				ct[i] = ct[i]+1.0;
