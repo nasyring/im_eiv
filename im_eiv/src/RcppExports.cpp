@@ -11,8 +11,8 @@ RcppExport SEXP imeiv_plauscontour(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SE
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericMatrix >::type par(parSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type par(parSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type propsd(propsdSEXP);
