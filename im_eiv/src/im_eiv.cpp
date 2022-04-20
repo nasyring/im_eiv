@@ -123,8 +123,8 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	
 	
 	for(int j=0; j<100000; j++) {
-		for(int i=0; i<4; i++){
-			for(int k=0; k<4; k++){
+		for(int i=0; i<5; i++){
+			for(int k=0; k<5; k++){
 				currsamp[k] = propsamp[k];
 			}
 			if(i<3){
@@ -208,13 +208,13 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			}
 		}
 		if( (j % 10) == 0 ){
-			for(int i=0; i<4; i++){
+			for(int i=0; i<5; i++){
 				samples(j/10, i) = propsamp[i];
 				sampdens[j/10] = propdens[0];
 			}
 		}
 	}
-	for(int i=0; i<4; i++){
+	for(int i=0; i<5; i++){
 		ct[i]=ct[i]/100000.0;
 	}
 	
