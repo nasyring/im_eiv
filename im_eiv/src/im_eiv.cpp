@@ -201,7 +201,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			}else {
 				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0] + R::dgamma(currsamp[i], propsamp[i]/propsd[i], propsd[i], true )  - R::dgamma(propsamp[i], currsamp[i]/propsd[i], propsd[i], true )), 1.0);
 			}	
-			if(uu[0] < densdiff[0]){
+			if(uu[0] < 1.0 & uu[0] < densdiff[0]){
 				propsamp[i] = currsamp[i];
 				propdens[0] = currdens[0];
 				ct[i] = ct[i]+1.0;
