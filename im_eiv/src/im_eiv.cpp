@@ -135,7 +135,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
 			L12[0] = sx[0]*bx[0]/L11[0];
-			if((sx[0]/del[0]) < (L12[0]*L12[0])){
+			if(  ((sx[0]/del[0]) < (L12[0]*L12[0])) || (sx[0]<=0.0) || (se[0]<=0.0) ){
 				currdens[0] = -99.0;
 			}else{ 	
 				L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
