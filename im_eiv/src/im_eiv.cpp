@@ -232,7 +232,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	for(int i=0; i<500; i++){
 		bxseq[i] = bxs[i*20];bzseq[i] = bzs[i*20];
 	}
-	bxseq[500] = bx[9999]; bxseq[500] = bx[9999];
+	bxseq[500] = bxs[9999]; bzseq[500] = bzs[9999];
 	NumericVector plausesx(501,0.0);NumericVector plausesz(501,0.0);
 	for(int i=0; i<500; i++){
 		for(int j=0; j<10000; j++){
