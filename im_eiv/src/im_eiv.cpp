@@ -94,7 +94,9 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
             { dz1dbx[0], dz1dbz[0], dz1dmux[0], dz1dsx[0], dz1dse[0] },
             { dz2dbx[0], dz2dbz[0], dz2dmux[0], dz2dsx[0], dz2dse[0] } };
 	
-	NumericVector det_J(1,0.0); det_J[0] = log(std::abs(arma::det(J)));
+	NumericVector det_J(1,0.0); 
+	
+	//det_J[0] = log(std::abs(arma::det(J)));
 	
 	result = Rcpp::List::create(Rcpp::Named("detJ") = det_J);
 
