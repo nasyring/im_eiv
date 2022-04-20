@@ -34,7 +34,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	
 	NumericVector L11(1,0.0); L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
 	NumericVector L12(1,0.0); L12[0] = sx[0]*bx[0]/L11[0];
-	NumericVector L22(1,0.0); 
+	NumericVector L22(1,1.0); 
 	if((sx[0]/del[0]) > (L12[0]*L12[0])){
 		L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
 	}
@@ -119,11 +119,6 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	NumericVector currsamp(5,0.0);
 	currsamp[0] = bx[0];currsamp[1] = bz[0];currsamp[2] = mux[0];currsamp[3] = sx[0];currsamp[4] = se[0];
 	NumericVector currdens(1,0.0);NumericVector propdens(1,0.0); propdens[0] = logdens[0];
-	
-		result = Rcpp::List::create(Rcpp::Named("logdens") = logdens);
-
-	return result;
-	/*
 	
 	
 	for(int j=0; j<100000; j++) {
@@ -216,14 +211,19 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 		}
 		if( (j % 10) == 0 ){
 			for(int i=0; i<4; i++){
-				samples(j, i) = propsamp[i];
-				sampdens[j] = propdens[0];
+				samples(j/10, i) = propsamp[i];
+				sampdens[j/10] = propdens[0];
 			}
 		}
 	}
 	for(int i=0; i<4; i++){
 		ct[i]=ct[i]/100000.0;
 	}
+	
+	result = Rcpp::List::create(Rcpp::Named("rate") = ct);
+
+	return result;
+	/*
 	
 	NumericVector unifs(1,0.0);NumericVector unifs_hi(10000,0.0);NumericVector unifs_lo(10000,0.0);
 	NumericVector bxs(10000,0.0);NumericVector bzs(10000,0.0);
