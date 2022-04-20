@@ -220,7 +220,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 		ct[i]=ct[i]/100000.0;
 	}
 	
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct);
+	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples);
 
 	return result;
 	/*
