@@ -104,7 +104,11 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	
 	logdens[0] = detJ[0] + (n[0]-2.0)*log(v1[0])-0.5*(v1[0]*v1[0]) + (n[0]-3.0)*log(v3[0])-0.5*(v3[0]*v3[0]) - 0.5*n[0]*(z1[0]*z1[0] + z2[0]*z2[0]) -  0.5*v2[0]*v2[0];
 
+	result = Rcpp::List::create(Rcpp::Named("logdens") = logdens);
 
+	return result;
+	
+/*
 
 	//  Begin MCMC  
 	
@@ -257,7 +261,7 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("beta_x_seq") = bxseq, Rcpp::Named("beta_z_seq") = bzseq);
 
 	return result;
-	
+	*/
 }
 	
 	
