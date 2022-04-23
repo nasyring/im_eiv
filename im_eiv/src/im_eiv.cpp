@@ -262,9 +262,27 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	
 
 
-Rcpp::List plauscontourIM(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq) {
+Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq) {
 	List result;
 	
+	NumericVector s11(1,0.0); s11[0] = stat[0];
+	NumericVector s12(1,0.0); s12[0] = stat[1];	
+	NumericVector s22(1,0.0); s22[0] = stat[2];
+	NumericVector ybar(1,0.0); ybar[0] = stat[3];
+	NumericVector wbar(1,0.0); wbar[0] = stat[4];
+	
+	NumericVector L11(1,0.0); 
+	NumericVector L12(1,0.0); 
+	NumericVector L22(1,1.0); 
+
+	NumericVector v1(1, 0.0); 
+	NumericVector v2(1, 0.0); 
+	NumericVector v3(1, 0.0); 
+	NumericVector u(1, 0.0); 
+	NumericVector logdensseq(1, 0.0); 
+
+	NumericVector plausbetax(500, 0.0);
+	NumericVector plausbetaxseq(1, 0.0);
 	
 	// Generate MC sample of aux rvs
 	
@@ -276,7 +294,7 @@ Rcpp::List plauscontourIM(NumericVector par, NumericVector stat, NumericVector d
 	NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n-2 );
 	NumericVector U(10000,0.0);
 	NumericVector logdens(10000,0.0);
-	for(int i; i < 10000; i++){
+	for(int i=0; i < 10000; i++){
 		V1[i] = std::sqrt(V1[i]);	
 		V3[i] = std::sqrt(V3[i]);
 		U[i] = std::sqrt(V2[i]/V3[i]);
@@ -285,12 +303,82 @@ Rcpp::List plauscontourIM(NumericVector par, NumericVector stat, NumericVector d
 	}
 	samps = sort_mat(samps,0);
 	
+	// Computing plausibility contour of beta_x using grid of variance components and MC density random set
+	
+	int ind=0;
+	
+	for(int i=0; i < 500; i++){
+		for(int j=0; j < 500; j++){
+			for(int k=0; k < 500; k++){
+				L11[0] = std::sqrt(seseq[k]+sxseq[j]*bxseq[i]*bxseq[i]);
+				L12[0] = sxseq[j]*bxseq[i]/L11[0];
+				if((sx[0]/del[0]) > (L12[0]*L12[0])){
+					L22[0] = std::sqrt(sxseq[j]/del[0] - L12[0]*L12[0]);
+					v1[0] = s11[0]/L11[0];
+					v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
+					v3[0] = s22[0]/L22[0];
+					u[0] = v2[0]/v3[0];
+					logdensseq[0] = log(v3[0]) + R::dchisq(v1[0]**2,n-1,true) + R::dchisq(v3[0]**2,n-2,true) + R::dnorm(u[0]*v3[0],0.0,1.0,true);
+					if(logdensseq[0] < samps(0,0)){
+						plausbetaxseq[0] = 0.0;	
+					}else if(logdensseq[0] > samps(9999,0)){
+						plausbetaxseq[0] = 1.0;	
+					}else {
+						while((ind < 10000) & (logdensseq[0] > samps(ind,0))){
+							ind = ind + 1;
+							plausbetaxseq[0] = plausbetaxseq[0] + 0.0001;	
+						}
+						ind = 0;
+					}
+				}
+				if(plausbetaxseq[0] > plausbetax[i]){
+					plausbetax[i] = plausbetaxseq[0];
+				}
+				plausbetaxseq[0] = 0.0;
+			}	
+		}
+	}
+	
+	
+	// Computing plausibility of true beta_x using grid of variance components and MC density random set
+	
+	NumericVector plaustruebetax(1,0.0);
+	
+		for(int j=0; j < 500; j++){
+			for(int k=0; k < 500; k++){
+				L11[0] = std::sqrt(seseq[k]+sxseq[j]*truebx[0]*truebx[0]);
+				L12[0] = sxseq[j]*truebx[0]/L11[0];
+				if((sx[0]/del[0]) > (L12[0]*L12[0])){
+					L22[0] = std::sqrt(sxseq[j]/del[0] - L12[0]*L12[0]);
+					v1[0] = s11[0]/L11[0];
+					v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
+					v3[0] = s22[0]/L22[0];
+					u[0] = v2[0]/v3[0];
+					logdensseq[0] = log(v3[0]) + R::dchisq(v1[0]**2,n-1,true) + R::dchisq(v3[0]**2,n-2,true) + R::dnorm(u[0]*v3[0],0.0,1.0,true);
+					if(logdensseq[0] < samps(0,0)){
+						plausbetaxseq[0] = 0.0;	
+					}else if(logdensseq[0] > samps(9999,0)){
+						plausbetaxseq[0] = 1.0;	
+					}else {
+						while((ind < 10000) & (logdensseq[0] > samps(ind,0))){
+							ind = ind + 1;
+							plausbetaxseq[0] = plausbetaxseq[0] + 0.0001;	
+						}
+						ind = 0;
+					}
+				}
+				if(plausbetaxseq[0] > plaustruebetax[0]){
+					plaustruebetax[0] = plausbetaxseq[0];
+				}
+				plausbetaxseq[0] = 0.0;
+			}	
+		}
 	
 	
 	
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plaustruebetax, Rcpp::Named("plauses_beta_x") = plausbetax);
 	
-	
-	
+	return result;
 	
 	
 }
