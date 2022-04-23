@@ -264,7 +264,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 
 Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq) {
 	
-	Rcpp::Function sort_mat("sort_mat");
+	Rcpp::Function sortmat("sortmat");
 	
 	List result;
 	
@@ -304,7 +304,7 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 		logdens[i] = log(V3[i]) + R::dchisq(V1[i]**2,n[0]-1,true) + R::dchisq(V3[i]**2,n[0]-2,true) + R::dnorm(U[i]*V3[i],0.0,1.0,true);
 		samps(i,0) = logdens[i];samps(i,1) = V1[i];samps(i,2) = V3[i];samps(i,3) = U[i];
 	}
-	samps = sort_mat(samps,0);
+	samps = sortmat(samps,0);
 	
 	// Computing plausibility contour of beta_x using grid of variance components and MC density random set
 	
@@ -388,7 +388,7 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 	
 	
 
-arma::mat sort_mat(arma::mat x, unsigned int col){
+arma::mat sortmat(arma::mat x, unsigned int col){
   
   arma::uvec id = arma::sort_index(x.col(col));
   
