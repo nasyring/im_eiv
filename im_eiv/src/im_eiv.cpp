@@ -14,7 +14,7 @@ using namespace std;
 #include <cmath>
 #include <algorithm>
 
-Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector truebz) {
+Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector truebz) {
 
 	List result;
 	NumericVector tempdens(1,0.0);
@@ -260,5 +260,51 @@ Rcpp::List plauscontour(NumericVector par, NumericVector stat, NumericVector del
 }
 	
 	
+
+
+Rcpp::List plauscontourIM(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq) {
+	List result;
 	
 	
+	// Generate MC sample of aux rvs
+	
+	NumericVector zeroes = NumericVector(10000*4, 0.0); 
+        NumericMatrix sampsNM = NumericMatrix(10000, 4, zeroes.begin());
+	arma::mat samps = as<arma::mat>(sampsNM);
+	NumericVector V2(10000,0.0); V2 = Rcpp::rnorm( 10000, 0.0, 1.0 );
+	NumericVector V1(10000,0.0); V1 = Rcpp::rchisq( 10000, n-1 );
+	NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n-2 );
+	NumericVector U(10000,0.0);
+	NumericVector logdens(10000,0.0);
+	for(int i; i < 10000; i++){
+		V1[i] = std::sqrt(V1[i]);	
+		V3[i] = std::sqrt(V3[i]);
+		U[i] = std::sqrt(V2[i]/V3[i]);
+		logdens[i] = log(V3[i]) + R::dchisq(V1[i]**2,n-1,true) + R::dchisq(V3[i]**2,n-2,true) + R::dnorm(U[i]*V3[i],0.0,1.0,true);
+		samps(i,0) = logdens[i];samps(i,1) = V1[i];samps(i,2) = V3[i];samps(i,3) = U[i];
+	}
+	samps = sort_mat(samps,0);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+	
+	
+
+arma::mat sort_mat(arma::mat x, unsigned int col){
+  
+  arma::uvec id = arma::sort_index(x.col(col));
+  
+  for(unsigned int i = 0; i<x.n_cols; i++){
+    arma::vec sub = x.col(i);
+    x.col(i) = sub.elem(id);
+  }
+  
+  return x;
+}
