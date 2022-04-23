@@ -1,3 +1,11 @@
-plauscontour <- function(par,stat,del,n,propsd,truebx,truebz){
-    .Call(`imeiv_plauscontour`, par,stat,del,n,propsd,truebx,truebz)
+plauscontourGF <- function(par,stat,del,n,propsd,truebx,truebz){
+    .Call(`imeiv_plauscontourGF`, par,stat,del,n,propsd,truebx,truebz)
+}
+
+plauscontourIM <- function(stat,del,n,truebx,truebz,bxseq,sxseq,seseq){
+    .Call(`imeiv_plauscontourIM`, stat,del,n,truebx,truebz,bxseq,sxseq,seseq)
+}
+
+sortmat <- function(x,col){
+    .Call(`imeiv_sortmat`, x,col)
 }
