@@ -5,7 +5,9 @@
 
 /* .Call calls */
 
-extern SEXP imeiv_plauscontour(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP imeiv_plauscontourGF(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP imeiv_plauscontourIM(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP imeiv_sortmat(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourGF", (DL_FUNC) &imeiv_plauscontourGF, 7},
