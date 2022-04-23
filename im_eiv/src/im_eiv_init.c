@@ -8,7 +8,9 @@
 extern SEXP imeiv_plauscontour(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
-    {"imeiv_plauscontour", (DL_FUNC) &imeiv_plauscontour, 7},
+    {"imeiv_plauscontourGF", (DL_FUNC) &imeiv_plauscontourGF, 7},
+    {"imeiv_plauscontourIM", (DL_FUNC) &imeiv_plauscontourIM, 8},
+    {"imeiv_sortmat", (DL_FUNC) &imeiv_sortmat, 2},
     {NULL, NULL, 0}
 };
 
