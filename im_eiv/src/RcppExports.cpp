@@ -40,13 +40,13 @@ BEGIN_RCPP
 END_RCPP
 }
 
-arma::mat sortmat(arma::mat x, unsigned int col);
+Rcpp::NumericMatrix sortmat(NumericMatrix x, unsigned int col);
 RcppExport SEXP imeiv_sortmat(SEXP xSEXP, SEXP colSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type col(colSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type col(colSEXP);
     __result = Rcpp::wrap(sortmat(x,col));
     return __result;
 END_RCPP    
