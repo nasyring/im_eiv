@@ -290,8 +290,7 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 	// Generate MC sample of aux rvs
 	
 	NumericVector zeroes = NumericVector(10000*4, 0.0); 
-        NumericMatrix sampsNM = NumericMatrix(10000, 4, zeroes.begin());
-	arma::mat samps = as<arma::mat>(sampsNM);
+        NumericMatrix samps = NumericMatrix(10000, 4, zeroes.begin());
 	NumericVector V2(10000,0.0); V2 = Rcpp::rnorm( 10000, 0.0, 1.0 );
 	NumericVector V1(10000,0.0); V1 = Rcpp::rchisq( 10000, n[0]-1 );
 	NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n[0]-2 );
@@ -388,14 +387,15 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 	
 	
 
-arma::mat sortmat(arma::mat x, unsigned int col){
+Rcpp::NumericMatrix sortmat(NumericMatrix x, unsigned int col){
+  arma::mat xx = as<arma::mat>(x);
+  arma::uvec id = arma::sort_index(xx.col(col));
   
-  arma::uvec id = arma::sort_index(x.col(col));
-  
-  for(unsigned int i = 0; i<x.n_cols; i++){
-    arma::vec sub = x.col(i);
-    x.col(i) = sub.elem(id);
+  for(unsigned int i = 0; i<xx.n_cols; i++){
+    arma::vec sub = xx.col(i);
+    xx.col(i) = sub.elem(id);
   }
   
-  return x;
+  NumericMatrix	y = as<Rcpp::NumericMatrix>(xx); 
+  return y;
 }
