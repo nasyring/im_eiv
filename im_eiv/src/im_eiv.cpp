@@ -293,15 +293,15 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
         NumericMatrix sampsNM = NumericMatrix(10000, 4, zeroes.begin());
 	arma::mat samps = as<arma::mat>(sampsNM);
 	NumericVector V2(10000,0.0); V2 = Rcpp::rnorm( 10000, 0.0, 1.0 );
-	NumericVector V1(10000,0.0); V1 = Rcpp::rchisq( 10000, n-1 );
-	NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n-2 );
+	NumericVector V1(10000,0.0); V1 = Rcpp::rchisq( 10000, n[0]-1 );
+	NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n[0]-2 );
 	NumericVector U(10000,0.0);
 	NumericVector logdens(10000,0.0);
 	for(int i=0; i < 10000; i++){
 		V1[i] = std::sqrt(V1[i]);	
 		V3[i] = std::sqrt(V3[i]);
 		U[i] = std::sqrt(V2[i]/V3[i]);
-		logdens[i] = log(V3[i]) + R::dchisq(V1[i]**2,n-1,true) + R::dchisq(V3[i]**2,n-2,true) + R::dnorm(U[i]*V3[i],0.0,1.0,true);
+		logdens[i] = log(V3[i]) + R::dchisq(V1[i]**2,n[0]-1,true) + R::dchisq(V3[i]**2,n[0]-2,true) + R::dnorm(U[i]*V3[i],0.0,1.0,true);
 		samps(i,0) = logdens[i];samps(i,1) = V1[i];samps(i,2) = V3[i];samps(i,3) = U[i];
 	}
 	samps = sort_mat(samps,0);
@@ -321,7 +321,7 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 					v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
 					v3[0] = s22[0]/L22[0];
 					u[0] = v2[0]/v3[0];
-					logdensseq[0] = log(v3[0]) + R::dchisq(v1[0]**2,n-1,true) + R::dchisq(v3[0]**2,n-2,true) + R::dnorm(u[0]*v3[0],0.0,1.0,true);
+					logdensseq[0] = log(v3[0]) + R::dchisq(v1[0]**2,n[0]-1,true) + R::dchisq(v3[0]**2,n[0]-2,true) + R::dnorm(u[0]*v3[0],0.0,1.0,true);
 					if(logdensseq[0] < samps(0,0)){
 						plausbetaxseq[0] = 0.0;	
 					}else if(logdensseq[0] > samps(9999,0)){
@@ -357,7 +357,7 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 					v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
 					v3[0] = s22[0]/L22[0];
 					u[0] = v2[0]/v3[0];
-					logdensseq[0] = log(v3[0]) + R::dchisq(v1[0]**2,n-1,true) + R::dchisq(v3[0]**2,n-2,true) + R::dnorm(u[0]*v3[0],0.0,1.0,true);
+					logdensseq[0] = log(v3[0]) + R::dchisq(v1[0]**2,n[0]-1,true) + R::dchisq(v3[0]**2,n[0]-2,true) + R::dnorm(u[0]*v3[0],0.0,1.0,true);
 					if(logdensseq[0] < samps(0,0)){
 						plausbetaxseq[0] = 0.0;	
 					}else if(logdensseq[0] > samps(9999,0)){
