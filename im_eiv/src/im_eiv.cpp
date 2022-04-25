@@ -304,13 +304,7 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 		samps(i,0) = logdens[i];samps(i,1) = V1[i];samps(i,2) = V3[i];samps(i,3) = U[i];
 	}
 	samps = sortmat(samps,0);
-	
-	result = Rcpp::List::create(Rcpp::Named("samps") = samps);
-	
-	return result;
-	
-	/*
-	
+
 	// Computing plausibility contour of beta_x using grid of variance components and MC density random set
 	
 	int ind=0;
@@ -388,7 +382,6 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 	
 	return result;
 	
-	*/
 }
 	
 	
