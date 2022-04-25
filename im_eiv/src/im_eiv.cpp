@@ -262,7 +262,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	
 
 
-Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq) {
+Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq) {
 	
 	Rcpp::Function sortmat("sortmat");
 	
@@ -273,6 +273,7 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 	NumericVector s22(1,0.0); s22[0] = stat[2];
 	NumericVector ybar(1,0.0); ybar[0] = stat[3];
 	NumericVector wbar(1,0.0); wbar[0] = stat[4];
+	NumericVector check(1,0.0);
 	
 	NumericVector L11(1,0.0); 
 	NumericVector L12(1,0.0); 
@@ -314,8 +315,23 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 			for(int k=0; k < 500; k++){
 				L11[0] = std::sqrt(seseq[k]+sxseq[j]*bxseq[i]*bxseq[i]);
 				L12[0] = sxseq[j]*bxseq[i]/L11[0];
-				if((sxseq[j]/del[0]) > (L12[0]*L12[0])){
-					L22[0] = std::sqrt(sxseq[j]/del[0] - L12[0]*L12[0]);
+				if(type == 1.0){
+					check = (sxseq[j]/del[0]) - (L12[0]*L12[0]);
+				}else if(type == 2.0){
+					check = (sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]);	
+				}else if(type == 3.0){
+					check = (sxseq[j] + del[0]) - (L12[0]*L12[0]);	
+				}else {
+					check = -1;	
+				}	
+				if(check > 0){
+					if(type == 1.0){
+						L22[0] = std::sqrt(sxseq[j]/del[0] - L12[0]*L12[0]);
+					}else if(type == 2.0){
+						L22[0] = std::sqrt((sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]));	
+					}else {
+						L22[0] = std::sqrt((sxseq[j] + del[0]) - (L12[0]*L12[0]));
+					}
 					v1[0] = s11[0]/L11[0];
 					v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
 					v3[0] = s22[0]/L22[0];
@@ -350,8 +366,23 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 			for(int k=0; k < 500; k++){
 				L11[0] = std::sqrt(seseq[k]+sxseq[j]*truebx[0]*truebx[0]);
 				L12[0] = sxseq[j]*truebx[0]/L11[0];
-				if((sxseq[j]/del[0]) > (L12[0]*L12[0])){
-					L22[0] = std::sqrt(sxseq[j]/del[0] - L12[0]*L12[0]);
+				if(type == 1.0){
+					check = (sxseq[j]/del[0]) - (L12[0]*L12[0]);
+				}else if(type == 2.0){
+					check = (sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]);	
+				}else if(type == 3.0){
+					check = (sxseq[j] + del[0]) - (L12[0]*L12[0]);	
+				}else {
+					check = -1;	
+				}	
+				if(check > 0){
+					if(type == 1.0){
+						L22[0] = std::sqrt(sxseq[j]/del[0] - L12[0]*L12[0]);
+					}else if(type == 2.0){
+						L22[0] = std::sqrt((sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]));	
+					}else {
+						L22[0] = std::sqrt((sxseq[j] + del[0]) - (L12[0]*L12[0]));
+					}
 					v1[0] = s11[0]/L11[0];
 					v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
 					v3[0] = s22[0]/L22[0];
