@@ -315,19 +315,19 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector t
 			for(int k=0; k < 500; k++){
 				L11[0] = std::sqrt(seseq[k]+sxseq[j]*bxseq[i]*bxseq[i]);
 				L12[0] = sxseq[j]*bxseq[i]/L11[0];
-				if(type == 1.0){
-					check = (sxseq[j]/del[0]) - (L12[0]*L12[0]);
-				}else if(type == 2.0){
-					check = (sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]);	
-				}else if(type == 3.0){
-					check = (sxseq[j] + del[0]) - (L12[0]*L12[0]);	
+				if(type[0] == 1.0){
+					check[0] = (sxseq[j]/del[0]) - (L12[0]*L12[0]);
+				}else if(type[0] == 2.0){
+					check[0] = (sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]);	
+				}else if(type[0] == 3.0){
+					check[0] = (sxseq[j] + del[0]) - (L12[0]*L12[0]);	
 				}else {
-					check = -1;	
+					check[0] = -1;	
 				}	
-				if(check > 0){
-					if(type == 1.0){
+				if(check[0] > 0){
+					if(type[0] == 1.0){
 						L22[0] = std::sqrt(sxseq[j]/del[0] - L12[0]*L12[0]);
-					}else if(type == 2.0){
+					}else if(type[0] == 2.0){
 						L22[0] = std::sqrt((sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]));	
 					}else {
 						L22[0] = std::sqrt((sxseq[j] + del[0]) - (L12[0]*L12[0]));
@@ -366,19 +366,19 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector t
 			for(int k=0; k < 500; k++){
 				L11[0] = std::sqrt(seseq[k]+sxseq[j]*truebx[0]*truebx[0]);
 				L12[0] = sxseq[j]*truebx[0]/L11[0];
-				if(type == 1.0){
-					check = (sxseq[j]/del[0]) - (L12[0]*L12[0]);
-				}else if(type == 2.0){
-					check = (sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]);	
-				}else if(type == 3.0){
-					check = (sxseq[j] + del[0]) - (L12[0]*L12[0]);	
+				if(type[0] == 1.0){
+					check[0] = (sxseq[j]/del[0]) - (L12[0]*L12[0]);
+				}else if(type[0] == 2.0){
+					check[0] = (sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]);	
+				}else if(type[0] == 3.0){
+					check[0] = (sxseq[j] + del[0]) - (L12[0]*L12[0]);	
 				}else {
-					check = -1;	
+					check[0] = -1;	
 				}	
-				if(check > 0){
-					if(type == 1.0){
+				if(check[0] > 0){
+					if(type[0] == 1.0){
 						L22[0] = std::sqrt(sxseq[j]/del[0] - L12[0]*L12[0]);
-					}else if(type == 2.0){
+					}else if(type[0] == 2.0){
 						L22[0] = std::sqrt((sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]));	
 					}else {
 						L22[0] = std::sqrt((sxseq[j] + del[0]) - (L12[0]*L12[0]));
