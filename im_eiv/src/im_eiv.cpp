@@ -303,7 +303,7 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector n
 		logdens[i] = log(V3[i]) + R::dchisq(V1[i]*V1[i],n[0]-1,true) + R::dchisq(V3[i]*V3[i],n[0]-2,true) + R::dnorm(U[i]*V3[i],0.0,1.0,true);
 		samps(i,0) = logdens[i];samps(i,1) = V1[i];samps(i,2) = V3[i];samps(i,3) = U[i];
 	}
-	samps = sortmat(samps,0);
+	//samps = sortmat(samps,0);
 	
 	result = Rcpp::List::create(Rcpp::Named("samps") = samps);
 	
