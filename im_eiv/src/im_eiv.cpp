@@ -434,8 +434,8 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 	
 	// Generate MC sample of aux rvs
 	
-        NumericMatrix sampslo = NumericMatrix(10000, 0.0);
-	NumericMatrix sampshi = NumericMatrix(10000, 0.0);
+        NumericMatrix sampslo = NumericVector(10000, 0.0);
+	NumericMatrix sampshi = NumericVector(10000, 0.0);
 	NumericVector V2(10000,0.0); V2 = Rcpp::rnorm( 10000, 0.0, 1.0 );
 	NumericVector V1(10000,0.0); V1 = Rcpp::rchisq( 10000, n[0]-1 );
 	NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n[0]-2 );
