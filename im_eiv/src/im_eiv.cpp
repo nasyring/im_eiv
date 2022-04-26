@@ -438,12 +438,12 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 	NumericVector sampshi(10000, 0.0);
 	NumericVector V2(10000,0.0); V2 = Rcpp::rnorm( 10000, 0.0, 1.0 );
 	NumericVector V1(10000,0.0); V1 = Rcpp::rchisq( 10000, n[0]-1 );
-	NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n[0]-2 );
+	//NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n[0]-2 );
 	NumericVector U(10000,0.0);
 	for(int i=0; i < 10000; i++){
 		V1[i] = std::sqrt(V1[i]);	
-		V3[i] = std::sqrt(V3[i]);
-		U[i] = (V2[i]+V3[i])/V1[i];
+		//V3[i] = std::sqrt(V3[i]);
+		U[i] = V2[i]/V1[i];
 		sampslo[i] = U[i]*std::sqrt((1/del[0])*0.01 - 0.0001);
 		sampshi[i] = 1.0 + U[i]*std::sqrt((1/del[0])-1.0);
 	}
@@ -468,8 +468,8 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 			unihi[0] = 1.0 - unilo[0];
 			indlo = floor(unilo[0]*9999);
 			indhi = ceil(unihi[0]*9999);
-			betaxlo[0] = sampslo[indlo]/((s12[0]+s22[0])/s11[0]);
-			betaxhi[0] = sampshi[indhi]/((s12[0]+s22[0])/s11[0]);
+			betaxlo[0] = sampslo[indlo]/(s12[0]/s11[0]);
+			betaxhi[0] = sampshi[indhi]/(s12[0]/s11[0]);
 		for(int i=0; i < 500; i++){
 			if((bxseq[i] > betaxlo[0]) & (bxseq[i] < betaxhi[0])){
 				plausbetax[i] = plausbetax[i] + 0.0001;
