@@ -449,6 +449,13 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 	}
 	std::sort(sampslo.begin(), sampslo.end());
 	std::sort(sampshi.begin(), sampshi.end());
+	
+	
+	result = Rcpp::List::create(Rcpp::Named("sampslo") = sampslo, Rcpp::Named("sampshi") = sampshi);
+	
+	return result;
+	
+	/*
 
 	// Computing plausibility contour of beta_x using grid of variance components and MC density random set
 	
@@ -483,6 +490,7 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plaustruebetax, Rcpp::Named("plauses_beta_x") = plausbetax);
 	
 	return result;
+	*/
 	
 }
 	
