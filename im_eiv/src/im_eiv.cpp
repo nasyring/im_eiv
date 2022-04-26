@@ -415,6 +415,85 @@ Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector t
 	
 }
 	
+
+Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq) {
+	
+	List result;
+	
+	NumericVector s11(1,0.0); s11[0] = stat[0];
+	NumericVector s12(1,0.0); s12[0] = stat[1];	
+	NumericVector s22(1,0.0); s22[0] = stat[2];
+	NumericVector ybar(1,0.0); ybar[0] = stat[3];
+	NumericVector wbar(1,0.0); wbar[0] = stat[4];
+	NumericVector check(1,0.0);
+	
+	NumericVector L11(1,0.0); 
+	NumericVector L12(1,0.0); 
+	NumericVector L22(1,1.0); 
+
+	NumericVector v1(1, 0.0); 
+	NumericVector v2(1, 0.0); 
+	NumericVector v3(1, 0.0); 
+	NumericVector u(1, 0.0); 
+	NumericVector logdensseq(1, 0.0); 
+
+	NumericVector plausbetax(500, 0.0);
+	NumericVector plausbetaxseq(1, 0.0);
+	
+	// Generate MC sample of aux rvs
+	
+        NumericMatrix sampslo = NumericMatrix(10000, 0.0);
+	NumericMatrix sampshi = NumericMatrix(10000, 0.0);
+	NumericVector V2(10000,0.0); V2 = Rcpp::rnorm( 10000, 0.0, 1.0 );
+	NumericVector V1(10000,0.0); V1 = Rcpp::rchisq( 10000, n[0]-1 );
+	NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n[0]-2 );
+	NumericVector U(10000,0.0);
+	NumericVector logdens(10000,0.0);
+	for(int i=0; i < 10000; i++){
+		V1[i] = std::sqrt(V1[i]);	
+		V3[i] = std::sqrt(V3[i]);
+		U[i] = (V2[i]+V3[i])/V1[i];
+		sampslo[i] = U[i]*std::sqrt((1/del[0])*0.01 - 0.0001);
+		sampshi[i] = 1.0 + U[i]*std::sqrt((1/del[0])-1.0);
+	}
+	std::sort(sampslo.begin(), sampslo.end());
+	std::sort(sampshi.begin(), sampshi.end());
+
+	// Computing plausibility contour of beta_x using grid of variance components and MC density random set
+	
+	int ind=0;
+	NumericVector uni(1,0.0);
+	NumericVector unilo(1,0.0);
+	NumericVector unihi(1,0.0);
+	NumericVector betaxlo(1,0.0);
+	NumericVector betaxhi(1,0.0);
+	int indlo;indlo=0;
+	int indhi;indhi=0;
+	
+	
+	for(int j=0; j < 10000; j++){
+			uni[0] = R::runif(0.0,1.0); 
+			unilo[0] = 0.5 - std::abs(0.5-uni[0]); 
+			unihi[0] = 1.0 - unilo[0];
+			indlo = round(unilo[0]*9999);
+			indhi = round(unihi[0]*9999);
+			betaxlo[0] = sampslo[indlo];
+			betaxhi[0] = sampshi[indhi];
+		for(int i=0; i < 500; i++){
+			if((bxseq[i] > betaxlo[0]) & (bxseq[i] < betaxhi[0])){
+				plausbetax[i] = plausbetax[i] + 0.0001;
+			}
+		}
+		if((truebx[0] > betaxlo[0]) & (truebx[0] < betaxhi[0])){
+			plaustruebetax[0] = plaustruebetax[0] + 0.0001;
+		}
+	}
+		
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plaustruebetax, Rcpp::Named("plauses_beta_x") = plausbetax);
+	
+	return result;
+	
+}
 	
 
 Rcpp::NumericMatrix sortmat(NumericMatrix x, unsigned int col){
