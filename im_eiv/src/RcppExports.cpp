@@ -41,6 +41,23 @@ BEGIN_RCPP
 END_RCPP
 }
 
+Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq);
+RcppExport SEXP imeiv_plauscontourIMmarg(SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP truebxSEXP, SEXP truebzSEXP, SEXP bxseqSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type truebx(truebxSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type truebz(truebzSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bxseq(bxseqSEXP);
+    __result = Rcpp::wrap(plauscontourIMmarg(stat,del,type,n,truebx,truebz,bxseq));
+    return __result;
+END_RCPP
+}
+
 Rcpp::NumericMatrix sortmat(NumericMatrix x, unsigned int col);
 RcppExport SEXP imeiv_sortmat(SEXP xSEXP, SEXP colSEXP){
 BEGIN_RCPP
