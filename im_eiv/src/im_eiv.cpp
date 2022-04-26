@@ -423,22 +423,14 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
 	NumericVector s22(1,0.0); s22[0] = stat[2];
-	NumericVector ybar(1,0.0); ybar[0] = stat[3];
-	NumericVector wbar(1,0.0); wbar[0] = stat[4];
 	NumericVector check(1,0.0);
 	
 	NumericVector L11(1,0.0); 
 	NumericVector L12(1,0.0); 
 	NumericVector L22(1,1.0); 
 
-	NumericVector v1(1, 0.0); 
-	NumericVector v2(1, 0.0); 
-	NumericVector v3(1, 0.0); 
-	NumericVector u(1, 0.0); 
-	NumericVector logdensseq(1, 0.0); 
 
 	NumericVector plausbetax(500, 0.0);
-	NumericVector plausbetaxseq(1, 0.0);
 	
 	// Generate MC sample of aux rvs
 	
@@ -448,7 +440,6 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 	NumericVector V1(10000,0.0); V1 = Rcpp::rchisq( 10000, n[0]-1 );
 	NumericVector V3(10000,0.0); V3 = Rcpp::rchisq( 10000, n[0]-2 );
 	NumericVector U(10000,0.0);
-	NumericVector logdens(10000,0.0);
 	for(int i=0; i < 10000; i++){
 		V1[i] = std::sqrt(V1[i]);	
 		V3[i] = std::sqrt(V3[i]);
@@ -476,10 +467,10 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 			uni[0] = R::runif(0.0,1.0); 
 			unilo[0] = 0.5 - std::abs(0.5-uni[0]); 
 			unihi[0] = 1.0 - unilo[0];
-			indlo = round(unilo[0]*9999);
-			indhi = round(unihi[0]*9999);
-			betaxlo[0] = sampslo[indlo];
-			betaxhi[0] = sampshi[indhi];
+			indlo = floor(unilo[0]*9999);
+			indhi = ceil(unihi[0]*9999);
+			betaxlo[0] = sampslo[indlo]/((s12s11[0]+s22s11[0])/s11[0]);
+			betaxhi[0] = sampshi[indhi]/((s12s11[0]+s22s11[0])/s11[0]);
 		for(int i=0; i < 500; i++){
 			if((bxseq[i] > betaxlo[0]) & (bxseq[i] < betaxhi[0])){
 				plausbetax[i] = plausbetax[i] + 0.0001;
