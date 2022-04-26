@@ -469,8 +469,8 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 			unihi[0] = 1.0 - unilo[0];
 			indlo = floor(unilo[0]*9999);
 			indhi = ceil(unihi[0]*9999);
-			betaxlo[0] = sampslo[indlo]/((s12s11[0]+s22s11[0])/s11[0]);
-			betaxhi[0] = sampshi[indhi]/((s12s11[0]+s22s11[0])/s11[0]);
+			betaxlo[0] = sampslo[indlo]/((s12[0]+s22[0])/s11[0]);
+			betaxhi[0] = sampshi[indhi]/((s12[0]+s22[0])/s11[0]);
 		for(int i=0; i < 500; i++){
 			if((bxseq[i] > betaxlo[0]) & (bxseq[i] < betaxhi[0])){
 				plausbetax[i] = plausbetax[i] + 0.0001;
