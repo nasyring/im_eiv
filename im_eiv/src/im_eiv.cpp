@@ -451,11 +451,7 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 	std::sort(sampshi.begin(), sampshi.end());
 	
 	
-	result = Rcpp::List::create(Rcpp::Named("sampslo") = sampslo, Rcpp::Named("sampshi") = sampshi);
-	
-	return result;
-	
-	/*
+
 
 	// Computing plausibility contour of beta_x using grid of variance components and MC density random set
 	
@@ -475,8 +471,8 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 			unihi[0] = 1.0 - unilo[0];
 			indlo = floor(unilo[0]*9999);
 			indhi = ceil(unihi[0]*9999);
-			betaxlo[0] = sampslo[indlo]/(s12[0]/s11[0]);
-			betaxhi[0] = sampshi[indhi]/(s12[0]/s11[0]);
+			betaxlo[0] = fmin(sampslo[indlo]/(s12[0]/s11[0]), sampshi[indhi]/(s12[0]/s11[0]));
+			betaxhi[0] = fmax(sampslo[indlo]/(s12[0]/s11[0]), sampshi[indhi]/(s12[0]/s11[0]));
 		for(int i=0; i < 500; i++){
 			if((bxseq[i] > betaxlo[0]) & (bxseq[i] < betaxhi[0])){
 				plausbetax[i] = plausbetax[i] + 0.0001;
@@ -490,7 +486,7 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plaustruebetax, Rcpp::Named("plauses_beta_x") = plausbetax);
 	
 	return result;
-	*/
+	
 	
 }
 	
