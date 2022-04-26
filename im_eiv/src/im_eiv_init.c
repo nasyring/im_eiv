@@ -13,7 +13,7 @@ extern SEXP imeiv_sortmat(SEXP, SEXP);
 static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourGF", (DL_FUNC) &imeiv_plauscontourGF, 7},
     {"imeiv_plauscontourIM", (DL_FUNC) &imeiv_plauscontourIM, 9},
-    {"imeiv_plauscontourIM", (DL_FUNC) &imeiv_plauscontourIMmarg, 7},
+    {"imeiv_plauscontourIMmarg", (DL_FUNC) &imeiv_plauscontourIMmarg, 7},
     {"imeiv_sortmat", (DL_FUNC) &imeiv_sortmat, 2},
     {NULL, NULL, 0}
 };
