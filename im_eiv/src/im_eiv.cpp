@@ -444,8 +444,8 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 		V1[i] = std::sqrt(V1[i]);	
 		//V3[i] = std::sqrt(V3[i]);
 		U[i] = V2[i]/V1[i];
-		sampslo[i] = U[i]*std::sqrt((1/del[0])*0.01 - 0.0001);
-		sampshi[i] = 1.0 + U[i]*std::sqrt((1/del[0])-1.0);
+		sampslo[i] = fmin(U[i]*std::sqrt((1/del[0])-1.0),U[i]*std::sqrt((1/del[0])*0.01-0.0001));
+		sampshi[i] = 1.0 + fmax(U[i]*std::sqrt((1/del[0])-1.0), U[i]*std::sqrt((1/del[0])*0.01-0.0001));
 	}
 	std::sort(sampslo.begin(), sampslo.end());
 	std::sort(sampshi.begin(), sampshi.end());
