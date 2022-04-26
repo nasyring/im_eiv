@@ -469,6 +469,7 @@ Rcpp::List plauscontourIMmarg(NumericVector stat, NumericVector del, NumericVect
 	NumericVector betaxhi(1,0.0);
 	int indlo;indlo=0;
 	int indhi;indhi=0;
+	NumericVector plaustruebetax(1,0.0);
 	
 	
 	for(int j=0; j < 10000; j++){
