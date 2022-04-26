@@ -14,9 +14,11 @@ using namespace std;
 #include <cmath>
 #include <algorithm>
 
-Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector truebz) {
+Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector bzseq) {
 
 	List result;
+	Rcpp::Function sortmat("sortmat");
+	
 	NumericVector tempdens(1,0.0);
 	NumericVector uu(1,0.0);
 	NumericVector ct(5,0.0);
@@ -91,7 +93,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	NumericVector dz2dse(1, 0.0); dz2dse[0] = (-z1[0]*dL12dse[0]-L12[0]*dz1dse[0])/L22[0] - z2[0]*dL22dse[0]/L22[0];
 	
 	
-	mat J(5,5,fill::zeros);
+	mat J(5,5,fill::zeros); mat J2(3,3,fill::zeros);
 	
 	J = { { dv1dbx[0], dv1dbz[0], dv1dmux[0], dv1dsx[0], dv1dse[0] },
             { dv2dbx[0], dv2dbz[0], dv2dmux[0], dv2dsx[0], dv2dse[0] },
@@ -99,29 +101,32 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
             { dz1dbx[0], dz1dbz[0], dz1dmux[0], dz1dsx[0], dz1dse[0] },
             { dz2dbx[0], dz2dbz[0], dz2dmux[0], dz2dsx[0], dz2dse[0] } };
 	
-	NumericVector detJ(1,0.0); 
+	NumericVector detJ(1,0.0); NumericVector detJ2(1,0.0); 
 	
 	detJ[0] = log(std::abs(arma::det(J)));
 	
-	NumericVector logdens(1, 0.0);
+	NumericVector logdens(1, 0.0); NumericVector logdens2(1, 0.0);
 	
 	logdens[0] = detJ[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1) + R::dnorm(z1[0],0.0,sd[0],1) + R::dnorm(z2[0],0.0,sd[0],1);
+	logdens2[0] = detJ2[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1);
+	
 	tempdens[0] = logdens[0]; 
 	//  Begin MCMC  
 	
-	NumericVector zeroes(50000,0.0);
-	NumericMatrix samples = NumericMatrix(10000, 5, zeroes.begin());
-	samples(0,0) = bx[0];samples(0,1) = bz[0];samples(0,2) = mux[0];samples(0,3) = sx[0];samples(0,4) = se[0];
-	NumericVector sampdens(10000,0.0);
+	NumericVector zeroes(70000,0.0);
+	NumericMatrix samples = NumericMatrix(10000, 7, zeroes.begin());
+	NumericMatrix samples2 = NumericMatrix(10000, 7, zeroes.begin());
+	samples(0,0) = bx[0];samples(0,1) = bz[0];samples(0,2) = mux[0];samples(0,3) = sx[0];samples(0,4) = se[0];samples(0,5) = logdens[0];samples(0,6) = logdens2[0];
 	NumericVector densdiff(1,0.0);
 	NumericVector propsamp(5,0.0);
 	propsamp[0] = bx[0];propsamp[1] = bz[0];propsamp[2] = mux[0];propsamp[3] = sx[0];propsamp[4] = se[0];
 	NumericVector currsamp(5,0.0);
 	currsamp[0] = bx[0];currsamp[1] = bz[0];currsamp[2] = mux[0];currsamp[3] = sx[0];currsamp[4] = se[0];
 	NumericVector currdens(1,0.0);NumericVector propdens(1,0.0); propdens[0] = logdens[0];
+	NumericVector currdens2(1,0.0);NumericVector propdens2(1,0.0); propdens2[0] = logdens2[0];
 	
 	
-	for(int j=0; j<100000; j++) {
+	for(int j=0; j<200000; j++) {
 		for(int i=0; i<5; i++){
 			for(int k=0; k<5; k++){
 				currsamp[k] = propsamp[k];
@@ -183,15 +188,22 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
   			 	         { dv3dbx[0], dv3dbz[0], dv3dmux[0], dv3dsx[0], dv3dse[0] },
   				          { dz1dbx[0], dz1dbz[0], dz1dmux[0], dz1dsx[0], dz1dse[0] },
      				       { dz2dbx[0], dz2dbz[0], dz2dmux[0], dz2dsx[0], dz2dse[0] } };
+				
+				J2 = { { dv1dbx[0], dv1dsx[0], dv1dse[0] },
+			            { dv2dbx[0],dv2dsx[0], dv2dse[0] },
+  			 	         { dv3dbx[0], dv3dsx[0], dv3dse[0] }};
 	
-				detJ[0] = log(std::abs(arma::det(J)));
+				detJ[0] = log(std::abs(arma::det(J))); detJ2[0] = log(std::abs(arma::det(J2)));
 				if((v1[0]>0) & (v3[0]>0)){
 					currdens[0]  = detJ[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1) + R::dnorm(z1[0],0.0,sd[0],1) + R::dnorm(z2[0],0.0,sd[0],1);
+					currdens2[0]  = detJ2[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1);
 				}else {
 					currdens[0]  = -1000000;
+					currdens2[0]  = -1000000;
 				}
 			}else {
 				currdens[0]  = -1000000;
+				currdens2[0]  = -1000000;
 			}
 			uu[0] = R::runif(0.0,1.0);
 			if(i<3){
@@ -202,19 +214,54 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			if(uu[0] < densdiff[0]){
 				propsamp[i] = currsamp[i];
 				propdens[0] = currdens[0];
+				propdens2[0] = currdens2[0];
 				ct[i] = ct[i]+1.0;
 			}
 		}
-		if( (j % 10) == 0 ){
+		if( ((j % 10) == 0) & (j <= 100000) ){
 			for(int i=0; i<5; i++){
 				samples(j/10, i) = propsamp[i];
-				sampdens[j/10] = propdens[0];
+
 			}
+			samples(j/10, 5) = propdens[0];
+			samples(j/10, 6) = propdens2[0];
+		}
+		if( ((j % 10) == 0) & (j > 100000) ){
+			for(int i=0; i<5; i++){
+				samples2(j/10, i) = propsamp[i];
+
+			}
+			samples2(j/10, 5) = propdens[0];
+			samples2(j/10, 6) = propdens2[0];
 		}
 	}
 	for(int i=0; i<5; i++){
 		ct[i]=ct[i]/100000.0;
 	}
+		
+	/*	
+	// plausibility of betax
+		
+	samples = sortmat(samples,6);
+	NumericVector plausbxseq(500,0.0);
+	int ind = 0;	
+		
+	for(int i = 0; i < 10000; i++){
+		if(samples2(i,6) > samples(0,6)){
+			if(samples2(i,6) < samples(9999,6)){
+				while(samples2(i,6) > samples(ind,6)){
+					ind = ind+1;
+				}
+				plausbxseq[i] = (ind+1.0) / 10000.0;
+			}
+		}else {
+			plausbxseq[i] = 1.0;	
+		}
+
+	}
+		*/
+		
+		
 	
 	
 	NumericVector unifs(1,0.0);NumericVector unifs_hi(10000,0.0);NumericVector unifs_lo(10000,0.0);
@@ -262,7 +309,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	
 
 
-Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq) {
+Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq, NumericVector bzseq, NumericVector muxseq) {
 	
 	Rcpp::Function sortmat("sortmat");
 	
