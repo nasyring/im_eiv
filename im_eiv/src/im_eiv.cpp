@@ -378,7 +378,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	
 
 
-Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq, NumericVector bzseq, NumericVector muxseq) {
+Rcpp::List plauscontourIM(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector sxseq, NumericVector seseq) {
 	
 	Rcpp::Function sortmat("sortmat");
 	
