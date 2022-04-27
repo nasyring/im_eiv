@@ -239,30 +239,48 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 		ct[i]=ct[i]/100000.0;
 	}
 		
-	/*	
+		
 	// plausibility of betax
 		
 	samples = sortmat(samples,6);
 	NumericVector plausbxseq(500,0.0);
+	NumericVector randsetlo(10000,0.0);NumericVector randsethi(10000,0.0);
 	int ind = 0;	
 		
 	for(int i = 0; i < 10000; i++){
 		if(samples2(i,6) > samples(0,6)){
 			if(samples2(i,6) < samples(9999,6)){
-				while(samples2(i,6) > samples(ind,6)){
+				while(samples2(i,6) < samples(ind,6)){
 					ind = ind+1;
 				}
-				plausbxseq[i] = (ind+1.0) / 10000.0;
+				NumericVector subset(10000-ind,0.0);
+				for(int j = ind; j < 10000-ind; j++){
+					subset[j-ind] = samples(j,0);
+				}
+				randsetlo[i] = 	Rcpp::min(subset);
+				randsethi[i] =  Rcpp::max(subset);
+			}else {
+				randsetlo[i] = 	0;
+				randsethi[i] =  0;
 			}
 		}else {
-			plausbxseq[i] = 1.0;	
+			NumericVector subset(10000,0.0);
+			for(int j = 0; j < 10000; j++){
+				subset[j] = samples(j,0);
+			}
+			randsetlo[i] = 	Rcpp::min(subset);
+			randsethi[i] =  Rcpp::max(subset);
 		}
-
+		for(int j = 0; j < 500; j++){
+			if((bxseq[j] > randsetlo[i]) & (bxseq[j] < randsethi[i])){
+				plausbxseq[j] = plausbxseq[j] + 0.0001;	
+			}
+		}
 	}
-		*/
 		
 		
-	
+		
+	/*
 	
 	NumericVector unifs(1,0.0);NumericVector unifs_hi(10000,0.0);NumericVector unifs_lo(10000,0.0);
 	NumericVector bxs(10000,0.0);NumericVector bzs(10000,0.0);
@@ -302,7 +320,10 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	}
 	
 	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("beta_x_seq") = bxseq, Rcpp::Named("beta_z_seq") = bzseq);
-	}
+	*/
+		
+	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plauses_beta_z") = plausesz);
+		
 	return result;
 }
 	
