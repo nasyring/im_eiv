@@ -242,6 +242,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 		
 	// plausibility of betax
 		
+	NumericVector plausestrux(1, 0.0);
 	samples = sortmat(samples,6);
 	NumericVector plausbxseq(500,0.0);
 	NumericVector randsetlo(10000,0.0);NumericVector randsethi(10000,0.0);
@@ -276,9 +277,12 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 				plausbxseq[j] = plausbxseq[j] + 0.0001;	
 			}
 		}
+		if((truebx[0] > randsetlo[i]) & (truebx[0] < randsethi[i])){
+			plausbxseq[j] = plausbxseq[j] + 0.0001;	
+		}
 	}
 		
-
+	NumericVector plausestruz(1, 0.0);
 	samples = sortmat(samples,5);
 	NumericVector plausbzseq(500,0.0);
 	NumericVector randsetloz(10000,0.0);NumericVector randsethiz(10000,0.0);
@@ -312,6 +316,9 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			if((bzseq[j] > randsetloz[i]) & (bzseq[j] < randsethiz[i])){
 				plausbzseq[j] = plausbzseq[j] + 0.0001;	
 			}
+		}
+		if((truebz[0] > randsetloz[i]) & (truebz[0] < randsethiz[i])){
+			plausbzseq[j] = plausbzseq[j] + 0.0001;	
 		}
 	}
 		
@@ -360,7 +367,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("beta_x_seq") = bxseq, Rcpp::Named("beta_z_seq") = bzseq);
 	*/
 		
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plauses_beta_z") = plausesz);
+	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausbxseq, Rcpp::Named("plauses_beta_z") = plausbzseq);
 		
 	return result;
 }
