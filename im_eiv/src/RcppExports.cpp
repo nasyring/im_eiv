@@ -5,8 +5,9 @@ using namespace arma;
 using namespace std;
 
 
-Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector truebz);
-RcppExport SEXP imeiv_plauscontourGF(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP propsdSEXP, SEXP truebxSEXP, SEXP truebzSEXP){
+
+Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector bzseq);
+RcppExport SEXP imeiv_plauscontourGF(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP propsdSEXP, SEXP truebxSEXP, SEXP truebzSEXP, SEXP bxseqSEXP, SEXP bzseqSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -17,7 +18,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type propsd(propsdSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type truebx(truebxSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type truebz(truebzSEXP);
-    __result = Rcpp::wrap(plauscontourGF(par,stat,del,n,propsd,truebx,truebz));
+    Rcpp::traits::input_parameter< NumericVector >::type bxseq(bxseqSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bzseq(bzseqSEXP);
+    __result = Rcpp::wrap(plauscontourGF(par,stat,del,n,propsd,truebx,truebz, bxseq, bzseq));
     return __result;
 END_RCPP
 }
