@@ -259,6 +259,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 				}
 				randsetlo[i] = 	Rcpp::min(subset);
 				randsethi[i] =  Rcpp::max(subset);
+				subset.clear();
 			}else {
 				randsetlo[i] = 	0;
 				randsethi[i] =  0;
@@ -270,6 +271,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			}
 			randsetlo[i] = 	Rcpp::min(subset);
 			randsethi[i] =  Rcpp::max(subset);
+			subset.clear();
 		}
 		for(int j = 0; j < 500; j++){
 			if((bxseq[j] > randsetlo[i]) & (bxseq[j] < randsethi[i])){
@@ -277,6 +279,46 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			}
 		}
 	}
+		
+
+	samples = sortmat(samples,5);
+	NumericVector plausbzseq(500,0.0);
+	NumericVector randsetloz(10000,0.0);NumericVector randsethiz(10000,0.0);
+	ind = 0;	
+		
+	for(int i = 0; i < 10000; i++){
+		if(samples2(i,5) > samples(0,5)){
+			if(samples2(i,5) < samples(9999,5)){
+				while(samples2(i,5) < samples(ind,5)){
+					ind = ind+1;
+				}
+				NumericVector subset(10000-ind,0.0);
+				for(int j = ind; j < 10000-ind; j++){
+					subset[j-ind] = samples(j,0);
+				}
+				randsetloz[i] = 	Rcpp::min(subset);
+				randsethiz[i] =  Rcpp::max(subset);
+				subset.clear();
+			}else {
+				randsetloz[i] = 	0;
+				randsethiz[i] =  0;
+			}
+		}else {
+			NumericVector subset(10000,0.0);
+			for(int j = 0; j < 10000; j++){
+				subset[j] = samples(j,0);
+			}
+			randsetloz[i] = 	Rcpp::min(subset);
+			randsethiz[i] =  Rcpp::max(subset);
+			subset.clear();
+		}
+		for(int j = 0; j < 500; j++){
+			if((bzseq[j] > randsetloz[i]) & (bzseq[j] < randsethiz[i])){
+				plausbzseq[j] = plausbzseq[j] + 0.0001;	
+			}
+		}
+	}
+		
 		
 		
 		
