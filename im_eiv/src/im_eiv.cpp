@@ -278,7 +278,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			}
 		}
 		if((truebx[0] > randsetlo[i]) & (truebx[0] < randsethi[i])){
-			plausbxseq[j] = plausbxseq[j] + 0.0001;	
+			plausestrux[0] = plausestrux[0] + 0.0001;	
 		}
 	}
 		
@@ -318,7 +318,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			}
 		}
 		if((truebz[0] > randsetloz[i]) & (truebz[0] < randsethiz[i])){
-			plausbzseq[j] = plausbzseq[j] + 0.0001;	
+			plausestruz[0] = plausestruz[0] + 0.0001;	
 		}
 	}
 		
