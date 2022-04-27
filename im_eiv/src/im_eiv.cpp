@@ -259,7 +259,6 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 				}
 				randsetlo[i] = 	Rcpp::min(subset);
 				randsethi[i] =  Rcpp::max(subset);
-				subset.clear();
 			}else {
 				randsetlo[i] = 	0;
 				randsethi[i] =  0;
@@ -271,7 +270,6 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			}
 			randsetlo[i] = 	Rcpp::min(subset);
 			randsethi[i] =  Rcpp::max(subset);
-			subset.clear();
 		}
 		for(int j = 0; j < 500; j++){
 			if((bxseq[j] > randsetlo[i]) & (bxseq[j] < randsethi[i])){
@@ -298,7 +296,6 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 				}
 				randsetloz[i] = 	Rcpp::min(subset);
 				randsethiz[i] =  Rcpp::max(subset);
-				subset.clear();
 			}else {
 				randsetloz[i] = 	0;
 				randsethiz[i] =  0;
@@ -310,7 +307,6 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			}
 			randsetloz[i] = 	Rcpp::min(subset);
 			randsethiz[i] =  Rcpp::max(subset);
-			subset.clear();
 		}
 		for(int j = 0; j < 500; j++){
 			if((bzseq[j] > randsetloz[i]) & (bzseq[j] < randsethiz[i])){
