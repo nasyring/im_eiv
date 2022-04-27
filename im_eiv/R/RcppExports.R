@@ -2,6 +2,10 @@ plauscontourGF <- function(par,stat,del,n,propsd,truebx,truebz,bxseq,bzseq){
     .Call(`imeiv_plauscontourGF`, par,stat,del,n,propsd,truebx,truebz,bxseq,bzseq)
 }
 
+plauscontourGF2 <- function(par,stat,del,n,propsd,truebx,truebz,bxseq,bzseq){
+    .Call(`imeiv_plauscontourGF2`, par,stat,del,n,propsd,truebx,truebz,bxseq,bzseq)
+}
+
 plauscontourIM <- function(stat,del,type,n,truebx,truebz,bxseq,sxseq,seseq){
     .Call(`imeiv_plauscontourIM`, stat,del,type,n,truebx,truebz,bxseq,sxseq,seseq)
 }
