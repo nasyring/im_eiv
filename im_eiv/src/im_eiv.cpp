@@ -39,16 +39,14 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	NumericVector L12(1,0.0); L12[0] = sx[0]*bx[0]/L11[0];
 	NumericVector L22(1,1.0); 
 	if((sx[0]/del[0]) > (L12[0]*L12[0])){
-		L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
-	}
-
+	
+	L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
+	
 	NumericVector v1(1, 0.0); v1[0] = s11[0]/L11[0];
 	NumericVector v2(1, 0.0); v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
 	NumericVector v3(1, 0.0); v3[0] = s22[0]/L22[0];
 	NumericVector z1(1, 0.0); z1[0] = (ybar[0] - bz[0] - bx[0]*mux[0])/L11[0];
 	NumericVector z2(1, 0.0); z2[0] = (wbar[0] - mux[0] - L12[0]*z1[0])/L22[0];
-	
-	if(((sx[0]/del[0]) > (L12[0]*L12[0])) & (v1[0] > 0) & (v3[0] > 0)){
 	
 	NumericVector dL11dbx(1, 0.0); dL11dbx[0] = bx[0]*sx[0]/L11[0];	
 	NumericVector dL11dsx(1, 0.0); dL11dsx[0] = 0.5*bx[0]*bx[0]/L11[0];	
@@ -100,10 +98,15 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
             { dv3dbx[0], dv3dbz[0], dv3dmux[0], dv3dsx[0], dv3dse[0] },
             { dz1dbx[0], dz1dbz[0], dz1dmux[0], dz1dsx[0], dz1dse[0] },
             { dz2dbx[0], dz2dbz[0], dz2dmux[0], dz2dsx[0], dz2dse[0] } };
+		
+	J2 = { { dv1dbx[0], dv1dsx[0], dv1dse[0] },
+            { dv2dbx[0], dv2dsx[0], dv2dse[0] },
+            { dv3dbx[0], dv3dsx[0], dv3dse[0] }};
 	
 	NumericVector detJ(1,0.0); NumericVector detJ2(1,0.0); 
 	
 	detJ[0] = log(std::abs(arma::det(J)));
+	detJ2[0] = log(std::abs(arma::det(J2)));
 	
 	NumericVector logdens(1, 0.0); NumericVector logdens2(1, 0.0);
 	
