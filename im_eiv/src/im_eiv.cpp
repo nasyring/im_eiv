@@ -221,21 +221,20 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 				ct[i] = ct[i]+1.0;
 			}
 		}
-		if( ((j % 10) == 0) & (j <= 100000) ){
+		if( ((j % 10) == 0) & (j < 100000) ){
 			for(int i=0; i<5; i++){
 				samples(j/10, i) = propsamp[i];
-
 			}
 			samples(j/10, 5) = propdens[0];
 			samples(j/10, 6) = propdens2[0];
 		}
-		if( ((j % 10) == 0) & (j > 100000) ){
+		if( ((j % 10) == 0) & (j >= 100000) ){
 			for(int i=0; i<5; i++){
-				samples2(j/10, i) = propsamp[i];
+				samples2((j-100000)/10, i) = propsamp[i];
 
 			}
-			samples2(j/10, 5) = propdens[0];
-			samples2(j/10, 6) = propdens2[0];
+			samples2((j-100000)/10, 5) = propdens[0];
+			samples2((j-100000)/10, 6) = propdens2[0];
 		}
 	}
 	for(int i=0; i<5; i++){
