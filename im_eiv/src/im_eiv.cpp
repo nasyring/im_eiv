@@ -251,6 +251,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	int ind = 0;	
 		
 	for(int i = 0; i < 10000; i++){
+		ind = 0;
 		if(samples2(i,6) > samples(0,6)){
 			if(samples2(i,6) < samples(9999,6)){
 				while(samples2(i,6) < samples(ind,6)){
@@ -291,6 +292,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	ind = 0;	
 		
 	for(int i = 0; i < 10000; i++){
+		ind = 0;
 		if(samples2(i,5) > samples(0,5)){
 			if(samples2(i,5) < samples(9999,5)){
 				while(samples2(i,5) < samples(ind,5)){
@@ -298,7 +300,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 				}
 				NumericVector subset(10000-ind,0.0);
 				for(int j = ind; j < 10000-ind; j++){
-					subset[j-ind] = samples(j,0);
+					subset[j-ind] = samples(j,1);
 				}
 				randsetloz[i] = 	Rcpp::min(subset);
 				randsethiz[i] =  Rcpp::max(subset);
@@ -309,7 +311,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 		}else {
 			NumericVector subset(10000,0.0);
 			for(int j = 0; j < 10000; j++){
-				subset[j] = samples(j,0);
+				subset[j] = samples(j,1);
 			}
 			randsetloz[i] = 	Rcpp::min(subset);
 			randsethiz[i] =  Rcpp::max(subset);
