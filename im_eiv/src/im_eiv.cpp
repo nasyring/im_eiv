@@ -258,7 +258,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 					ind = ind+1;
 				}
 				NumericVector subset(10000-ind,0.0);
-				for(int j = ind; j < 10000-ind; j++){
+				for(int j = ind; j < 10000; j++){
 					subset[j-ind] = samples(j,0);
 				}
 				randsetlo[i] = 	Rcpp::min(subset);
@@ -299,7 +299,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 					ind = ind+1;
 				}
 				NumericVector subset(10000-ind,0.0);
-				for(int j = ind; j < 10000-ind; j++){
+				for(int j = ind; j < 10000; j++){
 					subset[j-ind] = samples(j,1);
 				}
 				randsetloz[i] = 	Rcpp::min(subset);
@@ -371,7 +371,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("beta_x_seq") = bxseq, Rcpp::Named("beta_z_seq") = bzseq);
 	*/
 		
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausbxseq, Rcpp::Named("plauses_beta_z") = plausbzseq, Rcpp::Named("randsetlo") = randsetlo, Rcpp::Named("randsethi") = randsethi);		
+	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausbxseq, Rcpp::Named("plauses_beta_z") = plausbzseq, Rcpp::Named("randsetlo") = randsetlo, Rcpp::Named("randsethi") = randsethi, Rcpp::Named("samples") = samples);		
 	}
 	return result;
 }
