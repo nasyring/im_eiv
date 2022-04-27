@@ -41,11 +41,11 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	NumericVector L22(1,1.0); 
 	
 	if(type[0] == 1.0){
-		check[0] = (sxseq[j]/del[0]) - (L12[0]*L12[0]);
+		check[0] = (sx[0]/del[0]) - (L12[0]*L12[0]);
 	}else if(type[0] == 2.0){
-		check[0] = (sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]);	
+		check[0] = (sx[0] + se[0]/del[0]) - (L12[0]*L12[0]);	
 	}else if(type[0] == 3.0){
-		check[0] = (sxseq[j] + del[0]) - (L12[0]*L12[0]);	
+		check[0] = (sx[0] + del[0]) - (L12[0]*L12[0]);	
 	}else {
 		check[0] = -1;	
 	}	
@@ -55,9 +55,9 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 	if(type[0] == 1.0){
 		L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
 	}else if(type[0] == 2.0){
-		L22[0] = std::sqrt((sxseq[j] + seseq[k]/del[0]) - (L12[0]*L12[0]));
+		L22[0] = std::sqrt((sx[0] + se[0]/del[0]) - (L12[0]*L12[0]));
 	}else {
-		L22[0] = std::sqrt((sxseq[j] + del[0]) - (L12[0]*L12[0]));
+		L22[0] = std::sqrt((sx[0] + del[0]) - (L12[0]*L12[0]));
 	}
 	
 
@@ -172,8 +172,23 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
 			L12[0] = sx[0]*bx[0]/L11[0];
-			if(  ((sx[0]/del[0]) > (L12[0]*L12[0]))  ){
-				L22[0] = std::sqrt((sx[0]/del[0]) - (L12[0]*L12[0]));
+			if(type[0] == 1.0){
+				check[0] = (sx[0]/del[0]) - (L12[0]*L12[0]);
+			}else if(type[0] == 2.0){
+				check[0] = (sx[0] + se[0]/del[0]) - (L12[0]*L12[0]);	
+			}else if(type[0] == 3.0){
+				check[0] = (sx[0] + del[0]) - (L12[0]*L12[0]);	
+			}else {
+				check[0] = -1;	
+			}	
+			if(check[0] > 0){	
+				if(type[0] == 1.0){
+					L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
+				}else if(type[0] == 2.0){
+					L22[0] = std::sqrt((sx[0] + se[0]/del[0]) - (L12[0]*L12[0]));
+				}else {
+					L22[0] = std::sqrt((sx[0] + del[0]) - (L12[0]*L12[0]));
+				}
 				v1[0] = s11[0]/L11[0];
 				v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
 				v3[0] = s22[0]/L22[0];
@@ -189,8 +204,16 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 				dL12dse[0] = (-bx[0]*sx[0]*dL11dse[0])/(L11[0]*L11[0]);
 	
 				dL22dbx[0] = -L12[0]*dL12dbx[0]/L22[0];
-				dL22dsx[0] = (0.5/L22[0])*((1/del[0]) - 2.0*L12[0]*dL12dsx[0]);
-				dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
+				if(type[0] == 1.0){
+					dL22dsx[0] = (0.5/L22[0])*((1/del[0]) - 2.0*L12[0]*dL12dsx[0]);
+					dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
+				}else if(type[0] == 2.0){
+					dL22dsx[0] = (0.5/L22[0])*(1.0 - 2.0*L12[0]*dL12dsx[0]);
+					dL22dse[0] = (0.5/L22[0])*(1.0/del - 2.0*L12[0]*dL12dse[0]);
+				}else {
+					dL22dsx[0] = (0.5/L22[0])*(1.0 - 2.0*L12[0]*dL12dsx[0]);
+					dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
+				}
 	
 				dv1dbx[0] = -s11[0]*dL11dbx[0]/(L11[0]*L11[0]);
 				dv1dsx[0] = -s11[0]*dL11dsx[0]/(L11[0]*L11[0]);
