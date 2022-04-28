@@ -209,7 +209,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 					dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
 				}else if(type[0] == 2.0){
 					dL22dsx[0] = (0.5/L22[0])*(1.0 - 2.0*L12[0]*dL12dsx[0]);
-					dL22dse[0] = (0.5/L22[0])*(1.0/del - 2.0*L12[0]*dL12dse[0]);
+					dL22dse[0] = (0.5/L22[0])*(1.0/del[0] - 2.0*L12[0]*dL12dse[0]);
 				}else {
 					dL22dsx[0] = (0.5/L22[0])*(1.0 - 2.0*L12[0]*dL12dsx[0]);
 					dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
