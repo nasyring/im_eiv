@@ -164,11 +164,8 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 			for(int k=0; k<5; k++){
 				currsamp[k] = propsamp[k];
 			}
-			if(i<3){
-				currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
-			}else {
-				currsamp[i] = R::rgamma(propsd[i] + propsamp[i]/propsd[i], propsd[i] );
-			}
+			currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
+			if(!((i > 2) & (currsamp[i]<0))){
 			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
 			L12[0] = sx[0]*bx[0]/L11[0];
@@ -272,6 +269,7 @@ Rcpp::List plauscontourGF(NumericVector par, NumericVector stat, NumericVector d
 				propdens[0] = currdens[0];
 				propdens2[0] = currdens2[0];
 				ct[i] = ct[i]+1.0;
+			}
 			}
 		}
 		if( ((j % 10) == 0) & (j < 100000) ){
