@@ -719,22 +719,31 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	std::sort(bxs.begin(), bxs.end());
 	std::sort(bzs.begin(), bzs.end());
 	NumericVector plausesx(500,0.0);NumericVector plausesz(500,0.0);
+	int intlo = 0;  int inthi = 0;
 	for(int i=0; i<500; i++){
 		for(int j=0; j<20000; j++){
-			if(   (bxseq[i] > bxs[floor(19999*unifs_lo[j])]) & (bxseq[i] < bxs[ceil(19999*unifs_hi[j])])   ){
+			intlo = max(0, floor(19999*unifs_lo[j]));
+			inthi = min(19999,ceil(19999*unifs_hi[j]));
+			if(   (bxseq[i] > bxs[intlo]) & (bxseq[i] < bxs[inthi])   ){
 				plausesx[i] = plausesx[i]+0.00005;
-			}			
-			if(   (bzseq[i] > bzs[floor(19999*unifs_loz[j])]) & (bzseq[i] < bzs[ceil(19999*unifs_hiz[j])])   ){
+			}	
+			intlo = max(0, floor(19999*unifs_loz[j]));
+			inthi = min(19999,ceil(19999*unifs_hiz[j]));
+			if(   (bzseq[i] > bzs[intlo]) & (bzseq[i] < bzs[inthi])   ){
 				plausesz[i] = plausesz[i]+0.00005;
 			}
 		}
 	}
 	NumericVector plausestrux(1,0.0);NumericVector plausestruz(1,0.0);
 	for(int j=0; j<20000; j++){
-		if(   (truebx[0] > bxs[floor(19999*unifs_lo[j])]) & (truebx[0] < bxs[ceil(19999*unifs_hi[j])])   ){
+			intlo = max(0, floor(19999*unifs_lo[j]));
+			inthi = min(19999,ceil(19999*unifs_hi[j]));
+		if(   (truebx[0] > bxs[intlo]) & (truebx[0] < bxs[inthi])   ){
 			plausestrux[0] = plausestrux[0]+0.00005;
-		}			
-		if(   (truebz[0] > bzs[floor(19999*unifs_loz[j])]) & (truebz[0] < bzs[ceil(19999*unifs_hiz[j])])   ){
+		}	
+			intlo = max(0, floor(19999*unifs_loz[j]));
+			inthi = min(19999,ceil(19999*unifs_hiz[j]));
+		if(   (truebz[0] > bzs[intlo]) & (truebz[0] < bzs[inthi])   ){
 			plausestruz[0] = plausestruz[0]+0.00005;
 		}
 	}
