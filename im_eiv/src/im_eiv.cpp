@@ -704,7 +704,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	NumericVector unifs(3,0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(20000,0.0);NumericVector unifs_lo(20000,0.0);
 	NumericVector unifsz(3,0.0);NumericVector maxunifsz(1,0.0);NumericVector unifs_hiz(20000,0.0);NumericVector unifs_loz(20000,0.0);
 	NumericVector bxs(20000,0.0);NumericVector bzs(20000,0.0);
-	for(int i=0; i<19999; i++){
+	for(int i=0; i<20000; i++){
 		unifs[0] = R::runif(0.0,1.0); unifs[1] = R::runif(0.0,1.0); unifs[2] = R::runif(0.0,1.0);
 		maxunifs[0] = fmax(unifs[0], unifs[1]); maxunifs[0] = fmax(maxunifs[0], unifs[2]); 
 		unifs_hi[i] = 0.5 + fabs(maxunifs[0] - 0.5); 
@@ -719,8 +719,8 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	std::sort(bxs.begin(), bxs.end());
 	std::sort(bzs.begin(), bzs.end());
 	NumericVector plausesx(500,0.0);NumericVector plausesz(500,0.0);
-	for(int i=0; i<499; i++){
-		for(int j=0; j<19999; j++){
+	for(int i=0; i<500; i++){
+		for(int j=0; j<20000; j++){
 			if(   (bxseq[i] > bxs[floor(19999*unifs_lo[j])]) & (bxseq[i] < bxs[ceil(19999*unifs_hi[j])])   ){
 				plausesx[i] = plausesx[i]+0.00005;
 			}			
@@ -730,7 +730,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 		}
 	}
 	NumericVector plausestrux(1,0.0);NumericVector plausestruz(1,0.0);
-	for(int j=0; j<19999; j++){
+	for(int j=0; j<20000; j++){
 		if(   (truebx[0] > bxs[floor(19999*unifs_lo[j])]) & (truebx[0] < bxs[ceil(19999*unifs_hi[j])])   ){
 			plausestrux[0] = plausestrux[0]+0.00005;
 		}			
