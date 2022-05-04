@@ -722,7 +722,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	int intlo = 0;  int inthi = 0;
 	for(int i=0; i<500; i++){
 		for(int j=0; j<20000; j++){
-			intlo = round(floor(19999*unifs_lo[j])));
+			intlo = round(floor(19999*unifs_lo[j]));
 			if(intlo < 0){
 				intlo = 0;	
 			}
@@ -733,7 +733,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 			if(   (bxseq[i] > bxs[intlo]) & (bxseq[i] < bxs[inthi])   ){
 				plausesx[i] = plausesx[i]+0.00005;
 			}	
-			intlo = round(floor(19999*unifs_loz[j])));
+			intlo = round(floor(19999*unifs_loz[j]));
 			if(intlo < 0){
 				intlo = 0;	
 			}
@@ -748,7 +748,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	}
 	NumericVector plausestrux(1,0.0);NumericVector plausestruz(1,0.0);
 	for(int j=0; j<20000; j++){
-			intlo = round(floor(19999*unifs_lo[j])));
+			intlo = round(floor(19999*unifs_lo[j]));
 			if(intlo < 0){
 				intlo = 0;	
 			}
@@ -759,7 +759,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 		if(   (truebx[0] > bxs[intlo]) & (truebx[0] < bxs[inthi])   ){
 			plausestrux[0] = plausestrux[0]+0.00005;
 		}	
-			intlo = round(floor(19999*unifs_loz[j])));
+			intlo = round(floor(19999*unifs_loz[j]));
 			if(intlo < 0){
 				intlo = 0;	
 			}
