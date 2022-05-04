@@ -481,7 +481,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	NumericVector v3(1, 0.0); v3[0] = s22[0]/L22[0];
 	NumericVector z1(1, 0.0); z1[0] = (ybar[0] - bz[0] - bx[0]*mux[0])/L11[0];
 	NumericVector z2(1, 0.0); z2[0] = (wbar[0] - mux[0] - L12[0]*z1[0])/L22[0];
-	
+		
 	NumericVector dL11dbx(1, 0.0); dL11dbx[0] = bx[0]*sx[0]/L11[0];	
 	NumericVector dL11dsx(1, 0.0); dL11dsx[0] = 0.5*bx[0]*bx[0]/L11[0];	
 	NumericVector dL11dse(1, 0.0); dL11dse[0] = 0.5/L11[0];	
@@ -664,20 +664,12 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 				if((v1[0]>0) & (v3[0]>0)){
 					currdens[0]  = detJ[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1) + R::dnorm(z1[0],0.0,sd[0],1) + R::dnorm(z2[0],0.0,sd[0],1);
 					currdens2[0]  = detJ2[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1);
-				}else {
-					currdens[0]  = -1000000;
-					currdens2[0]  = -1000000;
 				}
-			}else {
-				currdens[0]  = -1000000;
-				currdens2[0]  = -1000000;
+				uu[0] = R::runif(0.0,1.0);
+			} else {
+				uu[0] = 2.0;
 			}
-			uu[0] = R::runif(0.0,1.0);
-			if(i<3){
-				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);	
-			}else {
-				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0] + R::dgamma(currsamp[i], propsd[i]+propsamp[i]/propsd[i], propsd[i], true )  - R::dgamma(propsamp[i], propsd[i]+currsamp[i]/propsd[i], propsd[i], true )), 1.0);
-			}	
+			densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);		
 			if(uu[0] < densdiff[0]){
 				propsamp[i] = currsamp[i];
 				propdens[0] = currdens[0];
