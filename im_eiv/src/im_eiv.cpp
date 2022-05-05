@@ -691,11 +691,11 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 		ct[i]=ct[i]/200000.0;
 	}
 	
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples);		
-	}
-	return result;
+	//result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples);		
+	//}
+	//return result;
 		
-	/*	
+		
 	// plausibility
 
 	NumericVector unifs(3,0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(20000,0.0);NumericVector unifs_lo(20000,0.0);
@@ -772,7 +772,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("samples") = samples);		
 	}
 	return result;
-	*/
+	
 }
 
 
