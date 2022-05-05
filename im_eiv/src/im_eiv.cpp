@@ -754,8 +754,8 @@ Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector 
 	NumericVector uu(1,0.0);
 	NumericVector ct(3,0.0);
 	NumericVector bx(1,0.0); bx[0] = par[0];
-	NumericVector sx(1,0.0); sx[0] = par[3];
-	NumericVector se(1,0.0); se[0] = par[4];
+	NumericVector sx(1,0.0); sx[0] = par[1];
+	NumericVector se(1,0.0); se[0] = par[2];
 	
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
