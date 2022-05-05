@@ -579,7 +579,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 				currsamp[k] = propsamp[k];
 			}
 			currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
-			if(!((i > 2) & (currsamp[i]<0))){
+			if(!((i > 2) & (currsamp[i]<0.0))){
 			bx[0] = currsamp[0];bz[0] = currsamp[1];mux[0] = currsamp[2];sx[0] = currsamp[3];se[0] = currsamp[4];
 			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
 			L12[0] = sx[0]*bx[0]/L11[0];
@@ -666,10 +666,11 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 					currdens2[0]  = detJ2[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1);
 				}
 				uu[0] = R::runif(0.0,1.0);
+				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);
 			} else {
 				uu[0] = 2.0;
-			}
-			densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);		
+				densdiff[0] = 0;
+			}		
 			if(uu[0] < densdiff[0]){
 				propsamp[i] = currsamp[i];
 				propdens[0] = currdens[0];
