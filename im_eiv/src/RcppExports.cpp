@@ -46,6 +46,24 @@ BEGIN_RCPP
 END_RCPP
 }
 
+Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector bxseq);
+RcppExport SEXP imeiv_plauscontourGFv(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP propsdSEXP, SEXP truebxSEXP, SEXP bxseqSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type par(parSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type propsd(propsdSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type truebx(truebxSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bxseq(bxseqSEXP);
+    __result = Rcpp::wrap(plauscontourGFv(par,stat,del,type,n,propsd,truebx,bxseq));
+    return __result;
+END_RCPP
+}
+
 Rcpp::List plauscontourGF2(NumericVector par, NumericVector stat, NumericVector del, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector truebz, NumericVector bxseq, NumericVector bzseq);
 RcppExport SEXP imeiv_plauscontourGF2(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP propsdSEXP, SEXP truebxSEXP, SEXP truebzSEXP, SEXP bxseqSEXP, SEXP bzseqSEXP){
 BEGIN_RCPP
