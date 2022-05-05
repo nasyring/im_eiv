@@ -691,15 +691,15 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 		ct[i]=ct[i]/200000.0;
 	}
 	
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples);		
-	}
-	return result;
+	//result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples);		
+	//}
+	//return result;
 		
-	/*	
+		
 	// plausibility
 
 	NumericVector unifs(3,0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(20000,0.0);NumericVector unifs_lo(20000,0.0);
-	NumericVector unifsz(3,0.0);NumericVector maxunifsz(1,0.0);NumericVector unifs_hiz(20000,0.0);NumericVector unifs_loz(20000,0.0);
+	NumericVector unifsz(5,0.0);NumericVector maxunifsz(1,0.0);NumericVector unifs_hiz(20000,0.0);NumericVector unifs_loz(20000,0.0);
 	NumericVector bxs(20000,0.0);NumericVector bzs(20000,0.0);
 	for(int i=0; i<20000; i++){
 		unifs[0] = R::runif(0.0,1.0); unifs[1] = R::runif(0.0,1.0); unifs[2] = R::runif(0.0,1.0);
@@ -743,7 +743,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 				    Rcpp::Named("unifs_lo") = unifs_lo, Rcpp::Named("unifs_hi") = unifs_hi, Rcpp::Named("unifs_loz") = unifs_loz, Rcpp::Named("unifs_hiz") = unifs_hiz);		
 	}
 	return result;
-	*/
+	
 }
 
 
