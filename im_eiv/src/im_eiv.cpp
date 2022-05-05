@@ -561,8 +561,8 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	tempdens[0] = logdens[0]; 
 	//  Begin MCMC  
 	
-	NumericVector zeroes(140000,0.0);NumericVector zeroes2(70000,0.0);
-	NumericMatrix samples = NumericMatrix(20000, 7, zeroes.begin());
+	NumericVector zeroes(280000,0.0);
+	NumericMatrix samples = NumericMatrix(40000, 7, zeroes.begin());
 	samples(0,0) = bx[0];samples(0,1) = bz[0];samples(0,2) = mux[0];samples(0,3) = sx[0];samples(0,4) = se[0];samples(0,5) = logdens[0];samples(0,6) = logdens2[0];
 	NumericVector densdiff(1,0.0);
 	NumericVector propsamp(5,0.0);
@@ -573,7 +573,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	NumericVector currdens2(1,0.0);NumericVector propdens2(1,0.0); propdens2[0] = logdens2[0];
 	
 	
-	for(int j=0; j<200000; j++) {
+	for(int j=0; j<400000; j++) {
 		for(int i=0; i<5; i++){
 			for(int k=0; k<5; k++){
 				currsamp[k] = propsamp[k];
@@ -688,20 +688,18 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 		}
 	}
 	for(int i=0; i<5; i++){
-		ct[i]=ct[i]/200000.0;
+		ct[i]=ct[i]/400000.0;
 	}
 	
-	//result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("samples") = samples);		
-	//}
-	//return result;
+
 		
 		
 	// plausibility
 
-	NumericVector unifs(3,0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(20000,0.0);NumericVector unifs_lo(20000,0.0);
-	NumericVector unifsz(5,0.0);NumericVector maxunifsz(1,0.0);NumericVector unifs_hiz(20000,0.0);NumericVector unifs_loz(20000,0.0);
-	NumericVector bxs(20000,0.0);NumericVector bzs(20000,0.0);
-	for(int i=0; i<20000; i++){
+	NumericVector unifs(3,0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(40000,0.0);NumericVector unifs_lo(40000,0.0);
+	NumericVector unifsz(5,0.0);NumericVector maxunifsz(1,0.0);NumericVector unifs_hiz(40000,0.0);NumericVector unifs_loz(40000,0.0);
+	NumericVector bxs(40000,0.0);NumericVector bzs(40000,0.0);
+	for(int i=0; i<40000; i++){
 		unifs[0] = R::runif(0.0,1.0); unifs[1] = R::runif(0.0,1.0); unifs[2] = R::runif(0.0,1.0);
 		maxunifs[0] = fmax(unifs[0], unifs[1]); maxunifs[0] = fmax(maxunifs[0], unifs[2]); 
 		unifs_hi[i] = 0.5 + fabs(maxunifs[0] - 0.5); 
@@ -718,23 +716,23 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	NumericVector plausesx(500,0.0);NumericVector plausesz(500,0.0);
 	NumericVector plausestrux(1,0.0);NumericVector plausestruz(1,0.0);
 	int intlo = 0;  int inthi = 0; int intloz = 0;  int inthiz = 0;
-	for(int j=0; j<20000; j++){
-		intlo = int(floor(19999*unifs_lo[j]));
-		inthi = int(ceil(19999*unifs_hi[j]));
-		intloz = int(floor(19999*unifs_loz[j]));
-		inthiz = int(ceil(19999*unifs_hiz[j]));
+	for(int j=0; j<40000; j++){
+		intlo = int(floor(39999*unifs_lo[j]));
+		inthi = int(ceil(39999*unifs_hi[j]));
+		intloz = int(floor(39999*unifs_loz[j]));
+		inthiz = int(ceil(39999*unifs_hiz[j]));
 		if(   (truebx[0] > bxs[intlo]) & (truebx[0] < bxs[inthi])   ){
-			plausestrux[0] = plausestrux[0]+0.00005;
+			plausestrux[0] = plausestrux[0]+0.000025;
 		}	
 		if(   (truebz[0] > bzs[intloz]) & (truebz[0] < bzs[inthiz])   ){
-			plausestruz[0] = plausestruz[0]+0.00005;
+			plausestruz[0] = plausestruz[0]+0.000025;
 		}
 		for(int i=0; i<500; i++){
 			if(   (bxseq[i] > bxs[intlo]) & (bxseq[i] < bxs[inthi])   ){
-				plausesx[i] = plausesx[i]+0.00005;
+				plausesx[i] = plausesx[i]+0.000025;
 			}
 			if(   (bzseq[i] > bzs[intloz]) & (bzseq[i] < bzs[inthiz])   ){
-				plausesz[i] = plausesz[i]+0.00005;
+				plausesz[i] = plausesz[i]+0.000025;
 			}
 		}
 	}
