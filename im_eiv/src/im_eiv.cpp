@@ -716,59 +716,29 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	std::sort(bxs.begin(), bxs.end());
 	std::sort(bzs.begin(), bzs.end());
 	NumericVector plausesx(500,0.0);NumericVector plausesz(500,0.0);
-	int intlo = 0;  int inthi = 0;
-	for(int i=0; i<500; i++){
-		for(int j=0; j<20000; j++){
-			intlo = round(floor(19999*unifs_lo[j]));
-			if(intlo < 0){
-				intlo = 0;	
-			}
-			inthi = round(ceil(19999*unifs_hi[j]));
-			if(inthi > 19999){
-				inthi = 19999;	
-			}
+	NumericVector plausestrux(1,0.0);NumericVector plausestruz(1,0.0);
+	int intlo = 0;  int inthi = 0; int intloz = 0;  int inthiz = 0;
+	for(int j=0; j<20000; j++){
+		intlo = int(floor(19999*unifs_lo[j]));
+		inthi = int(ceil(19999*unifs_hi[j]));
+		intloz = int(floor(19999*unifs_loz[j]));
+		inthiz = int(ceil(19999*unifs_hiz[j]));
+		if(   (truebx[0] > bxs[intlo]) & (truebx[0] < bxs[inthi])   ){
+			plausestrux[0] = plausestrux[0]+0.00005;
+		}	
+		if(   (truebz[0] > bzs[intloz]) & (truebz[0] < bzs[inthiz])   ){
+			plausestruz[0] = plausestruz[0]+0.00005;
+		}
+		for(int i=0; i<500; i++){
 			if(   (bxseq[i] > bxs[intlo]) & (bxseq[i] < bxs[inthi])   ){
 				plausesx[i] = plausesx[i]+0.00005;
-			}	
-			intlo = round(floor(19999*unifs_loz[j]));
-			if(intlo < 0){
-				intlo = 0;	
 			}
-			inthi = round(ceil(19999*unifs_hiz[j]));
-			if(inthi > 19999){
-				inthi = 19999;	
-			}
-			if(   (bzseq[i] > bzs[intlo]) & (bzseq[i] < bzs[inthi])   ){
+			if(   (bzseq[i] > bzs[intloz]) & (bzseq[i] < bzs[inthiz])   ){
 				plausesz[i] = plausesz[i]+0.00005;
 			}
 		}
 	}
-	NumericVector plausestrux(1,0.0);NumericVector plausestruz(1,0.0);
-	for(int j=0; j<20000; j++){
-			intlo = round(floor(19999*unifs_lo[j]));
-			if(intlo < 0){
-				intlo = 0;	
-			}
-			inthi = round(ceil(19999*unifs_hi[j]));
-			if(inthi > 19999){
-				inthi = 19999;	
-			}
-		if(   (truebx[0] > bxs[intlo]) & (truebx[0] < bxs[inthi])   ){
-			plausestrux[0] = plausestrux[0]+0.00005;
-		}	
-			intlo = round(floor(19999*unifs_loz[j]));
-			if(intlo < 0){
-				intlo = 0;	
-			}
-			inthi = round(ceil(19999*unifs_hiz[j]));
-			if(inthi > 19999){
-				inthi = 19999;	
-			}
-		if(   (truebz[0] > bzs[intlo]) & (truebz[0] < bzs[inthi])   ){
-			plausestruz[0] = plausestruz[0]+0.00005;
-		}
-	}
-		
+			
 	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("samples") = samples);		
 	}
 	return result;
