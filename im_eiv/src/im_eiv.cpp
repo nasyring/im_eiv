@@ -744,6 +744,247 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	
 }
 
+Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector bxseq) {
+
+	List result;
+	Rcpp::Function sortmat("sortmat");
+	
+	NumericVector check(1, 0.0);
+	NumericVector tempdens(1,0.0);
+	NumericVector uu(1,0.0);
+	NumericVector ct(3,0.0);
+	NumericVector bx(1,0.0); bx[0] = par[0];
+	NumericVector sx(1,0.0); sx[0] = par[3];
+	NumericVector se(1,0.0); se[0] = par[4];
+	
+	NumericVector s11(1,0.0); s11[0] = stat[0];
+	NumericVector s12(1,0.0); s12[0] = stat[1];	
+	NumericVector s22(1,0.0); s22[0] = stat[2];
+	
+	NumericVector L11(1,0.0); L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
+	NumericVector L12(1,0.0); L12[0] = sx[0]*bx[0]/L11[0];
+	NumericVector L22(1,1.0); 
+	
+	if(type[0] == 1.0){
+		check[0] = (sx[0]/del[0]) - (L12[0]*L12[0]);
+	}else if(type[0] == 2.0){
+		check[0] = (sx[0] + se[0]/del[0]) - (L12[0]*L12[0]);	
+	}else if(type[0] == 3.0){
+		check[0] = (sx[0] + del[0]) - (L12[0]*L12[0]);	
+	}else {
+		check[0] = -1;	
+	}	
+	
+	if(check[0] > 0){
+		
+	if(type[0] == 1.0){
+		L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
+	}else if(type[0] == 2.0){
+		L22[0] = std::sqrt((sx[0] + se[0]/del[0]) - (L12[0]*L12[0]));
+	}else {
+		L22[0] = std::sqrt((sx[0] + del[0]) - (L12[0]*L12[0]));
+	}
+	
+
+	NumericVector v1(1, 0.0); v1[0] = s11[0]/L11[0];
+	NumericVector v2(1, 0.0); v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
+	NumericVector v3(1, 0.0); v3[0] = s22[0]/L22[0];
+		
+	NumericVector dL11dbx(1, 0.0); dL11dbx[0] = bx[0]*sx[0]/L11[0];	
+	NumericVector dL11dsx(1, 0.0); dL11dsx[0] = 0.5*bx[0]*bx[0]/L11[0];	
+	NumericVector dL11dse(1, 0.0); dL11dse[0] = 0.5/L11[0];	
+	
+	NumericVector dL12dbx(1, 0.0); dL12dbx[0] = (sx[0]*L11[0]-bx[0]*sx[0]*dL11dbx[0])/(L11[0]*L11[0]);	
+	NumericVector dL12dsx(1, 0.0); dL12dsx[0] = (bx[0]*L11[0]-bx[0]*sx[0]*dL11dsx[0])/(L11[0]*L11[0]);
+	NumericVector dL12dse(1, 0.0); dL12dse[0] = (-bx[0]*sx[0]*dL11dse[0])/(L11[0]*L11[0]);
+		
+	NumericVector dL22dbx(1, 0.0); dL22dbx[0] = -L12[0]*dL12dbx[0]/L22[0];
+	NumericVector dL22dsx(1, 0.0); 
+	NumericVector dL22dse(1, 0.0); 
+		
+	if(type[0] == 1.0){
+		dL22dsx[0] = (0.5/L22[0])*((1/del[0]) - 2.0*L12[0]*dL12dsx[0]);
+		dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
+	}else if(type[0] == 2.0){
+		dL22dsx[0] = (0.5/L22[0])*(1.0 - 2.0*L12[0]*dL12dsx[0]);
+		dL22dse[0] = (0.5/L22[0])*(1.0/del[0] - 2.0*L12[0]*dL12dse[0]);
+	}else {
+		dL22dsx[0] = (0.5/L22[0])*(1.0 - 2.0*L12[0]*dL12dsx[0]);
+		dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
+	}	
+	
+	NumericVector dv1dbx(1, 0.0); dv1dbx[0] = -s11[0]*dL11dbx[0]/(L11[0]*L11[0]);
+	NumericVector dv1dsx(1, 0.0); dv1dsx[0] = -s11[0]*dL11dsx[0]/(L11[0]*L11[0]);
+	NumericVector dv1dse(1, 0.0); dv1dse[0] = -s11[0]*dL11dse[0]/(L11[0]*L11[0]);
+	
+	NumericVector dv2dbx(1, 0.0); dv2dbx[0] = ((-L12[0]*dv1dbx[0]-v1[0]*dL12dbx[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dbx[0])/(L22[0]*L22[0]);
+	NumericVector dv2dsx(1, 0.0); dv2dsx[0] = ((-L12[0]*dv1dsx[0]-v1[0]*dL12dsx[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dsx[0])/(L22[0]*L22[0]);
+	NumericVector dv2dse(1, 0.0); dv2dse[0] = ((-L12[0]*dv1dse[0]-v1[0]*dL12dse[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dse[0])/(L22[0]*L22[0]);
+	
+	NumericVector dv3dbx(1, 0.0); dv3dbx[0] = -s22[0]*dL22dbx[0]/(L22[0]*L22[0]);
+	NumericVector dv3dsx(1, 0.0); dv3dsx[0] = -s22[0]*dL22dsx[0]/(L22[0]*L22[0]);
+	NumericVector dv3dse(1, 0.0); dv3dse[0] = -s22[0]*dL22dse[0]/(L22[0]*L22[0]);
+	
+	mat J(3,3,fill::zeros);
+		
+	J = { { dv1dbx[0], dv1dsx[0], dv1dse[0] },
+            { dv2dbx[0], dv2dsx[0], dv2dse[0] },
+            { dv3dbx[0], dv3dsx[0], dv3dse[0] }};
+	
+	NumericVector detJ(1,0.0); 
+	
+	detJ[0] = log(std::abs(arma::det(J)));
+	
+	NumericVector logdens(1, 0.0); NumericVector logdens2(1, 0.0);
+	
+	logdens[0] = detJ[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1);
+	
+	tempdens[0] = logdens[0]; 
+	//  Begin MCMC  
+	
+	NumericVector zeroes(280000,0.0);
+	NumericMatrix samples = NumericMatrix(40000, 4, zeroes.begin());
+	samples(0,0) = bx[0];samples(0,1) = sx[0];samples(0,2) = se[0];samples(0,3) = logdens[0];
+	NumericVector densdiff(1,0.0);
+	NumericVector propsamp(3,0.0);
+	propsamp[0] = bx[0];propsamp[1] = sx[0];propsamp[2] = se[0];
+	NumericVector currsamp(3,0.0);
+	currsamp[0] = bx[0];currsamp[1] = sx[0];currsamp[2] = se[0];
+	NumericVector currdens(1,0.0);NumericVector propdens(1,0.0); propdens[0] = logdens[0];	
+	
+	for(int j=0; j<400000; j++) {
+		for(int i=0; i<3; i++){
+			for(int k=0; k<3; k++){
+				currsamp[k] = propsamp[k];
+			}
+			currsamp[i] = R::rnorm(propsamp[i], propsd[i]);
+			if(!((i > 0) & (currsamp[i]<0.0))){
+			bx[0] = currsamp[0];sx[0] = currsamp[1];se[0] = currsamp[2];
+			L11[0] = std::sqrt(se[0]+sx[0]*bx[0]*bx[0]);
+			L12[0] = sx[0]*bx[0]/L11[0];
+			if(type[0] == 1.0){
+				check[0] = (sx[0]/del[0]) - (L12[0]*L12[0]);
+			}else if(type[0] == 2.0){
+				check[0] = (sx[0] + se[0]/del[0]) - (L12[0]*L12[0]);	
+			}else if(type[0] == 3.0){
+				check[0] = (sx[0] + del[0]) - (L12[0]*L12[0]);	
+			}else {
+				check[0] = -1;	
+			}	
+			if(check[0] > 0){	
+				if(type[0] == 1.0){
+					L22[0] = std::sqrt(sx[0]/del[0] - L12[0]*L12[0]);
+				}else if(type[0] == 2.0){
+					L22[0] = std::sqrt((sx[0] + se[0]/del[0]) - (L12[0]*L12[0]));
+				}else {
+					L22[0] = std::sqrt((sx[0] + del[0]) - (L12[0]*L12[0]));
+				}
+				v1[0] = s11[0]/L11[0];
+				v2[0] = (s12[0] - v1[0]*L12[0])/L22[0];
+				v3[0] = s22[0]/L22[0];
+	
+				dL11dbx[0] = bx[0]*sx[0]/L11[0];	
+				dL11dsx[0] = 0.5*bx[0]*bx[0]/L11[0];	
+				dL11dse[0] = 0.5/L11[0];	
+	
+				dL12dbx[0] = (sx[0]*L11[0]-bx[0]*sx[0]*dL11dbx[0])/(L11[0]*L11[0]);	
+				dL12dsx[0] = (bx[0]*L11[0]-bx[0]*sx[0]*dL11dsx[0])/(L11[0]*L11[0]);
+				dL12dse[0] = (-bx[0]*sx[0]*dL11dse[0])/(L11[0]*L11[0]);
+	
+				dL22dbx[0] = -L12[0]*dL12dbx[0]/L22[0];
+				if(type[0] == 1.0){
+					dL22dsx[0] = (0.5/L22[0])*((1/del[0]) - 2.0*L12[0]*dL12dsx[0]);
+					dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
+				}else if(type[0] == 2.0){
+					dL22dsx[0] = (0.5/L22[0])*(1.0 - 2.0*L12[0]*dL12dsx[0]);
+					dL22dse[0] = (0.5/L22[0])*(1.0/del[0] - 2.0*L12[0]*dL12dse[0]);
+				}else {
+					dL22dsx[0] = (0.5/L22[0])*(1.0 - 2.0*L12[0]*dL12dsx[0]);
+					dL22dse[0] = -L12[0]*dL12dse[0]/L22[0];
+				}
+	
+				dv1dbx[0] = -s11[0]*dL11dbx[0]/(L11[0]*L11[0]);
+				dv1dsx[0] = -s11[0]*dL11dsx[0]/(L11[0]*L11[0]);
+				dv1dse[0] = -s11[0]*dL11dse[0]/(L11[0]*L11[0]);
+	
+				dv2dbx[0] = ((-L12[0]*dv1dbx[0]-v1[0]*dL12dbx[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dbx[0])/(L22[0]*L22[0]);
+				dv2dsx[0] = ((-L12[0]*dv1dsx[0]-v1[0]*dL12dsx[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dsx[0])/(L22[0]*L22[0]);
+				dv2dse[0] = ((-L12[0]*dv1dse[0]-v1[0]*dL12dse[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dse[0])/(L22[0]*L22[0]);
+	
+				dv3dbx[0] = -s22[0]*dL22dbx[0]/(L22[0]*L22[0]);
+				dv3dsx[0] = -s22[0]*dL22dsx[0]/(L22[0]*L22[0]);
+				dv3dse[0] = -s22[0]*dL22dse[0]/(L22[0]*L22[0]);
+				
+				J = { { dv1dbx[0], dv1dsx[0], dv1dse[0] },
+			            { dv2dbx[0],dv2dsx[0], dv2dse[0] },
+  			 	         { dv3dbx[0], dv3dsx[0], dv3dse[0] }};
+	
+				detJ[0] = log(std::abs(arma::det(J)));
+				if((v1[0]>0) & (v3[0]>0)){
+					currdens[0]  = detJ[0] + R::dchisq(v1[0]*v1[0],n[0]-1.0,1) +  R::dchisq(v3[0]*v3[0],n[0]-2.0,1) + R::dnorm(v2[0],0.0,1.0,1);
+				}
+				uu[0] = R::runif(0.0,1.0);
+				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);
+			} else {
+				uu[0] = 2.0;
+				densdiff[0] = 0;
+			}		
+			if(uu[0] < densdiff[0]){
+				propsamp[i] = currsamp[i];
+				propdens[0] = currdens[0];
+				propdens2[0] = currdens2[0];
+				ct[i] = ct[i]+1.0;
+			}
+			}
+		}
+		if( ((j % 10) == 0) ){
+			for(int i=0; i<3; i++){
+				samples(j/10, i) = propsamp[i];
+			}
+			samples(j/10, 3) = propdens[0];
+		}
+	}
+	for(int i=0; i<3; i++){
+		ct[i]=ct[i]/400000.0;
+	}
+	
+
+		
+		
+	// plausibility
+
+	NumericVector unifs(3,0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(40000,0.0);NumericVector unifs_lo(40000,0.0);
+	NumericVector bxs(40000,0.0);
+	for(int i=0; i<40000; i++){
+		unifs[0] = R::runif(0.0,1.0); unifs[1] = R::runif(0.0,1.0); unifs[2] = R::runif(0.0,1.0);
+		maxunifs[0] = fmax(unifs[0], unifs[1]); maxunifs[0] = fmax(maxunifs[0], unifs[2]); 
+		unifs_hi[i] = 0.5 + fabs(maxunifs[0] - 0.5); 
+		unifs_lo[i] = 1.0-unifs_hi[i];
+		bxs[i] = samples(i, 0);
+	}
+	std::sort(bxs.begin(), bxs.end());
+	NumericVector plausesx(500,0.0);
+	NumericVector plausestrux(1,0.0);
+	int intlo = 0;  int inthi = 0;
+	for(int j=0; j<40000; j++){
+		intlo = int(floor(39999*unifs_lo[j]));
+		inthi = int(ceil(39999*unifs_hi[j]));
+		if(   (truebx[0] > bxs[intlo]) & (truebx[0] < bxs[inthi])   ){
+			plausestrux[0] = plausestrux[0]+0.000025;
+		}	
+		for(int i=0; i<500; i++){
+			if(   (bxseq[i] > bxs[intlo]) & (bxseq[i] < bxs[inthi])   ){
+				plausesx[i] = plausesx[i]+0.000025;
+			}
+		}
+	}
+			
+	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples") = samples);		
+	}
+	return result;
+	
+}
+
 
 
 
