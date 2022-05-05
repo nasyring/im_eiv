@@ -7,6 +7,7 @@
 
 extern SEXP imeiv_plauscontourGF(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourGFu(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP imeiv_plauscontourGFv(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourGF2(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourIM(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourIMmarg(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -15,6 +16,7 @@ extern SEXP imeiv_sortmat(SEXP, SEXP);
 static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourGF", (DL_FUNC) &imeiv_plauscontourGF, 10},
     {"imeiv_plauscontourGFu", (DL_FUNC) &imeiv_plauscontourGFu, 10},
+    {"imeiv_plauscontourGFv", (DL_FUNC) &imeiv_plauscontourGFv, 8},
     {"imeiv_plauscontourGF2", (DL_FUNC) &imeiv_plauscontourGF2, 9},
     {"imeiv_plauscontourIM", (DL_FUNC) &imeiv_plauscontourIM, 9},
     {"imeiv_plauscontourIMmarg", (DL_FUNC) &imeiv_plauscontourIMmarg, 7},
