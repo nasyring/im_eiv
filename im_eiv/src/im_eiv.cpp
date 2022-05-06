@@ -744,7 +744,7 @@ Rcpp::List plauscontourGFu(NumericVector par, NumericVector stat, NumericVector 
 	
 }
 
-Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector bxseq) {
+Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector bxseq, NumericVector randsettype) {
 
 	List result;
 	Rcpp::Function sortmat("sortmat");
@@ -951,33 +951,52 @@ Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector 
 		
 		
 	// plausibility
-
-	NumericVector unifs(3,0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(40000,0.0);NumericVector unifs_lo(40000,0.0);
-	NumericVector bxs(40000,0.0);
-	for(int i=0; i<40000; i++){
-		unifs[0] = R::runif(0.0,1.0); unifs[1] = R::runif(0.0,1.0); unifs[2] = R::runif(0.0,1.0);
-		maxunifs[0] = fmax(unifs[0], unifs[1]); maxunifs[0] = fmax(maxunifs[0], unifs[2]); 
-		unifs_hi[i] = 0.5 + fabs(maxunifs[0] - 0.5); 
-		unifs_lo[i] = 1.0-unifs_hi[i];
-		bxs[i] = samples(i, 0);
-	}
-	std::sort(bxs.begin(), bxs.end());
 	NumericVector plausesx(500,0.0);
 	NumericVector plausestrux(1,0.0);
-	int intlo = 0;  int inthi = 0;
-	for(int j=0; j<40000; j++){
-		intlo = int(floor(39999*unifs_lo[j]));
-		inthi = int(ceil(39999*unifs_hi[j]));
-		if(   (truebx[0] > bxs[intlo]) & (truebx[0] < bxs[inthi])   ){
-			plausestrux[0] = plausestrux[0]+0.000025;
-		}	
-		for(int i=0; i<500; i++){
-			if(   (bxseq[i] > bxs[intlo]) & (bxseq[i] < bxs[inthi])   ){
-				plausesx[i] = plausesx[i]+0.000025;
+	if(randsettype[0] == 1.0){	
+		NumericVector unifs(3,0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(40000,0.0);NumericVector unifs_lo(40000,0.0);
+		NumericVector bxs(40000,0.0);
+		for(int i=0; i<40000; i++){
+			unifs[0] = R::runif(0.0,1.0); unifs[1] = R::runif(0.0,1.0); unifs[2] = R::runif(0.0,1.0);
+			maxunifs[0] = fmax(unifs[0], unifs[1]); maxunifs[0] = fmax(maxunifs[0], unifs[2]); 
+			unifs_hi[i] = 0.5 + fabs(maxunifs[0] - 0.5); 
+			unifs_lo[i] = 1.0-unifs_hi[i];
+			bxs[i] = samples(i, 0);
+		}
+		std::sort(bxs.begin(), bxs.end());
+		int intlo = 0;  int inthi = 0;
+		for(int j=0; j<40000; j++){
+			intlo = int(floor(39999*unifs_lo[j]));
+			inthi = int(ceil(39999*unifs_hi[j]));
+			if(   (truebx[0] > bxs[intlo]) & (truebx[0] < bxs[inthi])   ){
+				plausestrux[0] = plausestrux[0]+0.000025;
+			}	
+			for(int i=0; i<500; i++){
+				if(   (bxseq[i] > bxs[intlo]) & (bxseq[i] < bxs[inthi])   ){
+					plausesx[i] = plausesx[i]+0.000025;
+				}
 			}
 		}
-	}
-			
+	} else {
+		samples = sortmat(samples,3);
+		NumericVector randsetslo(39999,0.0);NumericVector randsetshi(39999,0.0);
+		for(int j=0; j<39999; j++){
+			NumericVector subset(j+1, 0.0);
+			for(int i=(j+1); i<40000; i++){
+				subset[i] = samples(0,i);	
+			}
+			randsetslo[j] = Rcpp::min(subset);randsetshi[j] = Rcpp::max(subset);
+			if(   (truebx[0] > randsetslo[j]) & (truebx[0] < randsetshi[j])   ){
+				plausestrux[0] = plausestrux[0]+(1/39999.0);
+			}
+			for(int i=0; i<500; i++){
+				if(   (bxseq[i] > randsetslo[j]) & (bxseq[i] < randsetshi[j])   ){
+					plausesx[i] = plausesx[i]+(1/39999.0);
+				}
+			}
+		}
+		
+	}	
 	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples") = samples);		
 	}
 	return result;
