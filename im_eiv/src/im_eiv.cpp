@@ -322,11 +322,11 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 			}
 			randsetslo[0] = Rcpp::min(subset);randsetshi[0] = Rcpp::max(subset);
 			if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-				plausestrux[0] = plausestrux[0]+(1/39999.0);
+				plausestrux[0] = plausestrux[0]+(1.0/39999.0);
 			}
 			for(int i=0; i<500; i++){
 				if(   (bxseq[i] > randsetslo[0]) & (bxseq[i] < randsetshi[0])   ){
-					plausesx[i] = plausesx[i]+(1/39999.0);
+					plausesx[i] = plausesx[i]+(1.0/39999.0);
 				}
 			}
 		}
@@ -338,7 +338,7 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 			}
 			randsetslo[0] = Rcpp::min(subset);randsetshi[0] = Rcpp::max(subset);
 			if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
-				plausestruz[0] = plausestruz[0]+(1/39999.0);
+				plausestruz[0] = plausestruz[0]+(1.0/39999.0);
 			}
 			for(int i=0; i<500; i++){
 				if(   (bzseq[i] > randsetslo[0]) & (bzseq[i] < randsetshi[0])   ){
