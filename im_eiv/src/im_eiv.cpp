@@ -925,7 +925,7 @@ Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector 
 				}
 				uu[0] = R::runif(0.0,1.0);
 				densdiff[0] = fmin(std::exp(currdens[0] - propdens[0]), 1.0);
-			} else {
+			}else {
 				uu[0] = 2.0;
 				densdiff[0] = 0;
 			}		
@@ -977,20 +977,20 @@ Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector 
 				}
 			}
 		}
-	} else {
+	}else {
 		samples = sortmat(samples,3);
-		NumericVector randsetslo(39999,0.0);NumericVector randsetshi(39999,0.0);
+		NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 		for(int j=0; j<39999; j++){
 			NumericVector subset(40000-j-1, 0.0);
 			for(int i=0; i<(40000-j-1); i++){
-				subset[i] = samples(0,i+j+1);	
+				subset[i] = samples(i+j+1,0);	
 			}
-			randsetslo[j] = Rcpp::min(subset);randsetshi[j] = Rcpp::max(subset);
-			if(   (truebx[0] > randsetslo[j]) & (truebx[0] < randsetshi[j])   ){
+			randsetslo[0] = Rcpp::min(subset);randsetshi[0] = Rcpp::max(subset);
+			if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
 				plausestrux[0] = plausestrux[0]+(1/39999.0);
 			}
 			for(int i=0; i<500; i++){
-				if(   (bxseq[i] > randsetslo[j]) & (bxseq[i] < randsetshi[j])   ){
+				if(   (bxseq[i] > randsetslo[0]) & (bxseq[i] < randsetshi[0])   ){
 					plausesx[i] = plausesx[i]+(1/39999.0);
 				}
 			}
