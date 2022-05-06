@@ -981,7 +981,7 @@ Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector 
 		samples = sortmat(samples,3);
 		NumericVector randsetslo(39999,0.0);NumericVector randsetshi(39999,0.0);
 		for(int j=0; j<39999; j++){
-			NumericVector subset(j+1, 0.0);
+			NumericVector subset(40000-j-1, 0.0);
 			for(int i=(j+1); i<40000; i++){
 				subset[i] = samples(0,i);	
 			}
