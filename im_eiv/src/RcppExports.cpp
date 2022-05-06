@@ -46,8 +46,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
-Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector bxseq);
-RcppExport SEXP imeiv_plauscontourGFv(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP propsdSEXP, SEXP truebxSEXP, SEXP bxseqSEXP){
+Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector bxseq, NumericVector randsettype);
+RcppExport SEXP imeiv_plauscontourGFv(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP propsdSEXP, SEXP truebxSEXP, SEXP bxseqSEXP, SEXP randsettypeSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -59,7 +59,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type propsd(propsdSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type truebx(truebxSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bxseq(bxseqSEXP);
-    __result = Rcpp::wrap(plauscontourGFv(par,stat,del,type,n,propsd,truebx,bxseq));
+    Rcpp::traits::input_parameter< NumericVector >::type randsettype(randsettypeSEXP);
+    __result = Rcpp::wrap(plauscontourGFv(par,stat,del,type,n,propsd,truebx,bxseq, randsettype));
     return __result;
 END_RCPP
 }
