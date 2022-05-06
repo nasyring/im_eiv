@@ -6,11 +6,6 @@ using namespace RcppParallel;
 using namespace Rcpp;
 using namespace arma;
 using namespace std;
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-// [[Rcpp::depends(RcppParallel)]]
-// [[Rcpp::depends(RcppArmadillo)]]
-
 #include <cmath>
 #include <algorithm>
 
@@ -1004,7 +999,7 @@ Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector 
 }
 
 
-Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq, NumericVector sampsize) {
+Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq,NumericVector truebz, NumericVector bzseq) {
 
 	List result;
 	Rcpp::Function sortmat("sortmat");
@@ -1013,6 +1008,9 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
 	NumericVector s22(1,0.0); s22[0] = stat[2];
+	NumericVector ybar(1,0.0); ybar[0] = stat[3];
+	NumericVector wbar(1,0.0); wbar[0] = stat[4];
+	
 	NumericVector check(1,0.0);
 
 	// Generate MC sample of aux rvs
@@ -1020,8 +1018,11 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 	NumericVector V2(size,0.0); V2 = Rcpp::rnorm( size, 0.0, 1.0 );
 	NumericVector V1(size,0.0); V1 = Rcpp::rchisq( size, n[0]-1 );
 	NumericVector V3(size,0.0); V3 = Rcpp::rchisq( size, n[0]-2 );
-	NumericVector bx(size,0.0); NumericVector sx(1,0.0); NumericVector se(1,0.0); 
-	NumericVector bxs(size,0.0); NumericVector density(size,0.0);
+	NumericVector Z1(size,0.0); Z1 = Rcpp::rnorm( size, 0.0, std::sqrt(1.0/n[0]) );
+	NumericVector Z2(size,0.0); Z2 = Rcpp::rnorm( size, 0.0, std::sqrt(1.0/n[0]) );
+	
+	NumericVector bx(1,0.0); NumericVector sx(1,0.0); NumericVector se(1,0.0); NumericVector mux(1,0.0); NumericVector bz(1,0.0); 
+	NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); NumericVector density3(size,0.0); NumericVector density5(size,0.0);
 	int ind = 0;
 	for(int i=0; i < size; i++){
 		V1[i] = std::sqrt(V1[i]);	
@@ -1030,40 +1031,53 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 			L11[0] = s11[0]/V1[i]; L22 = s22[0]/V3[i]; L12 = (s12[0] - V2[i]*L22[0])/V1[i]; 
 			sx[0] = 0.5*(-(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]) + std::sqrt(((L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0])*(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]))+4*L11[0]*L11[0]*L12[0]*L12[0]/del[0]));
-			bx[i] = L11[0]*L12[0]/sx[0];
+			bx[0] = L11[0]*L12[0]/sx[0];
 			se[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]-sx[0]);
+			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
+			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if(se[0] > 0){
-				bxs[ind] = bx[i]; 
-				density[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				bxs[ind] = bx[0]; 
+				bzs[ind] = bz[0]; 
+				density3[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}
 		}else if(type[0] == 1.0){
 			sx[0] = del[0]*((s22[0]/V3[i])*(s22[0]/V3[i])+(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i])*(s12[0] - s22[0]*V2[i]/V3[i]));
-			bx[i] = (s11[0]*(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i]))/sx[0];
+			bx[0] = (s11[0]*(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i]))/sx[0];
 			se[0] = (s11[0]/V1[i])*(s11[0]/V1[i]) - sx[0]*bx[i]*bx[i];
+			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
+			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if(se[0] > 0){
 				bxs[ind] = bx[i]; 
+				bzs[ind] = bz[0];
 				density[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}		
 		}else {
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 			L11[0] = s11[0]/V1[i]; L22 = s22[0]/V3[i]; L12 = (s12[0] - V2[i]*L22[0])/V1[i]; 
 			sx[0] = L22[0]*L22[0]+L12[0]*L12[0] - del[0];
-			bx[i] = L11[0]*L12[0]/sx[0];
+			bx[0] = L11[0]*L12[0]/sx[0];
 			se[0] = L11[0] - bx[i]*bx[i]*sx[0];
+			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
+			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if((se[0] > 0.0) & (sx[0]>0.0)){
-				bxs[ind] = bx[i]; 
+				bxs[ind] = bx[i];
+				bzs[ind] = bz[0];
 				density[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}
 		}
 	}
 
 	NumericVector zeroes(2*ind,0.0);
-	NumericMatrix samples(ind,2,zeroes.begin()); 
+	NumericMatrix samples_bx(ind,2,zeroes.begin()); NumericMatrix samples_bz(ind,2,zeroes.begin());
 	for(int i=0; i < ind; i++){
-		samples(i,0) = 	bxs[i]; samples(i,1) = 	density[i];
+		samples_bx(i,0) = bxs[i]; samples_bx(i,1) = density3[i];
+		samples_bz(i,0) = bzs[i]; samples_bz(i,1) = density5[i];
 	}
 	/*
 	V2 = Rcpp::rnorm( 400000, 0.0, 1.0 );
@@ -1156,12 +1170,12 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 	NumericVector plausesx(500,0.0);
 	NumericVector plausestrux(1,0.0);
 
-	samples = sortmat(samples,1);
+	samples_bx = sortmat(samples_bx,1);
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 	for(int j=0; j<(size-1); j++){
 		NumericVector subset(size-j-1, 0.0);
 		for(int i=0; i<(size-j-1); i++){
-			subset[i] = samples(i+j+1,0);	
+			subset[i] = samples_bx(i+j+1,0);	
 		}
 		randsetslo[0] = Rcpp::min(subset);randsetshi[0] = Rcpp::max(subset);
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
@@ -1174,7 +1188,27 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 		}
 	}
 	
-	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples") = samples);		
+	NumericVector plausesz(500,0.0);
+	NumericVector plausestruz(1,0.0);
+
+	samples_bz = sortmat(samples_bz,1);
+	for(int j=0; j<(size-1); j++){
+		NumericVector subset(size-j-1, 0.0);
+		for(int i=0; i<(size-j-1); i++){
+			subset[i] = samples_bz(i+j+1,0);	
+		}
+		randsetslo[0] = Rcpp::min(subset);randsetshi[0] = Rcpp::max(subset);
+		if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
+			plausestruz[0] = plausestruz[0]+(1.0/(size-1.0));
+		}
+		for(int i=0; i<500; i++){
+			if(   (bzseq[i] > randsetslo[0]) & (bzseq[i] < randsetshi[0])   ){
+				plausesz[i] = plausesz[i]+(1.0/(size-1.0));
+			}
+		}
+	}
+	
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = samples_bx, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = samples_bz);		
 	
 	return result;
 	
