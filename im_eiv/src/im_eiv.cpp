@@ -1008,7 +1008,7 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 
 	List result;
 	Rcpp::Function sortmat("sortmat");
-	int size = round(sampsize);
+	int size = round(sampsize[0]);
 	
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
