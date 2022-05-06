@@ -1016,13 +1016,13 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 
 	// Generate MC sample of aux rvs
 
-	NumericVector V2(40000,0.0); V2 = Rcpp::rnorm( 40000, 0.0, 1.0 );
-	NumericVector V1(40000,0.0); V1 = Rcpp::rchisq( 40000, n[0]-1 );
-	NumericVector V3(40000,0.0); V3 = Rcpp::rchisq( 40000, n[0]-2 );
-	NumericVector bx(40000,0.0); NumericVector sx(1,0.0); NumericVector se(1,0.0); 
-	NumericVector bxs(40000,0.0); NumericVector density(40000,0.0);
+	NumericVector V2(400000,0.0); V2 = Rcpp::rnorm( 400000, 0.0, 1.0 );
+	NumericVector V1(400000,0.0); V1 = Rcpp::rchisq( 400000, n[0]-1 );
+	NumericVector V3(400000,0.0); V3 = Rcpp::rchisq( 400000, n[0]-2 );
+	NumericVector bx(400000,0.0); NumericVector sx(1,0.0); NumericVector se(1,0.0); 
+	NumericVector bxs(400000,0.0); NumericVector density(400000,0.0);
 	int ind = 0;
-	for(int i=0; i < 40000; i++){
+	for(int i=0; i < 400000; i++){
 		V1[i] = std::sqrt(V1[i]);	
 		V3[i] = std::sqrt(V3[i]);
 		sx[0] = del[0]*((s22[0]/V3[0])*(s22[0]/V3[0])+(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i])*(s12[0] - s22[0]*V2[i]/V3[i]));
@@ -1040,11 +1040,11 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 		samples(i,0) = 	bxs[i]; samples(i,1) = 	density[i];
 	}
 	
-	V2 = Rcpp::rnorm( 40000, 0.0, 1.0 );
-	V1 = Rcpp::rchisq( 40000, n[0]-1 );
-	V3 = Rcpp::rchisq( 40000, n[0]-2 );
+	V2 = Rcpp::rnorm( 400000, 0.0, 1.0 );
+	V1 = Rcpp::rchisq( 400000, n[0]-1 );
+	V3 = Rcpp::rchisq( 400000, n[0]-2 );
 	int ind2 = 0;
-	for(int i=0; i < 40000; i++){
+	for(int i=0; i < 400000; i++){
 		V1[i] = std::sqrt(V1[i]);	
 		V3[i] = std::sqrt(V3[i]);
 		sx[0] = del[0]*((s22[0]/V3[0])*(s22[0]/V3[0])+(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i])*(s12[0] - s22[0]*V2[i]/V3[i]));
