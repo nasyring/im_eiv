@@ -18,7 +18,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourGF", (DL_FUNC) &imeiv_plauscontourGF, 10},
     {"imeiv_plauscontourGFu", (DL_FUNC) &imeiv_plauscontourGFu, 10},
     {"imeiv_plauscontourGFv", (DL_FUNC) &imeiv_plauscontourGFv, 9},
-    {"imeiv_plauscontourGFa", (DL_FUNC) &imeiv_plauscontourGFv, 6},
+    {"imeiv_plauscontourGFa", (DL_FUNC) &imeiv_plauscontourGFa, 6},
     {"imeiv_plauscontourGF2", (DL_FUNC) &imeiv_plauscontourGF2, 9},
     {"imeiv_plauscontourIM", (DL_FUNC) &imeiv_plauscontourIM, 9},
     {"imeiv_plauscontourIMmarg", (DL_FUNC) &imeiv_plauscontourIMmarg, 7},
