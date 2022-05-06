@@ -1027,7 +1027,7 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 		V3[i] = std::sqrt(V3[i]);
 		if(type[0] == 2.0){
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-			L11[0] = s11[0]/V1[0]; L22 = s22[0]/V3[0]; L12 = s12[0] - V2[0]*L22[0]/V1[0]; 
+			L11[0] = s11[0]/V1[i]; L22 = s22[0]/V3[i]; L12 = s12[0] - V2[i]*L22[0]/V1[i]; 
 			sx[0] = 0.5*(-(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]) + std::sqrt(((L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0])*(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]))+4*L11[0]*L11[0]*L12[0]*L12[0]/del[0]));
 			bx[i] = L11[0]*L12[0]/sx[0];
 			se[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]-sx[0]);
@@ -1047,7 +1047,7 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 			}		
 		}else {
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-			L11[0] = s11[0]/V1[0]; L22 = s22[0]/V3[0]; L12 = s12[0] - V2[0]*L22[0]/V1[0]; 
+			L11[0] = s11[0]/V1[i]; L22 = s22[0]/V3[i]; L12 = s12[0] - V2[i]*L22[0]/V1[i]; 
 			sx[0] = L22[0]*L22[0]+L12[0]*L12[0] - del[0];
 			bx[i] = L11[0]*L12[0]/sx[0];
 			se[0] = L11[0] - bx[i]*bx[i]*sx[0];
