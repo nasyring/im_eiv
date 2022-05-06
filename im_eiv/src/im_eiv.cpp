@@ -1091,7 +1091,6 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 			}
 			randsetslo[0] = Rcpp::min(subset);randsetshi[0] = Rcpp::max(subset);
 		}
-		randsetslo[0] = Rcpp::min(subset);randsetshi[0] = Rcpp::max(subset);
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
 			plausestrux[0] = plausestrux[0]+(1.0/(ind2-1.0));
 		}
