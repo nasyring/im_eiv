@@ -932,7 +932,6 @@ Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector 
 			if(uu[0] < densdiff[0]){
 				propsamp[i] = currsamp[i];
 				propdens[0] = currdens[0];
-				propdens2[0] = currdens2[0];
 				ct[i] = ct[i]+1.0;
 			}
 			}
