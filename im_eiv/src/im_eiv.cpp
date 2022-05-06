@@ -1054,11 +1054,11 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 		}
 		randsetslo[0] = Rcpp::min(subset);randsetshi[0] = Rcpp::max(subset);
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-			plausestrux[0] = plausestrux[0]+(1/(ind-1));
+			plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
 		}
 		for(int i=0; i<500; i++){
 			if(   (bxseq[i] > randsetslo[0]) & (bxseq[i] < randsetshi[0])   ){
-				plausesx[i] = plausesx[i]+(1/(ind-1));
+				plausesx[i] = plausesx[i]+(1.0/(ind-1.0));
 			}
 		}
 	}
