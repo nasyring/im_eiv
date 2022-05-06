@@ -10,8 +10,8 @@ plauscontourGFv <- function(par,stat,del,type,n,propsd,truebx,bxseq,randsettype)
     .Call(`imeiv_plauscontourGFv`, par,stat,del,type,n,propsd,truebx,bxseq,randsettype)
 }
 
-plauscontourGFa <- function(stat,del,type,n,truebx,bxseq,sampsize){
-    .Call(`imeiv_plauscontourGFa`, stat,del,type,n,truebx,bxseq,sampsize)
+plauscontourMC <- function(sampsize,stat,del,type,n,truebx,bxseq,truebz,bzseq){
+    .Call(`imeiv_plauscontourMC`, sampsize,stat,del,type,n,truebx,bxseq,truebz,bzseq)
 }
 
 plauscontourGF2 <- function(par,stat,del,n,propsd,truebx,truebz,bxseq,bzseq){
