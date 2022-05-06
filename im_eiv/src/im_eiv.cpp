@@ -982,8 +982,8 @@ Rcpp::List plauscontourGFv(NumericVector par, NumericVector stat, NumericVector 
 		NumericVector randsetslo(39999,0.0);NumericVector randsetshi(39999,0.0);
 		for(int j=0; j<39999; j++){
 			NumericVector subset(40000-j-1, 0.0);
-			for(int i=(j+1); i<40000; i++){
-				subset[i] = samples(0,i);	
+			for(int i=0; i<(40000-j-1); i++){
+				subset[i] = samples(0,i+j+1);	
 			}
 			randsetslo[j] = Rcpp::min(subset);randsetshi[j] = Rcpp::max(subset);
 			if(   (truebx[0] > randsetslo[j]) & (truebx[0] < randsetshi[j])   ){
