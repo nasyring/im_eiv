@@ -65,8 +65,6 @@ BEGIN_RCPP
 END_RCPP
 }
 
-Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq)
-
 Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq);
 RcppExport SEXP imeiv_plauscontourGFa(SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP truebxSEXP, SEXP bxseqSEXP){
 BEGIN_RCPP
