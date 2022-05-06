@@ -20,8 +20,8 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 	NumericVector uu(1,0.0);
 	NumericVector ct(3,0.0);
 	NumericVector bx(1,0.0); bx[0] = par[0];
-	NumericVector sx(1,0.0); bz[0] = par[1];
-	NumericVector se(1,0.0); mux[0] = par[2];
+	NumericVector bz(1,0.0); bz[0] = par[1];
+	NumericVector mux(1,0.0); mux[0] = par[2];
 	NumericVector sx(1,0.0); sx[0] = par[3];
 	NumericVector se(1,0.0); se[0] = par[4];
 	
@@ -88,14 +88,20 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 	NumericVector dv1dbx(1, 0.0); dv1dbx[0] = -s11[0]*dL11dbx[0]/(L11[0]*L11[0]);
 	NumericVector dv1dsx(1, 0.0); dv1dsx[0] = -s11[0]*dL11dsx[0]/(L11[0]*L11[0]);
 	NumericVector dv1dse(1, 0.0); dv1dse[0] = -s11[0]*dL11dse[0]/(L11[0]*L11[0]);
+	NumericVector dv1dbz(1, 0.0);
+	NumericVector dv1dmux(1, 0.0);
 	
 	NumericVector dv2dbx(1, 0.0); dv2dbx[0] = ((-L12[0]*dv1dbx[0]-v1[0]*dL12dbx[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dbx[0])/(L22[0]*L22[0]);
 	NumericVector dv2dsx(1, 0.0); dv2dsx[0] = ((-L12[0]*dv1dsx[0]-v1[0]*dL12dsx[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dsx[0])/(L22[0]*L22[0]);
 	NumericVector dv2dse(1, 0.0); dv2dse[0] = ((-L12[0]*dv1dse[0]-v1[0]*dL12dse[0])*L22[0] - (s12[0]-v1[0]*L12[0])*dL22dse[0])/(L22[0]*L22[0]);
-	
+	NumericVector dv2dbz(1, 0.0);
+	NumericVector dv2dmux(1, 0.0);
+		
 	NumericVector dv3dbx(1, 0.0); dv3dbx[0] = -s22[0]*dL22dbx[0]/(L22[0]*L22[0]);
 	NumericVector dv3dsx(1, 0.0); dv3dsx[0] = -s22[0]*dL22dsx[0]/(L22[0]*L22[0]);
 	NumericVector dv3dse(1, 0.0); dv3dse[0] = -s22[0]*dL22dse[0]/(L22[0]*L22[0]);
+	NumericVector dv3dbz(1, 0.0);
+	NumericVector dv3dmux(1, 0.0);
 		
 	NumericVector dz1dbx(1, 0.0); dz1dbx[0] = (-mux[0]-z1[0]*dL11dbx[0])/L11[0];
 	NumericVector dz1dbz(1, 0.0); dz1dbz[0] = -1/L11[0];
@@ -274,11 +280,12 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 	NumericVector plausestruz(1,0.0);
 		
 	if(randsettype[0] > 0.0){	
-		NumericVector unifs(round(randsettype[0]),0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(40000,0.0);NumericVector unifs_lo(40000,0.0);
+		int dim = round(randsettype[0]);
+		NumericVector unifs(dim,0.0);NumericVector maxunifs(1,0.0);NumericVector unifs_hi(40000,0.0);NumericVector unifs_lo(40000,0.0);
 		NumericVector bxs(40000,0.0);NumericVector bzs(40000,0.0);
 		for(int i=0; i<40000; i++){
-			unifs = Rcpp::runif(round(randsettype[0]), 0.0,1.0);
-			for(int j = 0; j < round(randsettype[0]); j++){
+			unifs = Rcpp::runif(dim, 0.0,1.0);
+			for(int j = 0; j < dim; j++){
 				maxunifs[0] = fmax(maxunifs[0], unifs[j]);	
 			}
 			unifs_hi[i] = 0.5 + fabs(maxunifs[0] - 0.5); 
@@ -324,7 +331,6 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 			}
 		}
 		samples = sortmat(samples,5);
-		NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 		for(int j=0; j<39999; j++){
 			NumericVector subset(40000-j-1, 0.0);
 			for(int i=0; i<(40000-j-1); i++){
@@ -393,6 +399,8 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 				ind = ind+1;
 			}
 		}else if(type[0] == 1.0){
+			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
+			L11[0] = s11[0]/V1[i]; L22 = s22[0]/V3[i]; L12 = (s12[0] - V2[i]*L22[0])/V1[i]; 
 			sx[0] = del[0]*((s22[0]/V3[i])*(s22[0]/V3[i])+(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i])*(s12[0] - s22[0]*V2[i]/V3[i]));
 			bx[0] = (s11[0]*(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i]))/sx[0];
 			se[0] = (s11[0]/V1[i])*(s11[0]/V1[i]) - sx[0]*bx[i]*bx[i];
@@ -401,7 +409,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			if(se[0] > 0){
 				bxs[ind] = bx[i]; 
 				bzs[ind] = bz[0];
-				density[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				density3[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
 				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}		
@@ -416,7 +424,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			if((se[0] > 0.0) & (sx[0]>0.0)){
 				bxs[ind] = bx[i];
 				bzs[ind] = bz[0];
-				density[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				density3[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
 				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}
