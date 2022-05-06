@@ -1047,13 +1047,37 @@ Rcpp::List plauscontourGFa(NumericVector stat, NumericVector del, NumericVector 
 	for(int i=0; i < 400000; i++){
 		V1[i] = std::sqrt(V1[i]);	
 		V3[i] = std::sqrt(V3[i]);
-		sx[0] = del[0]*((s22[0]/V3[0])*(s22[0]/V3[0])+(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i])*(s12[0] - s22[0]*V2[i]/V3[i]));
-		bx[i] = (s11[0]*(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i]))/sx[0];
-		se[0] = (s11[0]/V1[0])*(s11[0]/V1[0]) - sx[0]*bx[i]*bx[i];
-		if(se[0] > 0){
-			bxs[ind2] = bx[i]; 
-			density[ind2] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
-			ind2 = ind2+1;
+		if(type == 2.0){
+			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
+			L11[0] = s11[0]/V1[0]; L22 = s22[0]/V3[0]; L12 = s12[0] - V2[0]*L22[0]/V1[0]; 
+			sx[0] = 0.5*(-(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]) + std::sqrt(((L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0])*(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]))+4*L11[0]*L11[0]*L12[0]*L12[0]/del[0]));
+			bx[i] = L11[0]*L12[0]/sx[0];
+			se[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]-sx[0]);
+			if(se[0] > 0){
+				bxs[ind2] = bx[i]; 
+				density[ind2] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				ind2 = ind2+1;
+			}
+		}else if(type == 1.0){
+			sx[0] = del[0]*((s22[0]/V3[0])*(s22[0]/V3[0])+(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i])*(s12[0] - s22[0]*V2[i]/V3[i]));
+			bx[i] = (s11[0]*(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i]))/sx[0];
+			se[0] = (s11[0]/V1[0])*(s11[0]/V1[0]) - sx[0]*bx[i]*bx[i];
+			if(se[0] > 0){
+				bxs[ind2] = bx[i]; 
+				density[ind2] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				ind2 = ind2+1;
+			}		
+		}else {
+			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
+			L11[0] = s11[0]/V1[0]; L22 = s22[0]/V3[0]; L12 = s12[0] - V2[0]*L22[0]/V1[0]; 
+			sx[0] = L22[0]*L22[0]+L12[0]*L12[0] - del[0];
+			bx[i] = L11[0]*L12[0]/sx[0];
+			se[0] = L11[0] - bx[i]*bx[i]*sx[0];
+			if((se[0] > 0.0) & (sx[0]>0.0)){
+				bxs[ind2] = bx[i]; 
+				density[ind2] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				ind2 = ind2+1;
+			}
 		}
 	}
 	NumericVector zeroes2(2*ind2,0.0);
