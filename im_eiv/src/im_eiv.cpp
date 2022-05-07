@@ -451,7 +451,8 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 		for(int i=0; i<(ind-j-1); i++){
 			subset[i] = samples_bx(i+j+1,0);	
 		}
-		randsetslo[0] = Rcpp::min(subset); randsetshi[0] = Rcpp::max(subset);
+		std::sort(subset.begin(), subset.end());
+		randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-j-2];
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
 			plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
 		}
