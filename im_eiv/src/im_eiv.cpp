@@ -429,9 +429,9 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			}
 		}
 	}
-/*
+
 	NumericVector zeroes(2*ind,0.0);
-	NumericMatrix samples_bx(ind,2,zeroes.begin()); NumericMatrix samples_bz(ind,2,zeroes.begin());
+	NumericMatrix samples_bx(ind,2,zeroes.begin()); NumericMatrix samples_bz(ind,2,zeroes.begin());/*
 	for(int i=0; i < ind; i++){
 		samples_bx(i,0) = bxs[i]; samples_bx(i,1) = density3[i];
 		samples_bz(i,0) = bzs[i]; samples_bz(i,1) = density5[i];
