@@ -444,14 +444,16 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	NumericVector plausesx(500,0.0);
 	NumericVector plausestrux(1,0.0);
 
-/*
+
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 	for(int j=0; j<(ind-1); j++){
 		NumericVector subset(ind-j-1, 0.0);
 		for(int i=0; i<(ind-j-1); i++){
 			subset[i] = samples_bx(i+j+1,0);	
 		}
+		if(ind-j-1>1){
 		std::sort(subset.begin(), subset.end());
+		}
 		randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-j-2];
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
 			plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
@@ -463,7 +465,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 		}
 	}
 
-	
+	/*
 	
 	NumericVector plausesz(500,0.0);
 	NumericVector plausestruz(1,0.0);
@@ -473,7 +475,9 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 		for(int i=0; i<(ind-j-1); i++){
 			subset[i] = samples_bz(i+j+1,0);	
 		}
+		if(ind-j-1>1){
 		std::sort(subset.begin(), subset.end());
+		}
 		randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-j-2];
 		if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
 			plausestruz[0] = plausestruz[0]+(1.0/(ind-1.0));
@@ -487,8 +491,9 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	
 	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = samples_bx, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = samples_bz);		
 	
-		*/
+	*/	
 	
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = samples_bx);		
 	
 	return result;
 	
