@@ -446,19 +446,19 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 
 	samples_bx = sortmat(samples_bx,1);
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
-	for(int j=0; j<(size-1); j++){
-		NumericVector subset(size-j-1, 0.0);
-		for(int i=0; i<(size-j-1); i++){
+	for(int j=0; j<(ind-1); j++){
+		NumericVector subset(ind-j-1, 0.0);
+		for(int i=0; i<(ind-j-1); i++){
 			subset[i] = samples_bx(i+j+1,0);	
 		}
 		std::sort(subset.begin(), subset.end());
-		randsetslo[0] = subset[0];	randsetshi[0] = subset[size-j-2];
+		randsetslo[0] = subset[0];	randsetshi[0] = subset[ind-j-2];
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-			plausestrux[0] = plausestrux[0]+(1.0/(size-1.0));
+			plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
 		}
 		for(int i=0; i<500; i++){
 			if(   (bxseq[i] > randsetslo[0]) & (bxseq[i] < randsetshi[0])   ){
-				plausesx[i] = plausesx[i]+(1.0/(size-1.0));
+				plausesx[i] = plausesx[i]+(1.0/(ind-1.0));
 			}
 		}
 	}
@@ -467,19 +467,19 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	NumericVector plausestruz(1,0.0);
 
 	samples_bz = sortmat(samples_bz,1);
-	for(int j=0; j<(size-1); j++){
-		NumericVector subset(size-j-1, 0.0);
-		for(int i=0; i<(size-j-1); i++){
+	for(int j=0; j<(ind-1); j++){
+		NumericVector subset(ind-j-1, 0.0);
+		for(int i=0; i<(ind-j-1); i++){
 			subset[i] = samples_bz(i+j+1,0);	
 		}
 		std::sort(subset.begin(), subset.end());
-		randsetslo[0] = subset[0];	randsetshi[0] = subset[size-j-2];
+		randsetslo[0] = subset[0];	randsetshi[0] = subset[ind-j-2];
 		if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
-			plausestruz[0] = plausestruz[0]+(1.0/(size-1.0));
+			plausestruz[0] = plausestruz[0]+(1.0/(ind-1.0));
 		}
 		for(int i=0; i<500; i++){
 			if(   (bzseq[i] > randsetslo[0]) & (bzseq[i] < randsetshi[0])   ){
-				plausesz[i] = plausesz[i]+(1.0/(size-1.0));
+				plausesz[i] = plausesz[i]+(1.0/(ind-1.0));
 			}
 		}
 	}
