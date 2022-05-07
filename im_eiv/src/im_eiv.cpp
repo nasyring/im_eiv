@@ -439,12 +439,12 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	samples_bx = sortmat(samples_bx,1);
 	samples_bz = sortmat(samples_bz,1);
 	
-	/*
+
 	// plausibility
 	NumericVector plausesx(500,0.0);
 	NumericVector plausestrux(1,0.0);
 
-	samples_bx = sortmat(samples_bx,1);
+
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 	for(int j=0; j<(ind-1); j++){
 		NumericVector subset(ind-j-1, 0.0);
@@ -461,11 +461,12 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			}
 		}
 	}
+
+	/*
 	
 	NumericVector plausesz(500,0.0);
 	NumericVector plausestruz(1,0.0);
 
-	samples_bz = sortmat(samples_bz,1);
 	for(int j=0; j<(ind-1); j++){
 		NumericVector subset(ind-j-1, 0.0);
 		for(int i=0; i<(ind-j-1); i++){
