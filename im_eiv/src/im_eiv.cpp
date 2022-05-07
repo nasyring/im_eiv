@@ -278,17 +278,17 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 	NumericVector plausestrux(1,0.0);
 	NumericVector plausesz(500,0.0);
 	NumericVector plausestruz(1,0.0);
-		NumericVector unifs_hi(40000,0.0);NumericVector unifs_lo(40000,0.0);
-		NumericVector bxs(40000,0.0);NumericVector bzs(40000,0.0);
+	NumericVector unifs_hi(40000,0.0);NumericVector unifs_lo(40000,0.0);
+	NumericVector bxs(40000,0.0);NumericVector bzs(40000,0.0);
+	NumericVector unifs(1,0.0);NumericVector maxunifs(1,0.0);
+	int dim = round(randsettype[0]);
 	if(randsettype[0] > 0.0){	
-		int dim = round(randsettype[0]);
-		NumericVector unifs(1,0.0);NumericVector maxunifs(1,0.0);
 		for(int i=0; i<40000; i++){
 			for(int j = 0; j < dim; j++){
 				unifs[0] = R::runif(0.0,1.0);
-				maxunifs[0] = fmax(maxunifs[0], unifs[0]);	
+				maxunifs[0] = std::max(maxunifs[0], unifs[0]);	
 			}
-			unifs_hi[i] = 0.5 + fabs(maxunifs[0] - 0.5); 
+			unifs_hi[i] = 0.5 + std::abs(maxunifs[0] - 0.5); 
 			unifs_lo[i] = 1.0-unifs_hi[i];
 			bxs[i] = samples(i, 0);	bzs[i] = samples(i, 1);
 		}
@@ -348,7 +348,7 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 		}
 		
 	}	
-	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("samples") = samples,Rcpp::Named("unifs_hi") = unifs_hi,Rcpp::Named("unifs_lo") = unifs_lo,Rcpp::Named("bxs") = bxs,Rcpp::Named("bzs") = bzs);		
+	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("samples") = samples,Rcpp::Named("unifs_hi") = unifs_hi,Rcpp::Named("unifs_lo") = unifs_lo,Rcpp::Named("bxs") = bxs,Rcpp::Named("bzs") = bzs, Rcpp::Named("dim") = dim);		
 	}
 	return result;
 	
