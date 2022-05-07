@@ -375,9 +375,9 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	NumericVector V3(size,0.0); V3 = Rcpp::rchisq( size, n[0]-2 );
 	NumericVector Z1(size,0.0); Z1 = Rcpp::rnorm( size, 0.0, std::sqrt(1.0/n[0]) );
 	NumericVector Z2(size,0.0); Z2 = Rcpp::rnorm( size, 0.0, std::sqrt(1.0/n[0]) );
-	
+	NumericVector zeroes(2*size,0.0);
+	NumericMatrix bxs(size,2,zeroes.begin()); NumericMatrix bzs(size,2,zeroes.begin());
 	NumericVector bx(1,0.0); NumericVector sx(1,0.0); NumericVector se(1,0.0); NumericVector mux(1,0.0); NumericVector bz(1,0.0); 
-	NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); NumericVector density3(size,0.0); NumericVector density5(size,0.0);
 	int ind = 0;
 	for(int i=0; i < size; i++){
 		V1[i] = std::sqrt(V1[i]);	
@@ -391,10 +391,10 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
 			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if(se[0] > 0){
-				bxs[ind] = bx[0]; 
-				bzs[ind] = bz[0]; 
-				density3[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
-				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
+				bxs(ind,0) = bx[0]; 
+				bzs(ind,0) = bz[0]; 
+				bxs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				bzs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}
 		}else if(type[0] == 1.0){
@@ -406,10 +406,10 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
 			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if((se[0] > 0.0) & (sx[0]>0.0)){
-				bxs[ind] = bx[0]; 
-				bzs[ind] = bz[0];
-				density3[ind] = R::dchisq(V1[i]*V1[i], n[0]-1.0, 1) + R::dchisq(V3[i]*V3[i], n[0]-2.0, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
-				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1.0, 1) + R::dchisq(V3[i]*V3[i], n[0]-2.0, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
+				bxs(ind,0) = bx[0]; 
+				bzs(ind,0) = bz[0]; 
+				bxs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				bzs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}		
 		}else {
@@ -421,21 +421,21 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
 			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if((se[0] > 0.0) & (sx[0]>0.0)){
-				bxs[ind] = bx[0];
-				bzs[ind] = bz[0];
-				density3[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
-				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
+				bxs(ind,0) = bx[0]; 
+				bzs(ind,0) = bz[0]; 
+				bxs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
+				bzs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}
 		}
 	}
 
-	NumericVector zeroes(2*ind,0.0);
-	NumericMatrix samples_bx(ind,2,zeroes.begin()); NumericMatrix samples_bz(ind,2,zeroes.begin());/*
+	NumericVector zeroes2(2*ind,0.0);
+	NumericMatrix samples_bx(ind,2,zeroes.begin()); NumericMatrix samples_bz(ind,2,zeroes.begin());
 	for(int i=0; i < ind; i++){
-		samples_bx(i,0) = bxs[i]; samples_bx(i,1) = density3[i];
-		samples_bz(i,0) = bzs[i]; samples_bz(i,1) = density5[i];
-	}
+		samples_bx(i,0) = bxs(i,0); samples_bx(i,1) = bxs(i,1);
+		samples_bz(i,0) = bzs(i,0); samples_bz(i,1) = bzs(i,1);
+	}/*
 	samples_bx = sortmat(samples_bx,1);
 	samples_bz = sortmat(samples_bz,1);
 	
