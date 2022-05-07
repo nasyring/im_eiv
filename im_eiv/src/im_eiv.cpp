@@ -282,10 +282,10 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 		NumericVector bxs(40000,0.0);NumericVector bzs(40000,0.0);
 	if(randsettype[0] > 0.0){	
 		int dim = round(randsettype[0]);
-		NumericVector unifs(dim,0.0);NumericVector maxunifs(1,0.0);
+		NumericVector unifs(1,0.0);NumericVector maxunifs(1,0.0);
 		for(int i=0; i<40000; i++){
-			unifs = Rcpp::runif(dim, 0.0,1.0);
 			for(int j = 0; j < dim; j++){
+				unifs[j] = R::runif(0.0,1.0);
 				maxunifs[0] = fmax(maxunifs[0], unifs[j]);	
 			}
 			unifs_hi[i] = 0.5 + fabs(maxunifs[0] - 0.5); 
