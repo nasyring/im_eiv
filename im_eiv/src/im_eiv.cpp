@@ -278,11 +278,11 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 	NumericVector plausestrux(1,0.0);
 	NumericVector plausesz(500,0.0);
 	NumericVector plausestruz(1,0.0);
+	int dim = round(randsettype[0]);
+	if(randsettype[0] > 0.0){	
 	NumericVector unifs_hi(40000,0.0);NumericVector unifs_lo(40000,0.0);
 	NumericVector bxs(40000,0.0);NumericVector bzs(40000,0.0);
 	NumericVector unifs(1,0.0);NumericVector maxunifs(1,0.0);
-	int dim = round(randsettype[0]);
-	if(randsettype[0] > 0.0){	
 		for(int i=0; i<40000; i++){
 			for(int j = 0; j < dim; j++){
 				unifs[0] = R::runif(0.0,1.0);
@@ -290,6 +290,7 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 			}
 			unifs_hi[i] = 0.5 + std::abs(maxunifs[0] - 0.5); 
 			unifs_lo[i] = 1.0-unifs_hi[i];
+			maxunifs[0] = 0.0;
 			bxs[i] = samples(i, 0);	bzs[i] = samples(i, 1);
 		}
 		std::sort(bxs.begin(), bxs.end());std::sort(bzs.begin(), bzs.end());
