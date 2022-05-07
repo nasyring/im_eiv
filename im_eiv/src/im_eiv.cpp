@@ -435,10 +435,10 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	for(int i=0; i < ind; i++){
 		samples_bx(i,0) = bxs(i,0); samples_bx(i,1) = bxs(i,1);
 		samples_bz(i,0) = bzs(i,0); samples_bz(i,1) = bzs(i,1);
-	}/*
+	}
 	samples_bx = sortmat(samples_bx,1);
 	samples_bz = sortmat(samples_bz,1);
-	
+	/*
 	
 	// plausibility
 	NumericVector plausesx(500,0.0);
