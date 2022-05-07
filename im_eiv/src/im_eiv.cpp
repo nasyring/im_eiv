@@ -285,8 +285,8 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 		NumericVector unifs(1,0.0);NumericVector maxunifs(1,0.0);
 		for(int i=0; i<40000; i++){
 			for(int j = 0; j < dim; j++){
-				unifs[j] = R::runif(0.0,1.0);
-				maxunifs[0] = fmax(maxunifs[0], unifs[j]);	
+				unifs[0] = R::runif(0.0,1.0);
+				maxunifs[0] = fmax(maxunifs[0], unifs[0]);	
 			}
 			unifs_hi[i] = 0.5 + fabs(maxunifs[0] - 0.5); 
 			unifs_lo[i] = 1.0-unifs_hi[i];
