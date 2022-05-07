@@ -444,7 +444,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	NumericVector plausesx(500,0.0);
 	NumericVector plausestrux(1,0.0);
 
-
+/*
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 	for(int j=0; j<(ind-1); j++){
 		NumericVector subset(ind-j-1, 0.0);
@@ -487,7 +487,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	
 	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = samples_bx, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = samples_bz);		
 	
-		
+		*/
 	
 	
 	return result;
