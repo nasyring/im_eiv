@@ -408,7 +408,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
 			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if(se[0] > 0){
-				bxs[ind] = bx[i]; 
+				bxs[ind] = bx[0]; 
 				bzs[ind] = bz[0];
 				density3[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
 				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
@@ -423,7 +423,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
 			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if((se[0] > 0.0) & (sx[0]>0.0)){
-				bxs[ind] = bx[i];
+				bxs[ind] = bx[0];
 				bzs[ind] = bz[0];
 				density3[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
 				density5[ind] = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
