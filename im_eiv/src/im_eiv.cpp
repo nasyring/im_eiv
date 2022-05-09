@@ -370,61 +370,62 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	
 	// Generate MC sample of aux rvs
 
-	NumericVector V2(size,0.0); V2 = Rcpp::rnorm( size, 0.0, 1.0 );
-	NumericVector V1(size,0.0); V1 = Rcpp::rchisq( size, n[0]-1 );
-	NumericVector V3(size,0.0); V3 = Rcpp::rchisq( size, n[0]-2 );
-	NumericVector Z1(size,0.0); Z1 = Rcpp::rnorm( size, 0.0, std::sqrt(1.0/n[0]) );
-	NumericVector Z2(size,0.0); Z2 = Rcpp::rnorm( size, 0.0, std::sqrt(1.0/n[0]) );
+	NumericVector V2(1,0.0); 
+	NumericVector V1(1,0.0); 
+	NumericVector V3(1,0.0); 
+	NumericVector Z1(1,0.0); 
+	NumericVector Z2(1,0.0); 
 	NumericVector zeroes(2*size,0.0);
 	NumericMatrix bxs(size,2,zeroes.begin()); NumericMatrix bzs(size,2,zeroes.begin());
 	NumericVector bx(1,0.0); NumericVector sx(1,0.0); NumericVector se(1,0.0); NumericVector mux(1,0.0); NumericVector bz(1,0.0); 
 	int ind = 0;
 	while(ind < size){
-		V1[i] = std::sqrt(V1[i]);	
-		V3[i] = std::sqrt(V3[i]);
+		V2[0] = R::rnorm( 0.0, 1.0 );V1[0] = R::rchisq( n[0]-1 );V3[0] = R::rchisq( n[0]-2 );Z1[0] = R::rnorm( 0.0, std::sqrt(1.0/n[0]) );Z2[0] = R::rnorm( 0.0, std::sqrt(1.0/n[0]) );
+		V1[0] = std::sqrt(V1[0]);	
+		V3[0] = std::sqrt(V3[0]);
 		if(type[0] == 2.0){
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-			L11[0] = s11[0]/V1[i]; L22[0] = s22[0]/V3[i]; L12[0] = (s12[0] - V2[i]*L22[0])/V1[i]; 
+			L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
 			sx[0] = 0.5*(-(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]) + std::sqrt(((L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0])*(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]))+4*L11[0]*L11[0]*L12[0]*L12[0]/del[0]));
 			bx[0] = L11[0]*L12[0]/sx[0];
 			se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
-			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
-			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
+			mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[0];
+			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[0];
 			if((se[0] > 0.0) & (sx[0]>0.0)){
 				bxs(ind,0) = bx[0]; 
 				bzs(ind,0) = bz[0]; 
-				bxs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
-				bzs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
+				bxs(ind,1) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[0], 0.0, 1.0, 1);	
+				bzs(ind,1) = bxs(ind,1) + R::dnorm(Z1[0], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[0], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}
 		}else if(type[0] == 1.0){
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-			L11[0] = s11[0]/V1[i]; L22[0] = s22[0]/V3[i]; L12[0] = (s12[0] - V2[i]*L22[0])/V1[i]; 
+			L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
 			sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
 			bx[0] = L11[0]*L12[0]/sx[0];
 			se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
-			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
-			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
+			mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[0];
+			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[0];
 			if((se[0] > 0.0) & (sx[0]>0.0)){
 				bxs(ind,0) = bx[0]; 
 				bzs(ind,0) = bz[0]; 
-				bxs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
-				bzs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
+				bxs(ind,1) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[0], 0.0, 1.0, 1);	
+				bzs(ind,1) = bxs(ind,1) + R::dnorm(Z1[0], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[0], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}		
 		}else {
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-			L11[0] = s11[0]/V1[i]; L22[0] = s22[0]/V3[i]; L12[0] = (s12[0] - V2[i]*L22[0])/V1[i]; 
+			L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
 			sx[0] = L22[0]*L22[0]+L12[0]*L12[0] - del[0];
 			bx[0] = L11[0]*L12[0]/sx[0];
 			se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
-			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
-			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
+			mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[0];
+			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[0];
 			if((se[0] > 0.0) & (sx[0]>0.0)){
 				bxs(ind,0) = bx[0]; 
 				bzs(ind,0) = bz[0]; 
-				bxs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
-				bzs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1) + R::dnorm(Z1[i], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[i], 0.0, std::sqrt(1.0/n[0]), 1);
+				bxs(ind,1) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[0], 0.0, 1.0, 1);	
+				bzs(ind,1) = bxs(ind,1) + R::dnorm(Z1[0], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[0], 0.0, std::sqrt(1.0/n[0]), 1);
 				ind = ind+1;
 			}
 		}
