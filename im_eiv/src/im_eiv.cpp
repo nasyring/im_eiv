@@ -379,7 +379,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 	NumericMatrix bxs(size,2,zeroes.begin()); NumericMatrix bzs(size,2,zeroes.begin());
 	NumericVector bx(1,0.0); NumericVector sx(1,0.0); NumericVector se(1,0.0); NumericVector mux(1,0.0); NumericVector bz(1,0.0); 
 	int ind = 0;
-	for(int i=0; i < size; i++){
+	while(ind < size){
 		V1[i] = std::sqrt(V1[i]);	
 		V3[i] = std::sqrt(V3[i]);
 		if(type[0] == 2.0){
