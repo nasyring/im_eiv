@@ -387,10 +387,10 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			L11[0] = s11[0]/V1[i]; L22[0] = s22[0]/V3[i]; L12[0] = (s12[0] - V2[i]*L22[0])/V1[i]; 
 			sx[0] = 0.5*(-(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]) + std::sqrt(((L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0])*(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]))+4*L11[0]*L11[0]*L12[0]*L12[0]/del[0]));
 			bx[0] = L11[0]*L12[0]/sx[0];
-			se[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]-sx[0]);
+			se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
 			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
 			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
-			if(se[0] > 0){
+			if((se[0] > 0.0) & (sx[0]>0.0)){
 				bxs(ind,0) = bx[0]; 
 				bzs(ind,0) = bz[0]; 
 				bxs(ind,1) = R::dchisq(V1[i]*V1[i], n[0]-1, 1) + R::dchisq(V3[i]*V3[i], n[0]-2, 1)  + R::dnorm(V2[i], 0.0, 1.0, 1);	
@@ -400,9 +400,9 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 		}else if(type[0] == 1.0){
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 			L11[0] = s11[0]/V1[i]; L22[0] = s22[0]/V3[i]; L12[0] = (s12[0] - V2[i]*L22[0])/V1[i]; 
-			sx[0] = del[0]*((s22[0]/V3[i])*(s22[0]/V3[i])+(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i])*(s12[0] - s22[0]*V2[i]/V3[i]));
-			bx[0] = (s11[0]*(1.0/(V1[i]*V1[i]))*(s12[0] - s22[0]*V2[i]/V3[i]))/sx[0];
-			se[0] = (s11[0]/V1[i])*(s11[0]/V1[i]) - sx[0]*bx[i]*bx[i];
+			sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
+			bx[0] = L11[0]*L12[0]/sx[0];
+			se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
 			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
 			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if((se[0] > 0.0) & (sx[0]>0.0)){
@@ -417,7 +417,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 			L11[0] = s11[0]/V1[i]; L22[0] = s22[0]/V3[i]; L12[0] = (s12[0] - V2[i]*L22[0])/V1[i]; 
 			sx[0] = L22[0]*L22[0]+L12[0]*L12[0] - del[0];
 			bx[0] = L11[0]*L12[0]/sx[0];
-			se[0] = L11[0] - bx[i]*bx[i]*sx[0];
+			se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
 			mux[0] = wbar[0] - L12[0]*Z1[i]-L22[0]*Z2[i];
 			bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[i];
 			if((se[0] > 0.0) & (sx[0]>0.0)){
@@ -465,8 +465,6 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 		}
 	}
 
-	
-	
 	NumericVector plausesz(500,0.0);
 	NumericVector plausestruz(1,0.0);
 
