@@ -6,12 +6,12 @@
 /* .Call calls */
 
 extern SEXP imeiv_plauscontourMCMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-extern SEXP imeiv_plauscontourMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP imeiv_plauscontourMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_sortmat(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourMCMC", (DL_FUNC) &imeiv_plauscontourMCMC, 11},
-    {"imeiv_plauscontourMC", (DL_FUNC) &imeiv_plauscontourMC, 9},
+    {"imeiv_plauscontourMC", (DL_FUNC) &imeiv_plauscontourMC, 10},
     {"imeiv_sortmat", (DL_FUNC) &imeiv_sortmat, 2},
     {NULL, NULL, 0}
 };
