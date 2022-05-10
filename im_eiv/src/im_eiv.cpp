@@ -356,7 +356,7 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 }
 
 
-Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq,NumericVector truebz, NumericVector bzseq) {
+Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq,NumericVector truebz, NumericVector bzseq, NumericVector randsettype) {
 
 	List result;
 	Rcpp::Function sortmat("sortmat");
@@ -433,62 +433,112 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 
 	NumericVector zeroes2(2*ind,0.0);
 	NumericMatrix samples_bx(ind,2,zeroes.begin()); NumericMatrix samples_bz(ind,2,zeroes.begin());
+	NumericVector bx_s(size, 0.0); NumericVector bz_s(size, 0.0);
 	for(int i=0; i < ind; i++){
-		samples_bx(i,0) = bxs(i,0); samples_bx(i,1) = bxs(i,1);
-		samples_bz(i,0) = bzs(i,0); samples_bz(i,1) = bzs(i,1);
+		bx_s[i] = bxs(i,0); samples_bx(i,0) = bxs(i,0); samples_bx(i,1) = bxs(i,1);
+		bz_s[i] = bzs(i,0); samples_bz(i,0) = bzs(i,0); samples_bz(i,1) = bzs(i,1);
 	}
 	samples_bx = sortmat(samples_bx,1);
 	samples_bz = sortmat(samples_bz,1);
+	std::sort(bx_s.begin(), bx_s.end()); std::sort(bz_s.begin(), bz_s.end());
+	
+
 	
 
 	// plausibility
 	NumericVector plausesx(500,0.0);
 	NumericVector plausestrux(1,0.0);
-
-
-	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
-	for(int j=0; j<(ind-1); j++){
-		NumericVector subset(ind-j-1, 0.0);
-		for(int i=0; i<(ind-j-1); i++){
-			subset[i] = samples_bx(i+j+1,0);	
-		}
-		if(ind-j-1>1){
-		std::sort(subset.begin(), subset.end());
-		}
-		randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-j-2];
-		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-			plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
-		}
-		for(int i=0; i<500; i++){
-			if(   (bxseq[i] > randsetslo[0]) & (bxseq[i] < randsetshi[0])   ){
-				plausesx[i] = plausesx[i]+(1.0/(ind-1.0));
-			}
-		}
-	}
-
 	NumericVector plausesz(500,0.0);
 	NumericVector plausestruz(1,0.0);
+	
+	int inc = round(floor(size / 500));
+	NumericVector bx_seq(500, 0.0);NumericVector bz_seq(500, 0.0);
+	for(int i = 0; i < 500; i++){
+		bx_seq[i] = bx_s[i*inc];bz_seq[i] = bz_s[i*inc];	
+	}
+	bx_seq[499] = bx_s[(size-1)];bz_seq[499] = bz_s[(size-1)];
+	int dim = round(randsettype[0]);
+	
+	if(randsettype[0] == 0){
 
-	for(int j=0; j<(ind-1); j++){
-		NumericVector subset(ind-j-1, 0.0);
-		for(int i=0; i<(ind-j-1); i++){
-			subset[i] = samples_bz(i+j+1,0);	
-		}
-		if(ind-j-1>1){
-		std::sort(subset.begin(), subset.end());
-		}
-		randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-j-2];
-		if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
-			plausestruz[0] = plausestruz[0]+(1.0/(ind-1.0));
-		}
-		for(int i=0; i<500; i++){
-			if(   (bzseq[i] > randsetslo[0]) & (bzseq[i] < randsetshi[0])   ){
-				plausesz[i] = plausesz[i]+(1.0/(ind-1.0));
+
+		NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
+		for(int j=0; j<(ind-1); j++){
+			NumericVector subset(ind-j-1, 0.0);
+			for(int i=0; i<(ind-j-1); i++){
+				subset[i] = samples_bx(i+j+1,0);	
+			}
+			if(ind-j-1>1){
+			std::sort(subset.begin(), subset.end());
+			}
+			randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-j-2];
+			if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
+				plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
+			}
+			for(int i=0; i<500; i++){
+				if(   (bxseq[i] > randsetslo[0]) & (bxseq[i] < randsetshi[0])   ){
+					plausesx[i] = plausesx[i]+(1.0/(ind-1.0));
+				}
 			}
 		}
+
+
+
+		for(int j=0; j<(ind-1); j++){
+			NumericVector subset(ind-j-1, 0.0);
+			for(int i=0; i<(ind-j-1); i++){
+				subset[i] = samples_bz(i+j+1,0);	
+			}
+			if(ind-j-1>1){
+			std::sort(subset.begin(), subset.end());
+			}
+			randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-j-2];
+			if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
+				plausestruz[0] = plausestruz[0]+(1.0/(ind-1.0));
+			}
+			for(int i=0; i<500; i++){
+				if(   (bzseq[i] > randsetslo[0]) & (bzseq[i] < randsetshi[0])   ){
+					plausesz[i] = plausesz[i]+(1.0/(ind-1.0));
+				}
+			}
+		}
+	}else {
+	NumericVector unifs_hi(size,0.0);NumericVector unifs_lo(size,0.0);
+	NumericVector bxs(size,0.0);NumericVector bzs(size,0.0);
+	NumericVector unifs(1,0.0);NumericVector maxunifs(1,0.0);
+		for(int i=0; i<size; i++){
+			for(int j = 0; j < dim; j++){
+				unifs[0] = R::runif(0.0,1.0);
+				maxunifs[0] = std::max(maxunifs[0], unifs[0]);	
+			}
+			unifs_hi[i] = 0.5 + std::abs(maxunifs[0] - 0.5); 
+			unifs_lo[i] = 1.0-unifs_hi[i];
+			maxunifs[0] = 0.0;
+		}
+		int intlo = 0;  int inthi = 0;
+		for(int j=0; j<size; j++){
+			intlo = int(floor((size - 1)*unifs_lo[j]));
+			inthi = int(ceil((size-1)*unifs_hi[j]));
+			if(   (truebx[0] > bx_s[intlo]) & (truebx[0] < bx_s[inthi])   ){
+				plausestrux[0] = plausestrux[0]+(1.0/size);
+			}	
+			if(   (truebz[0] > bz_s[intlo]) & (truebz[0] < bz_s[inthi])   ){
+				plausestruz[0] = plausestruz[0]+(1.0/size);
+			}	
+			for(int i=0; i<500; i++){
+				if(   (bx_seq[i] > bx_s[intlo]) & (bx_seq[i] < bx_s[inthi])   ){
+					plausesx[i] = plausesx[i]+(1.0/size);
+				}
+				if(   (bz_seq[i] > bz_s[intlo]) & (bz_seq[i] < bz_s[inthi])   ){
+					plausesz[i] = plausesz[i]+(1.0/size);
+				}
+			}
+		}
+		
+		
 	}
 	
-	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = samples_bx, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = samples_bz);		
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = samples_bx, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = samples_bz, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq);		
 
 	return result;
 	
