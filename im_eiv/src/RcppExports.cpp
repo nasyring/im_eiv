@@ -25,8 +25,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
-Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq,NumericVector truebz, NumericVector bzseq);
-RcppExport SEXP imeiv_plauscontourMC(SEXP sampsizeSEXP, SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP truebxSEXP, SEXP bxseqSEXP, SEXP truebzSEXP, SEXP bzseqSEXP){
+Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq,NumericVector truebz, NumericVector bzseq, NumericVector randsetpred);
+RcppExport SEXP imeiv_plauscontourMC(SEXP sampsizeSEXP, SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP truebxSEXP, SEXP bxseqSEXP, SEXP truebzSEXP, SEXP bzseqSEXP, SEXP randsetpredSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -39,7 +39,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type bxseq(bxseqSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type truebz(truebzSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bzseq(bzseqSEXP);
-    __result = Rcpp::wrap(plauscontourMC(sampsize,stat,del,type,n,truebx,bxseq,truebz,bzseq));
+    Rcpp::traits::input_parameter< NumericVector >::type randsetpred(randsetpredSEXP);
+    __result = Rcpp::wrap(plauscontourMC(sampsize,stat,del,type,n,truebx,bxseq,truebz,bzseq,randsetpred));
     return __result;
 END_RCPP
 }    
