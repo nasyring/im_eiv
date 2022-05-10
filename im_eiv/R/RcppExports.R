@@ -2,8 +2,8 @@ plauscontourMCMC <- function(par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzse
     .Call(`imeiv_plauscontourMCMC`, par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzseq,randsettype)
 }
 
-plauscontourMC <- function(sampsize,stat,del,type,n,truebx,bxseq,truebz,bzseq){
-    .Call(`imeiv_plauscontourMC`, sampsize,stat,del,type,n,truebx,bxseq,truebz,bzseq)
+plauscontourMC <- function(sampsize,stat,del,type,n,truebx,bxseq,truebz,bzseq,randsetpred){
+    .Call(`imeiv_plauscontourMC`, sampsize,stat,del,type,n,truebx,bxseq,truebz,bzseq,randsetpred)
 }
 
 sortmat <- function(x,col){
