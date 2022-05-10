@@ -476,7 +476,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 				plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
 			}
 			for(int i=0; i<500; i++){
-				if(   (bx_seq[i] > randsetslo[0]) & (bx_seq[i] < randsetshi[0])   ){
+				if(   (bx_seq[i] >= randsetslo[0]) & (bx_seq[i] <= randsetshi[0])   ){
 					plausesx[i] = plausesx[i]+(1.0/(ind-1.0));
 				}
 			}
@@ -497,7 +497,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 				plausestruz[0] = plausestruz[0]+(1.0/(ind-1.0));
 			}
 			for(int i=0; i<500; i++){
-				if(   (bz_seq[i] > randsetslo[0]) & (bz_seq[i] < randsetshi[0])   ){
+				if(   (bz_seq[i] >= randsetslo[0]) & (bz_seq[i] <= randsetshi[0])   ){
 					plausesz[i] = plausesz[i]+(1.0/(ind-1.0));
 				}
 			}
@@ -526,10 +526,10 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 				plausestruz[0] = plausestruz[0]+(1.0/size);
 			}	
 			for(int i=0; i<500; i++){
-				if(   (bx_seq[i] > bx_s[intlo]) & (bx_seq[i] < bx_s[inthi])   ){
+				if(   (bx_seq[i] >= bx_s[intlo]) & (bx_seq[i] <= bx_s[inthi])   ){
 					plausesx[i] = plausesx[i]+(1.0/size);
 				}
-				if(   (bz_seq[i] > bz_s[intlo]) & (bz_seq[i] < bz_s[inthi])   ){
+				if(   (bz_seq[i] => bz_s[intlo]) & (bz_seq[i] <= bz_s[inthi])   ){
 					plausesz[i] = plausesz[i]+(1.0/size);
 				}
 			}
