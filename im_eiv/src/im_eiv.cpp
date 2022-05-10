@@ -529,7 +529,7 @@ Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVec
 				if(   (bx_seq[i] >= bx_s[intlo]) & (bx_seq[i] <= bx_s[inthi])   ){
 					plausesx[i] = plausesx[i]+(1.0/size);
 				}
-				if(   (bz_seq[i] => bz_s[intlo]) & (bz_seq[i] <= bz_s[inthi])   ){
+				if(   (bz_seq[i] >= bz_s[intlo]) & (bz_seq[i] <= bz_s[inthi])   ){
 					plausesz[i] = plausesz[i]+(1.0/size);
 				}
 			}
