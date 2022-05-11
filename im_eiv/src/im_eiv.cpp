@@ -673,16 +673,12 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 	int unifind =0;
 	for(int j=0; j<1000; j++){
-		NumericVector subset(1, 0.0);
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*size);
 		while(bxs(ind-1-ind2,1) >= (dens_samps_x[unifind] - offset[0]) ){
-			subset[ind2] = bxs(ind-1-ind2,0);
+			randsetslo[0] = std::min(randsetslo[0], bxs(ind-1-ind2,0));
+			randsetshi[0] = std::max(randsetshi[0], bxs(ind-1-ind2,0));
 			ind2 = ind2+1;
-			subset = grow(subset);
-		}
-		if(ind2>1){
-			std::sort(subset.begin(), subset.end());
 		}
 		randsetslo[0] = subset[0]; randsetshi[0] = subset[ind2-1];
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
@@ -700,16 +696,12 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	
 	unifind =0;
 	for(int j=0; j<1000; j++){
-		NumericVector subset(1, 0.0);
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*size);
 		while(bzs(ind-1-ind2,1) >= (dens_samps_z[unifind] - offset[0]) ){
-			subset[ind2] = bzs(ind-1-ind2,0);
+			randsetslo[0] = std::min(randsetslo[0], bzs(ind-1-ind2,0));
+			randsetshi[0] = std::max(randsetshi[0], bzs(ind-1-ind2,0));
 			ind2 = ind2+1;
-			subset = grow(subset);
-		}
-		if(ind2>1){
-			std::sort(subset.begin(), subset.end());
 		}
 		randsetslo[0] = subset[0]; randsetshi[0] = subset[ind2-1];
 		if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
@@ -722,7 +714,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		}
 	}
 		
-	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = bxs, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq);		
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = bxs, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("size") = size);		
 
 	return result;
 	
