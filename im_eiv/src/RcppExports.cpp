@@ -78,6 +78,16 @@ BEGIN_RCPP
 END_RCPP    
 }
 
+Rcpp::NumericVector grow(NumericVector x);
+RcppExport SEXP imeiv_grow(SEXP xSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    __result = Rcpp::wrap(grow(x));
+    return __result;
+END_RCPP    
+}
 
 
 
