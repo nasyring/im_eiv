@@ -560,7 +560,7 @@ Rcpp::NumericMatrix sortmat(NumericMatrix x, unsigned int col){
 
 Rcpp::NumericVector grow(NumericVector x) {
   arma::vec xx = as<arma::vec>(x);
-  xx.resize( xx.size()+1 );
+  xx.resize( xx.size()+1, 0.0 );
   NumericMatrix	y = wrap(xx); 
   return y;
 }
