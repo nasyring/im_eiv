@@ -46,6 +46,26 @@ END_RCPP
 }    
     
 
+Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq,NumericVector truebz, NumericVector bzseq, NumericVector randsetpred);
+RcppExport SEXP imeiv_plauscontourMC2(SEXP sampsizeSEXP, SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP truebxSEXP, SEXP bxseqSEXP, SEXP truebzSEXP, SEXP bzseqSEXP, SEXP randsetpredSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type sampsize(sampsizeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type truebx(truebxSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bxseq(bxseqSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type truebz(truebzSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bzseq(bzseqSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type randsetpred(randsetpredSEXP);
+    __result = Rcpp::wrap(plauscontourMC2(sampsize,stat,del,type,n,truebx,bxseq,truebz,bzseq,randsetpred));
+    return __result;
+END_RCPP
+} 
+
 Rcpp::NumericMatrix sortmat(NumericMatrix x, unsigned int col);
 RcppExport SEXP imeiv_sortmat(SEXP xSEXP, SEXP colSEXP){
 BEGIN_RCPP
