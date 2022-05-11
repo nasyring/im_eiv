@@ -652,7 +652,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	bzs = sortmat(bzs,1);
 	std::sort(bx_s.begin(), bx_s.end()); std::sort(bz_s.begin(), bz_s.end());
 	std::sort(dens_samps_x.begin(), dens_samps_x.end()); std::sort(dens_samps_z.begin(), dens_samps_z.end());
-/*	
+	
 	// plausibility
 	NumericVector plausesx(500,0.0);
 	NumericVector plausestrux(1,0.0);
@@ -665,7 +665,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		bx_seq[i] = bx_s[i*inc];bz_seq[i] = bz_s[i*inc];	
 	}
 	bx_seq[499] = bx_s[(size-1)];bz_seq[499] = bz_s[(size-1)];	
-	
+/*	
 	NumericVector offset(1,0.0);
 	offset[0] = dens_samps_x[step - 1] - bxs(ind-1,1);
 	int ind2 = 0;
