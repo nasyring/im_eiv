@@ -714,7 +714,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		
 	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = bxs, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("size") = size);		
 */
-		result = Rcpp::List::create(Rcpp::Named("samples_bx") = bxs, Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("size") = size);		
+		result = Rcpp::List::create(Rcpp::Named("samples_bx") = bxs, Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("step") = step);		
 
 	return result;
 	
