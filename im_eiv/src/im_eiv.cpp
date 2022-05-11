@@ -673,6 +673,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 	int unifind =0;
 	for(int j=0; j<1000; j++){
+		randsetslo[0] = 0.0; randsetshi[0] = 0.0;
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*(step-1));
 		while(bxs(ind-1-ind2,1) >= (dens_samps_x[unifind] - offset[0]) ){
@@ -695,6 +696,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	
 	unifind =0;
 	for(int j=0; j<1000; j++){
+		randsetslo[0] = 0.0; randsetshi[0] = 0.0;
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*(step-1));
 		while(bzs(ind-1-ind2,1) >= (dens_samps_z[unifind] - offset[0]) ){
@@ -712,7 +714,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		}
 	}
 		
-	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = bxs, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("size") = size);		
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = bxs, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("step") = step, Rcpp::Named("dens_samps_x") = dens_samps_x, Rcpp::Named("dens_samps_z") = dens_samps_z);		
 
 	//	result = Rcpp::List::create(Rcpp::Named("samples_bx") = bxs, Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("step") = step);		
 
