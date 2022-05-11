@@ -652,7 +652,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	bzs = sortmat(bzs,1);
 	std::sort(bx_s.begin(), bx_s.end()); std::sort(bz_s.begin(), bz_s.end());
 	std::sort(dens_samps_x.begin(), dens_samps_x.end()); std::sort(dens_samps_z.begin(), dens_samps_z.end());
-	
+/*	
 	// plausibility
 	NumericVector plausesx(500,0.0);
 	NumericVector plausestrux(1,0.0);
@@ -713,6 +713,8 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	}
 		
 	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = bxs, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("size") = size);		
+*/
+		result = Rcpp::List::create(Rcpp::Named("samples_bx") = bxs, Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("size") = size);		
 
 	return result;
 	
