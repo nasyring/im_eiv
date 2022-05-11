@@ -569,7 +569,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 
 	List result;
 	Rcpp::Function sortmat("sortmat");
-	Rcpp::Function sortmat("grow");
+	Rcpp::Function grow("grow");
 	int size = round(sampsize[0]);
 	
 	NumericVector s11(1,0.0); s11[0] = stat[0];
