@@ -585,7 +585,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector V3(1,0.0); 
 	NumericVector Z1(1,0.0); 
 	NumericVector Z2(1,0.0); 
-	NumericVector zeroes(2*size,0.0); NumericVector zero(1,0.0);
+	NumericVector zeroes(2*size,0.0); ;
 	NumericMatrix bxs(size,2,zeroes.begin()); NumericMatrix bzs(size,2,zeroes.begin());
 	NumericVector bx(1,0.0); NumericVector sx(1,0.0); NumericVector se(1,0.0); NumericVector mux(1,0.0); NumericVector bz(1,0.0); 
 	NumericVector dens_samps_x(1,0.0); NumericVector dens_samps_z(1,0.0);
@@ -597,8 +597,8 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		V3[0] = std::sqrt(V3[0]);
 		dens_samps_x[step] = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[0], 0.0, 1.0, 1);
 		dens_samps_z[step] = dens_samps_x[ind] + R::dnorm(Z1[0], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[0], 0.0, std::sqrt(1.0/n[0]), 1);
-		dens_samps_x.insert( dens_samps_x.end(), zero.begin(), zero.end() );
-		dens_samps_z.insert( dens_samps_z.end(), zero.begin(), zero.end() );
+		dens_samps_x.push_back( 0.0 );
+		dens_samps_z.push_back( 0.0 );
 		if(type[0] == 2.0){
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 			L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
