@@ -671,10 +671,12 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	int ind2 = 0;
 	
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
-	for(int j=0; j<(step-1); j++){
+	int unifind =0;
+	for(int j=0; j<1000; j++){
 		NumericVector subset(1, 0.0);
 		ind2 = 0;
-		while(bxs(ind-1-ind2,1) >= (dens_samps_x[j] - offset[0]) ){
+		unifind = round(R::runif(0.0,1.0)*size);
+		while(bxs(ind-1-ind2,1) >= (dens_samps_x[unifind] - offset[0]) ){
 			subset[ind2] = bxs(ind-1-ind2,0);
 			ind2 = ind2+1;
 			subset = grow(subset);
@@ -684,11 +686,11 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		}
 		randsetslo[0] = subset[0]; randsetshi[0] = subset[ind2-1];
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-			plausestrux[0] = plausestrux[0]+(1.0/(step-1.0));
+			plausestrux[0] = plausestrux[0]+(1.0/1000.0);
 		}
 		for(int i=0; i<500; i++){
 			if(   (bx_seq[i] >= randsetslo[0]) & (bx_seq[i] <= randsetshi[0])   ){
-				plausesx[i] = plausesx[i]+(1.0/(step-1.0));
+				plausesx[i] = plausesx[i]+(1.0/1000.0);
 			}
 		}
 	}
@@ -696,10 +698,12 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	ind2 = 0;
 	offset[0] = dens_samps_z[step - 1] - bzs(ind-1,1);
 	
-	for(int j=0; j<(step-1); j++){
+	unifind =0;
+	for(int j=0; j<1000; j++){
 		NumericVector subset(1, 0.0);
 		ind2 = 0;
-		while(bzs(ind-1-ind2,1) >= (dens_samps_z[j] - offset[0]) ){
+		unifind = round(R::runif(0.0,1.0)*size);
+		while(bzs(ind-1-ind2,1) >= (dens_samps_z[unifind] - offset[0]) ){
 			subset[ind2] = bzs(ind-1-ind2,0);
 			ind2 = ind2+1;
 			subset = grow(subset);
@@ -709,11 +713,11 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		}
 		randsetslo[0] = subset[0]; randsetshi[0] = subset[ind2-1];
 		if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
-			plausestruz[0] = plausestruz[0]+(1.0/(step-1.0));
+			plausestruz[0] = plausestruz[0]+(1.0/1000.0);
 		}
 		for(int i=0; i<500; i++){
 			if(   (bz_seq[i] >= randsetslo[0]) & (bz_seq[i] <= randsetshi[0])   ){
-				plausesz[i] = plausesz[i]+(1.0/(step-1.0));
+				plausesz[i] = plausesz[i]+(1.0/1000.0);
 			}
 		}
 	}
