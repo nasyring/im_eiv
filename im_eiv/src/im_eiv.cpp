@@ -675,7 +675,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 	int unifind =0;
 	for(int j=0; j<size; j++){
-		randsetslo[0] = bx_s[size-1]; randsetshi[0] = bx_s[0];
+		randsetslo[0] = bx_s[(size-1)]; randsetshi[0] = bx_s[0];
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*(step-1));
 		while(bxs(ind-1-ind2,1) >= (dens_samps_x[unifind] - offset[0]) ){
@@ -694,11 +694,11 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	}
 	
 	ind2 = 0;
-	offset[0] = dens_samps_z[step - 1] - bzs(ind-1,1);
+	offset[0] = dens_samps_z[(step - 1)] - bzs((ind-1),1);
 	
 	unifind =0;
 	for(int j=0; j<size; j++){
-		randsetslo[0] = bz_s[size-1]; randsetshi[0] = bz_s[0];
+		randsetslo[0] = bz_s[(size-1)]; randsetshi[0] = bz_s[0];
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*(step-1));
 		while(bzs(ind-1-ind2,1) >= (dens_samps_z[unifind] - offset[0]) ){
