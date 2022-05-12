@@ -597,8 +597,10 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		V3[0] = std::sqrt(V3[0]);
 		dens_samps_x[step] = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[0], 0.0, 1.0, 1);
 		dens_samps_z[step] = dens_samps_x[ind] + R::dnorm(Z1[0], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[0], 0.0, std::sqrt(1.0/n[0]), 1);
-		dens_samps_x.push_back( 0.0 );
-		dens_samps_z.push_back( 0.0 );
+		if(ind  < (size-1)){
+			dens_samps_x.push_back( 0.0 );
+			dens_samps_z.push_back( 0.0 );
+		}	
 		if(type[0] == 2.0){
 			NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 			L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
@@ -682,11 +684,11 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 			ind2 = ind2+1;
 		}
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-			plausestrux[0] = plausestrux[0]+(1.0/(size-1.0));
+			plausestrux[0] = plausestrux[0]+(1.0/size);
 		}
 		for(int i=0; i<500; i++){
 			if(   (bx_seq[i] >= randsetslo[0]) & (bx_seq[i] <= randsetshi[0])   ){
-				plausesx[i] = plausesx[i]+(1.0/(size-1.0));
+				plausesx[i] = plausesx[i]+(1.0/size);
 			}
 		}
 	}
@@ -705,11 +707,11 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 			ind2 = ind2+1;
 		}
 		if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
-			plausestruz[0] = plausestruz[0]+(1.0/(size-1.0));
+			plausestruz[0] = plausestruz[0]+(1.0/size);
 		}
 		for(int i=0; i<500; i++){
 			if(   (bz_seq[i] >= randsetslo[0]) & (bz_seq[i] <= randsetshi[0])   ){
-				plausesz[i] = plausesz[i]+(1.0/(size-1.0));
+				plausesz[i] = plausesz[i]+(1.0/size);
 			}
 		}
 	}
