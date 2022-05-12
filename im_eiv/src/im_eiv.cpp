@@ -672,7 +672,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	
 	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 	int unifind =0;
-	for(int j=0; j<1000; j++){
+	for(int j=0; j<size; j++){
 		randsetslo[0] = 0.0; randsetshi[0] = 0.0;
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*(step-1));
@@ -682,11 +682,11 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 			ind2 = ind2+1;
 		}
 		if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-			plausestrux[0] = plausestrux[0]+(1.0/1000.0);
+			plausestrux[0] = plausestrux[0]+(1.0/(size-1.0));
 		}
 		for(int i=0; i<500; i++){
 			if(   (bx_seq[i] >= randsetslo[0]) & (bx_seq[i] <= randsetshi[0])   ){
-				plausesx[i] = plausesx[i]+(1.0/1000.0);
+				plausesx[i] = plausesx[i]+(1.0/(size-1.0));
 			}
 		}
 	}
@@ -695,7 +695,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	offset[0] = dens_samps_z[step - 1] - bzs(ind-1,1);
 	
 	unifind =0;
-	for(int j=0; j<1000; j++){
+	for(int j=0; j<size; j++){
 		randsetslo[0] = 0.0; randsetshi[0] = 0.0;
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*(step-1));
@@ -705,11 +705,11 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 			ind2 = ind2+1;
 		}
 		if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
-			plausestruz[0] = plausestruz[0]+(1.0/1000.0);
+			plausestruz[0] = plausestruz[0]+(1.0/(size-1.0));
 		}
 		for(int i=0; i<500; i++){
 			if(   (bz_seq[i] >= randsetslo[0]) & (bz_seq[i] <= randsetshi[0])   ){
-				plausesz[i] = plausesz[i]+(1.0/1000.0);
+				plausesz[i] = plausesz[i]+(1.0/(size-1.0));
 			}
 		}
 	}
