@@ -328,15 +328,15 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 			}
 			index1 = index1+1;
 		}
-		if(offset > 0.0){
+		if(offset[0] > 0.0){
 			
 		NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 		for(int j=0; j<39999; j++){
 			randsetslo[0] = Rcpp::max(bxs);randsetshi[0] = Rcpp::min(bxs);
 			for(int i=0; i<39999; i++){
 				if((samples(i,3)>0) & (samples(i,4)>0) & (samples(i,6)>(samples(j,6)-offset[0]))){
-					randsetslo[0] = std::min(randsetslo[0], (samples(i,0));
-					randsetshi[0] = std::max(randsetshi[0], (samples(i,0));
+					randsetslo[0] = std::min(randsetslo[0], samples(i,0));
+					randsetshi[0] = std::max(randsetshi[0], samples(i,0));
 				}
 			}
 			if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
@@ -356,8 +356,8 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 			randsetslo[0] = Rcpp::max(bxs);randsetshi[0] = Rcpp::min(bxs);
 			for(int i=0; i<(40000-j-1); i++){
 				if((samples(i+j+1,3)>0) & (samples(i+j+1,4)>0)){
-					randsetslo[0] = std::min(randsetslo[0], (samples(i+j+1,0));
-					randsetshi[0] = std::max(randsetshi[0], (samples(i+j+1,0));
+					randsetslo[0] = std::min(randsetslo[0], samples(i+j+1,0));
+					randsetshi[0] = std::max(randsetshi[0], samples(i+j+1,0));
 				}
 			}
 			if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
@@ -382,15 +382,15 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 			}
 			index1 = index1+1;
 		}
-		if(offset > 0.0){
+		if(offset[0] > 0.0){
 		
 		NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 		for(int j=0; j<39999; j++){
 			randsetslo[0] = Rcpp::max(bzs);randsetshi[0] = Rcpp::min(bzs);
 			for(int i=0; i<39999; i++){
 				if((samples(i,3)>0) & (samples(i,4)>0) & (samples(i,5)>(samples(j,5)-offset[0]))){
-					randsetslo[0] = std::min(randsetslo[0], (samples(i,1));
-					randsetshi[0] = std::max(randsetshi[0], (samples(i,1));
+					randsetslo[0] = std::min(randsetslo[0], samples(i,1));
+					randsetshi[0] = std::max(randsetshi[0], samples(i,1));
 				}
 			}
 			if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
@@ -410,8 +410,8 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 			randsetslo[0] = Rcpp::max(bzs);randsetshi[0] = Rcpp::min(bzs);
 			for(int i=0; i<(40000-j-1); i++){
 				if((samples(i+j+1,3)>0) & (samples(i+j+1,4)>0)){
-					randsetslo[0] = std::min(randsetslo[0], (samples(i+j+1,1));
-					randsetshi[0] = std::max(randsetshi[0], (samples(i+j+1,1));
+					randsetslo[0] = std::min(randsetslo[0], samples(i+j+1,1));
+					randsetshi[0] = std::max(randsetshi[0], samples(i+j+1,1));
 				}
 			}
 			if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
