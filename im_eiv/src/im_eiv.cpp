@@ -592,7 +592,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector bx_s(size, 0.0); NumericVector bz_s(size, 0.0);
 	int ind = 0; int step = 0;
 	while(ind < size){
-		if(ind > 0){
+		if(step > 0){
 			dens_samps_x.push_back( 0.0 );
 			dens_samps_z.push_back( 0.0 );	
 		}
@@ -717,8 +717,6 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	}
 		
 	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = bxs, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("step") = step, Rcpp::Named("dens_samps_x") = dens_samps_x, Rcpp::Named("dens_samps_z") = dens_samps_z);		
-
-	//	result = Rcpp::List::create(Rcpp::Named("samples_bx") = bxs, Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("step") = step);		
 
 	return result;
 	
