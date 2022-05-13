@@ -318,7 +318,7 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 	}else {
 		samples = sortmat(samples,6);
 		bool offcheck = true;
-		NumericVector offset(1.0,0.0);
+		NumericVector offset(1,0.0);
 		int index1 = 0;
 		while(offcheck){
 			if((samples(39999-index1,3)<0) || (samples(39999-index1,4)<0)){
@@ -738,7 +738,7 @@ Rcpp::List plauscontourMCMC2(NumericVector par, NumericVector stat, NumericVecto
 	}else {
 		samples = sortmat(samples,6);
 		bool offcheck = true;
-		NumericVector offset(1.0,0.0);
+		NumericVector offset(1,0.0);
 		int index1 = 0;
 		while(offcheck){
 			if((samples(39999-index1,3)<0) || (samples(39999-index1,4)<0)){
