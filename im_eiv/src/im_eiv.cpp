@@ -18,7 +18,7 @@ Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector
 	NumericVector check(1, 0.0);
 	NumericVector tempdens(1,0.0);
 	NumericVector uu(1,0.0);
-	NumericVector ct(3,0.0);
+	NumericVector ct(5,0.0);
 	NumericVector bx(1,0.0); bx[0] = par[0];
 	NumericVector bz(1,0.0); bz[0] = par[1];
 	NumericVector mux(1,0.0); mux[0] = par[2];
@@ -438,7 +438,7 @@ Rcpp::List plauscontourMCMC2(NumericVector par, NumericVector stat, NumericVecto
 	NumericVector check(1, 0.0);
 	NumericVector tempdens(1,0.0);
 	NumericVector uu(1,0.0);
-	NumericVector ct(3,0.0);
+	NumericVector ct(5,0.0);
 	NumericVector bx(1,0.0); bx[0] = par[0];
 	NumericVector bz(1,0.0); bz[0] = par[1];
 	NumericVector mux(1,0.0); mux[0] = par[2];
