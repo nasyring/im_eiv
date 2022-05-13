@@ -679,16 +679,16 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		randsetslo[0] = bx_s[(size-1)]; randsetshi[0] = bx_s[0];
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*(step-1));
-		comp = (bxs(ind2,1) < (dens_samps_x[unifind] - offset[0]))
+		comp = (bxs(ind2,1) < (dens_samps_x[unifind] - offset[0]));
 		while(comp & (ind2 < (ind - 1))){
-			ind2 = ind2 + 1	
-			comp = (bxs(ind2,1) < (dens_samps_x[unifind] - offset[0]))
+			ind2 = ind2 + 1	;
+			comp = (bxs(ind2,1) < (dens_samps_x[unifind] - offset[0]));
 		}
 		NumericVector subset(size - ind2, 0.0);
 		for(int i = 0; i < (size - ind2); i++){
 			subset[i] = bxs(ind2+i,0);	
 		}
-		randsetlo = Rcpp::min(subset);  randsethi = Rcpp::max(subset); 
+		randsetslo = Rcpp::min(subset);  randsetshi = Rcpp::max(subset); 
 		/*while((bxs(ind-1-ind2,1) >= (dens_samps_x[unifind] - offset[0])) & (ind2 < ind) ){
 			randsetslo[0] = std::min(randsetslo[0], bxs(ind-1-ind2,0));
 			randsetshi[0] = std::max(randsetshi[0], bxs(ind-1-ind2,0));
@@ -712,16 +712,16 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		randsetslo[0] = bz_s[(size-1)]; randsetshi[0] = bz_s[0];
 		ind2 = 0;
 		unifind = round(R::runif(0.0,1.0)*(step-1));
-		comp = (bzs(ind2,1) < (dens_samps_z[unifind] - offset[0]))
+		comp = (bzs(ind2,1) < (dens_samps_z[unifind] - offset[0]));
 		while(comp & (ind2 < (ind - 1))){
-			ind2 = ind2 + 1	
-			comp = (bzs(ind2,1) < (dens_samps_z[unifind] - offset[0]))
+			ind2 = ind2 + 1	;
+			comp = (bzs(ind2,1) < (dens_samps_z[unifind] - offset[0]));
 		}
 		NumericVector subset(size - ind2, 0.0);
 		for(int i = 0; i < (size - ind2); i++){
 			subset[i] = bzs(ind2+i,0);	
 		}
-		randsetlo = Rcpp::min(subset);  randsethi = Rcpp::max(subset); 
+		randsetslo = Rcpp::min(subset);  randsetshi = Rcpp::max(subset); 
 		/*while((bzs(ind-1-ind2,1) >= (dens_samps_z[unifind] - offset[0]) ) & (ind2 < ind)  ){
 			randsetslo[0] = std::min(randsetslo[0], bzs(ind-1-ind2,0));
 			randsetshi[0] = std::max(randsetshi[0], bzs(ind-1-ind2,0));
