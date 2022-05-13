@@ -688,7 +688,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		for(int i = 0; i < (size - ind2); i++){
 			subset[i] = bxs(ind2+i,0);	
 		}
-		randsetslo = Rcpp::min(subset);  randsetshi = Rcpp::max(subset); 
+		randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
 		/*while((bxs(ind-1-ind2,1) >= (dens_samps_x[unifind] - offset[0])) & (ind2 < ind) ){
 			randsetslo[0] = std::min(randsetslo[0], bxs(ind-1-ind2,0));
 			randsetshi[0] = std::max(randsetshi[0], bxs(ind-1-ind2,0));
@@ -721,7 +721,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		for(int i = 0; i < (size - ind2); i++){
 			subset[i] = bzs(ind2+i,0);	
 		}
-		randsetslo = Rcpp::min(subset);  randsetshi = Rcpp::max(subset); 
+		randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
 		/*while((bzs(ind-1-ind2,1) >= (dens_samps_z[unifind] - offset[0]) ) & (ind2 < ind)  ){
 			randsetslo[0] = std::min(randsetslo[0], bzs(ind-1-ind2,0));
 			randsetshi[0] = std::max(randsetshi[0], bzs(ind-1-ind2,0));
