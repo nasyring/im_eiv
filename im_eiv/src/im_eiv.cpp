@@ -848,7 +848,155 @@ Rcpp::List plauscontourMCMC2(NumericVector par, NumericVector stat, NumericVecto
 	result = Rcpp::List::create(Rcpp::Named("rate") = ct, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz, Rcpp::Named("samples") = samples,Rcpp::Named("unifs_hi") = unifs_hi,Rcpp::Named("unifs_lo") = unifs_lo,Rcpp::Named("bxs") = bxs,Rcpp::Named("bzs") = bzs, Rcpp::Named("dim") = dim);		
 	}
 	return result;
-}								 
+}	
+
+
+Rcpp::List plauscontourMCMC(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector propsd, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz,NumericVector bxseq, NumericVector sxseq, NumericVector lenseq, NumericVector plbxseq, NumericVector plbzseq, NumericVector lenplseq, NumericVector se2) {
+
+	List result;
+	Rcpp::Function sortmat("sortmat");
+	int size = round(sampsize[0]);
+	int L = round(lenseq[0]);  	int pL = round(lenseq[0]);
+	
+	NumericVector s11(1,0.0); s11[0] = stat[0];
+	NumericVector s12(1,0.0); s12[0] = stat[1];	
+	NumericVector s22(1,0.0); s22[0] = stat[2];
+	NumericVector ybar(1,0.0); ybar[0] = stat[3];
+	NumericVector wbar(1,0.0); wbar[0] = stat[4];
+	
+	// Generate MC sample of aux rvs Z1, Z2, V2
+
+	NumericVector V2(size,0.0); V2 = Rcpp::rnorm(size,0.0,1.0);
+	NumericVector V1(1,0.0); 
+	NumericVector V3(1,0.0); 
+	NumericVector Z1(size,0.0); Z1 = Rcpp::rnorm(size,0.0,std::sqrt(1.0/n[0]));
+	NumericVector Z2(size,0.0); Z2 = Rcpp::rnorm(size,0.0,std::sqrt(1.0/n[0]));
+	
+	// for grid of (bxseq, sxseq) values generate (V1, omega) r.v.'s by MCMC 
+	
+	NumericVector denscurr(1,0.0); NumericVector densprop(1,0.0);
+	NumericVector omega(1,0.0); NumericVector c(1,0.0); NumericVector L110(1,0.0); NumericVector L220(1,0.0); NumericVector dL110(1,0.0); NumericVector dL220(1,0.0);
+	NumericVector dV10(1,0.0); NumericVector dV30(1,0.0);
+	NumericVector sampcurr(1,0.0); NumericVector sampprop(1,0.0);
+	
+	NumericVector zeroes4(size*4, 0.0);
+	NumericVector densx(1,0.0); NumericVector densz(1,0.0); NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); NumericMatrix samples(size,4, zeroes4.begin());
+	
+	NumericVector maxplausesx(pL, 0.0); NumericVector maxplausesz(pL, 0.0); NumericVector maxplausx(1, 0.0); NumericVector maxplausz(1, 0.0);
+	
+	int ind = 0; 
+	NumericVector unif(1,0.0);
+	
+	for(int i = 0; i < L; i++){
+		for(int j = 0; j < L; j++){
+			L110[0] = std::sqrt(se2[0] + bxseq[i]*bxseq[i]*sxseq[j]);
+			L220[0] = std::sqrt(sxseq[j]/del[0] - std::pow(sxseq[j]*bxseq[i],2.0)/std::pow(L11[0],2.0))
+			dL110[0] = bxseq[i]*sxseq[j]/L110[0];
+			dL220[0] = (std::pow(bxseq[i]*sxseq[j], 3.0) - bxseq[i]*std::pow(sxseq[j]*L11[0],2.0))/(std::pow(L11[0],4.0)*L22[0]);
+			dV10[0] = (-s11[0]/std::pow(L110[0],2.0)) * dL110[0];
+			dV30[0] = (-s22[0]/std::pow(L220[0],2.0)) * dL220[0];;
+			c[0] = -dV30[0]/dV10[0];
+			sampcurr[0] = n[0] - 3.0;
+			omega[0] = (c[0] * s11[0]/L110[0]) + (s22[0]/L220[0]);
+			denscurr[0] = R::dchisq(sampcurr[0], n[0] - 2.0, 1) + R::dchisq(omega[0]-c[0]*sampcurr[0], n[0] - 3.0, 1);
+			ind = 0; 
+			while(ind < size){
+				sampprop[0] = R::rnorm(sampcurr[0], propsd[0]);
+				if(((omega[0]-c[0]*sampprop[0]) > 0.0) & (sampprop[0] > 0.0)){
+					densprop[0] = R::dchisq(sampprop[0], n[0] - 2.0, 1) + R::dchisq(omega[0]-c[0]*sampprop[0], n[0] - 3.0, 1);
+					unif[0] = R::runif(0.0,1.0);
+				}else {
+					unif[0] = 2.0;	densprop[0] = denscurr[0];
+				}
+				if(unif[0] < std::exp(densprop[0] - denscurr[0])){
+					V1[0] = std::sqrt(sampprop[0]); V3[0] = std::sqrt(omega[0]-c[0]*sampprop[0]);
+					denscurr[0] = densprop[0];
+					sampcurr[0] = sampprop[0];
+					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
+					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector se(1,0.0);NumericVector mux(1,0.0);
+					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[ind]*L22[0])/V1[0]; 
+					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
+					bx[0] = L11[0]*L12[0]/sx[0];
+					se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
+					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
+					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
+					if((se[0] > 0.0) & (sx[0]>0.0)){
+						bxs[ind] = bx[0]; 
+						bzs[ind] = bz[0]; 
+						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; 
+						samples(ind,2) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);	
+						samples(ind,3) = samples(ind,2) + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
+						ind = ind+1;
+					}
+				}
+			}
+			
+			// Compute plausibility
+			
+			NumericVector plausesx(pL,0.0);
+			NumericVector plausestrux(1,0.0);
+			NumericVector plausesz(pL,0.0);
+			NumericVector plausestruz(1,0.0);
+			
+			samples = sortmat(samples,2);
+			NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
+			for(int k=0; k<(ind-1); k++){
+				NumericVector subset(ind-k-1, 0.0);
+				for(int l=0; l<(ind-k-1); l++){
+					subset[l] = samples(l+k+1,0);	
+				}
+				if(ind-j-1>1){
+					std::sort(subset.begin(), subset.end());
+				}
+				randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-k-2];
+				if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
+					plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
+				}
+				for(int l=0; l<pL; l++){
+					if(   (bxseq[l] >= randsetslo[0]) & (bxseq[l] <= randsetshi[0])   ){
+						plausesx[l] = plausesx[l]+(1.0/(ind-1.0));
+					}
+				}
+			}
+			maxplausx[0] = std::max(maxplausx[0], plausestrux[0]);
+			for(int l=0; l<pL; l++){
+				maxplausesx[l] = std::max(maxplausesx[l], plausesx[l]);
+			}			
+
+			samples = sortmat(samples,3);
+			randsetslo(1,0.0); randsetshi(1,0.0);
+			for(int k=0; k<(ind-1); k++){
+				NumericVector subset(ind-k-1, 0.0);
+				for(int l=0; l<(ind-k-1); l++){
+					subset[l] = samples(l+k+1,1);	
+				}
+				if(ind-k-1>1){
+					std::sort(subset.begin(), subset.end());
+				}
+				randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-k-2];
+				if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
+					plausestruz[0] = plausestruz[0]+(1.0/(ind-1.0));
+				}
+				for(int l=0; l<pL; l++){
+					if(   (bzseq[l] >= randsetslo[0]) & (bzseq[l] <= randsetshi[0])   ){
+						plausesz[l] = plausesz[l]+(1.0/(ind-1.0));
+					}
+				}
+			}
+			maxplausz[0] = std::max(maxplausz[0], plausestruz[0]);
+			for(int l=0; l<pL; l++){
+				maxplausesz[l] = std::max(maxplausesz[l], plausesz[l]);
+			}
+				
+		}
+	}
+			
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = maxplausx, Rcpp::Named("plauses_beta_x") = maxplausesx,   Rcpp::Named("plaus_beta_z") = maxplausz, Rcpp::Named("plauses_beta_z") = maxplausesz,  Rcpp::Named("samples") = samples);		
+
+	return result;
+	
+}
+
 
 
 Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq,NumericVector truebz, NumericVector bzseq, NumericVector randsettype) {
