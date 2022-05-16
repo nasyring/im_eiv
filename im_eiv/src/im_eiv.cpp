@@ -896,8 +896,12 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			dV10[0] = (-s11[0]/std::pow(L110[0],2.0)) * dL110[0];
 			dV30[0] = (-s22[0]/std::pow(L220[0],2.0)) * dL220[0];;
 			c[0] = -dV30[0]/dV10[0];
-			sampcurr[0] = n[0] - 3.0;
-			omega[0] = (c[0] * s11[0]/L110[0]) + (s22[0]/L220[0]);
+			omega[0] = (c[0] * s11[0]/L110[0]) + (s22[0]/L220[0]); 
+			if(omega[0] < 0.0){
+				sampcurr[0] = 2.0*omega[0]/c[0];
+			}else {
+				sampcurr[0] = 0.5*omega[0]/c[0];	
+			}
 			denscurr[0] = R::dchisq(sampcurr[0], n[0] - 2.0, 1) + R::dchisq(omega[0]-c[0]*sampcurr[0], n[0] - 3.0, 1);
 			ind = 0; 
 			while(ind < size){
