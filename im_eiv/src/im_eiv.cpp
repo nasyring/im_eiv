@@ -974,9 +974,8 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			std::sort(densx.begin(), densx.end()); std::sort(densz.begin(), densz.end());
 			
 			NumericVector offset(1,0.0);
-			offset[0] = densx[step - 1] - samples(ind-1,5);
-			
 			samples = sortmat(samples,5);
+			offset[0] = densx[step - 1] - samples(ind-1,5);
 			int unifind =0; int ind2 =0;
 			bool comp = true;
 			for(int k=0; k<size; k++){
@@ -994,11 +993,11 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				}
 				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
 				if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-					plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
+					plausestrux[0] = plausestrux[0]+(1.0/(ind));
 				}
 				for(int l=0; l<pL; l++){
 					if(   (plbxseq[l] >= randsetslo[0]) & (plbxseq[l] <= randsetshi[0])   ){
-						plausesx[l] = plausesx[l]+(1.0/(ind-1.0));
+						plausesx[l] = plausesx[l]+(1.0/(ind));
 					}
 				}
 			}
@@ -1008,9 +1007,10 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				maxplausesx[l] = std::max(maxplausesx[l], plausesx[l]);
 			}			
 
-			offset[0] = densz[step - 1] - samples(ind-1,6);
+			
 			
 			samples = sortmat(samples,6);
+			offset[0] = densz[step - 1] - samples(ind-1,6);
 			unifind =0; ind2 =0;
 			comp = true;
 			for(int k=0; k<size; k++){
@@ -1028,11 +1028,11 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				}
 				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
 				if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
-					plausestruz[0] = plausestruz[0]+(1.0/(ind-1.0));
+					plausestruz[0] = plausestruz[0]+(1.0/(ind));
 				}
 				for(int l=0; l<pL; l++){
 					if(   (plbzseq[l] >= randsetslo[0]) & (plbzseq[l] <= randsetshi[0])   ){
-						plausesz[l] = plausesz[l]+(1.0/(ind-1.0));
+						plausesz[l] = plausesz[l]+(1.0/(ind));
 					}
 				}
 			}
