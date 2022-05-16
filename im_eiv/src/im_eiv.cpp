@@ -954,7 +954,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			}
 			
 			// Compute plausibility
-			
+			/*
 			NumericVector plausesx(pL,0.0);
 			NumericVector plausestrux(1,0.0);
 			NumericVector plausesz(pL,0.0);
@@ -1009,7 +1009,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			for(int l=0; l<pL; l++){
 				maxplausesz[l] = std::max(maxplausesz[l], plausesz[l]);
 			}
-				
+			*/	
 		}
 	}
 			
