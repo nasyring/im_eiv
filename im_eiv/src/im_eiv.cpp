@@ -884,6 +884,9 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	
 	NumericVector maxplausesx(pL, 0.0); NumericVector maxplausesz(pL, 0.0); NumericVector maxplausx(1, 0.0); NumericVector maxplausz(1, 0.0);
 	
+	
+	
+	int step = 0;
 	int ind = 0; 
 	NumericVector unif(1,0.0);
 	
@@ -905,6 +908,9 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			denscurr[0] = R::dchisq(sampcurr[0]*sampcurr[0], n[0] - 2.0, 1) + R::dchisq(std::pow(omega[0]-c[0]*sampcurr[0],2.0), n[0] - 3.0, 1);
 			ind = 0; 
 			while(ind < size){
+				if(step > 0){
+					densx.pushback(0.0);	densz.pushback(0.0);
+				}
 				sampprop[0] = R::rnorm(sampcurr[0], propsd[0]);
 				if(((omega[0]-c[0]*sampprop[0]) > 0.0) & (sampprop[0] > 0.0)){
 					densprop[0] = R::dchisq(sampprop[0]*sampprop[0], n[0] - 2.0, 1) + R::dchisq(std::pow(omega[0]-c[0]*sampprop[0],2.0), n[0] - 3.0, 1);
@@ -917,38 +923,43 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					denscurr[0] = densprop[0];
 					sampcurr[0] = sampprop[0];
 					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector se(1,0.0);NumericVector mux(1,0.0);
+					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);
 					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[ind]*L22[0])/V1[0]; 
 					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
 					bx[0] = L11[0]*L12[0]/sx[0];
-					se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
-					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
+  					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
-					bxs[ind] = bx[0]; 
-					bzs[ind] = bz[0]; 
-					samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
-					samples(ind,5) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);	
-					samples(ind,6) = samples(ind,2) + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
-					ind = ind+1;
+					densx[step] = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);
+					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
+					if((sx[0] > 0.0))
+						bxs[ind] = bx[0]; 
+						bzs[ind] = bz[0]; 
+						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se2[0]; 
+						samples(ind,5) = densx[step];	
+						samples(ind,6) = densz[step];
+						ind = ind+1;
+					}
 				}else {
-					V1[0] = std::sqrt(sampcurr[0]); V3[0] = std::sqrt(omega[0]-c[0]*sampcurr[0]);
+					V1[0] = sampcurr[0]; V3[0] = omega[0]-c[0]*sampcurr[0];
 					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector se(1,0.0);NumericVector mux(1,0.0);
+					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);
 					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[ind]*L22[0])/V1[0]; 
 					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
 					bx[0] = L11[0]*L12[0]/sx[0];
-					se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
-					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
+  					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
-
-					bxs[ind] = bx[0]; 
-					bzs[ind] = bz[0]; 
-					samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
-					samples(ind,5) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);	
-					samples(ind,6) = samples(ind,2) + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
-					ind = ind+1;
-						
+					densx[step] = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);
+					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
+					if((sx[0] > 0.0))
+						bxs[ind] = bx[0]; 
+						bzs[ind] = bz[0]; 
+						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se2[0]; 
+						samples(ind,5) = densx[step];	
+						samples(ind,6) = densz[step];
+						ind = ind+1;
+					}	
 				}
+				step = step + 1;
 			}
 			
 			// Compute plausibility
