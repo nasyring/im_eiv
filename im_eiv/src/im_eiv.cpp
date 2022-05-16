@@ -890,7 +890,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	for(int i = 0; i < L; i++){
 		for(int j = 0; j < L; j++){
 			L110[0] = std::sqrt(se2[0] + bxseq[i]*bxseq[i]*sxseq[j]);
-			L220[0] = std::sqrt(sxseq[j]/del[0] - std::pow(sxseq[j]*bxseq[i],2.0)/std::pow(L110[0],2.0))
+			L220[0] = std::sqrt(sxseq[j]/del[0] - std::pow(sxseq[j]*bxseq[i],2.0)/std::pow(L110[0],2.0));
 			dL110[0] = bxseq[i]*sxseq[j]/L110[0];
 			dL220[0] = (std::pow(bxseq[i]*sxseq[j], 3.0) - bxseq[i]*std::pow(sxseq[j]*L110[0],2.0))/(std::pow(L110[0],4.0)*L220[0]);
 			dV10[0] = (-s11[0]/std::pow(L110[0],2.0)) * dL110[0];
