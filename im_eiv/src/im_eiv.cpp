@@ -909,7 +909,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			ind = 0; 
 			while(ind < size){
 				if(step > 0){
-					densx.pushback(0.0);	densz.pushback(0.0);
+					densx.push_back(0.0);	densz.push_back(0.0);
 				}
 				sampprop[0] = R::rnorm(sampcurr[0], propsd[0]);
 				if(((omega[0]-c[0]*sampprop[0]) > 0.0) & (sampprop[0] > 0.0)){
