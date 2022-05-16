@@ -931,7 +931,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
 					densx[step] = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);
 					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
-					if((sx[0] > 0.0))
+					if(sx[0] > 0.0){
 						bxs[ind] = bx[0]; 
 						bzs[ind] = bz[0]; 
 						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se2[0]; 
@@ -950,7 +950,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
 					densx[step] = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);
 					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
-					if((sx[0] > 0.0))
+					if(sx[0] > 0.0){
 						bxs[ind] = bx[0]; 
 						bzs[ind] = bz[0]; 
 						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se2[0]; 
