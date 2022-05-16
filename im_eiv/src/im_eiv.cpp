@@ -883,7 +883,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	NumericVector densx(1,0.0); NumericVector densz(1,0.0); NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); NumericMatrix samples(size,7, zeroes7.begin());
 	
 	NumericVector maxplausesx(pL, 0.0); NumericVector maxplausesz(pL, 0.0); NumericVector maxplausx(1, 0.0); NumericVector maxplausz(1, 0.0);
-	
+	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
 	
 	
 	int step = 0;
@@ -973,7 +973,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			
 			std::sort(densx.begin(), densx.end()); std::sort(densz.begin(), densz.end());
 			
-			NumericVector offsetx(1,0.0);
+			
 			samples = sortmat(samples,5);
 			offsetx[0] = densx[step - 1] - samples(ind-1,5);
 			int unifind =0; int ind2 =0;
@@ -1008,7 +1008,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			}			
 
 			
-			NumericVector offsetz(1,0.0);
+			
 			samples = sortmat(samples,6);
 			offsetz[0] = densz[step - 1] - samples(ind-1,6);
 			unifind =0; ind2 =0;
