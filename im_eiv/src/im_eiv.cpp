@@ -982,7 +982,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				randsetslo[0] = bxs[(size-1)]; randsetshi[0] = bxs[0];
 				ind2 = 0;
 				unifind = round(R::runif(0.0,1.0)*(step-1));
-				comp = (samples(ind,5) < (densx[unifind] - offsetx[0]));
+				comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
 				while(comp & (ind2 < (ind - 1))){
 					ind2 = ind2 + 1	;
 					comp = (samples(ind,5) < (densx[unifind] - offsetx[0]));
@@ -1017,7 +1017,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				randsetslo[0] = bzs[(size-1)]; randsetshi[0] = bzs[0];
 				ind2 = 0;
 				unifind = round(R::runif(0.0,1.0)*(step-1));
-				comp = (samples(ind,6) < (densz[unifind] - offsetz[0]));
+				comp = (samples(ind2,6) < (densz[unifind] - offsetz[0]));
 				while(comp & (ind2 < (ind - 1))){
 					ind2 = ind2 + 1	;
 					comp = (samples(ind,6) < (densz[unifind] - offsetz[0]));
