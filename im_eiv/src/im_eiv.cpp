@@ -890,9 +890,9 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	for(int i = 0; i < L; i++){
 		for(int j = 0; j < L; j++){
 			L110[0] = std::sqrt(se2[0] + bxseq[i]*bxseq[i]*sxseq[j]);
-			L220[0] = std::sqrt(sxseq[j]/del[0] - std::pow(sxseq[j]*bxseq[i],2.0)/std::pow(L11[0],2.0))
+			L220[0] = std::sqrt(sxseq[j]/del[0] - std::pow(sxseq[j]*bxseq[i],2.0)/std::pow(L110[0],2.0))
 			dL110[0] = bxseq[i]*sxseq[j]/L110[0];
-			dL220[0] = (std::pow(bxseq[i]*sxseq[j], 3.0) - bxseq[i]*std::pow(sxseq[j]*L11[0],2.0))/(std::pow(L11[0],4.0)*L22[0]);
+			dL220[0] = (std::pow(bxseq[i]*sxseq[j], 3.0) - bxseq[i]*std::pow(sxseq[j]*L110[0],2.0))/(std::pow(L110[0],4.0)*L220[0]);
 			dV10[0] = (-s11[0]/std::pow(L110[0],2.0)) * dL110[0];
 			dV30[0] = (-s22[0]/std::pow(L220[0],2.0)) * dL220[0];;
 			c[0] = -dV30[0]/dV10[0];
@@ -953,7 +953,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
 				}
 				for(int l=0; l<pL; l++){
-					if(   (bxseq[l] >= randsetslo[0]) & (bxseq[l] <= randsetshi[0])   ){
+					if(   (plbxseq[l] >= randsetslo[0]) & (plbxseq[l] <= randsetshi[0])   ){
 						plausesx[l] = plausesx[l]+(1.0/(ind-1.0));
 					}
 				}
@@ -978,7 +978,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					plausestruz[0] = plausestruz[0]+(1.0/(ind-1.0));
 				}
 				for(int l=0; l<pL; l++){
-					if(   (bzseq[l] >= randsetslo[0]) & (bzseq[l] <= randsetshi[0])   ){
+					if(   (plbzseq[l] >= randsetslo[0]) & (plbzseq[l] <= randsetshi[0])   ){
 						plausesz[l] = plausesz[l]+(1.0/(ind-1.0));
 					}
 				}
