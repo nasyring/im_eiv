@@ -879,8 +879,8 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	NumericVector dV10(1,0.0); NumericVector dV30(1,0.0);
 	NumericVector sampcurr(1,0.0); NumericVector sampprop(1,0.0);
 	
-	NumericVector zeroes4(size*4, 0.0);
-	NumericVector densx(1,0.0); NumericVector densz(1,0.0); NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); NumericMatrix samples(size,4, zeroes4.begin());
+	NumericVector zeroes7(size*7, 0.0);
+	NumericVector densx(1,0.0); NumericVector densz(1,0.0); NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); NumericMatrix samples(size,7, zeroes7.begin());
 	
 	NumericVector maxplausesx(pL, 0.0); NumericVector maxplausesz(pL, 0.0); NumericVector maxplausx(1, 0.0); NumericVector maxplausz(1, 0.0);
 	
@@ -924,14 +924,12 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
 					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
-					if((se[0] > 0.0) & (sx[0]>0.0)){
-						bxs[ind] = bx[0]; 
-						bzs[ind] = bz[0]; 
-						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; 
-						samples(ind,2) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);	
-						samples(ind,3) = samples(ind,2) + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
-						ind = ind+1;
-					}
+					bxs[ind] = bx[0]; 
+					bzs[ind] = bz[0]; 
+					samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
+					samples(ind,5) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);	
+					samples(ind,6) = samples(ind,2) + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
+					ind = ind+1;
 				}else {
 					V1[0] = std::sqrt(sampcurr[0]); V3[0] = std::sqrt(omega[0]-c[0]*sampcurr[0]);
 					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
@@ -942,14 +940,14 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
 					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
-					if((se[0] > 0.0) & (sx[0]>0.0)){
-						bxs[ind] = bx[0]; 
-						bzs[ind] = bz[0]; 
-						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; 
-						samples(ind,2) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);	
-						samples(ind,3) = samples(ind,2) + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
-						ind = ind+1;
-					}	
+
+					bxs[ind] = bx[0]; 
+					bzs[ind] = bz[0]; 
+					samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
+					samples(ind,5) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);	
+					samples(ind,6) = samples(ind,2) + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
+					ind = ind+1;
+						
 				}
 			}
 			
