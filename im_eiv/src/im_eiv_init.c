@@ -5,7 +5,12 @@
 
 /* .Call calls */
 
+Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector propsd, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz,NumericVector bxseq, NumericVector sxseq, NumericVector lenseq, NumericVector plbxseq, NumericVector plbzseq, NumericVector lenplseq, NumericVector se2) {
+
+
+
 extern SEXP imeiv_plauscontourMCMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP imeiv_plauscontourMCMCcond(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourMCMC2(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourMC2(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -14,6 +19,7 @@ extern SEXP imeiv_grow(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourMCMC", (DL_FUNC) &imeiv_plauscontourMCMC, 11},
+    {"imeiv_plauscontourMCMCcond", (DL_FUNC) &imeiv_plauscontourMCMCcond, 15},
     {"imeiv_plauscontourMCMC2", (DL_FUNC) &imeiv_plauscontourMCMC2, 11},
     {"imeiv_plauscontourMC", (DL_FUNC) &imeiv_plauscontourMC, 10},
     {"imeiv_plauscontourMC2", (DL_FUNC) &imeiv_plauscontourMC2, 10},
