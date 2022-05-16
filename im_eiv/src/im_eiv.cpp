@@ -1008,7 +1008,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			}			
 
 			
-			NumericVector offsetx(1,0.0);
+			NumericVector offsetz(1,0.0);
 			samples = sortmat(samples,6);
 			offsetz[0] = densz[step - 1] - samples(ind-1,6);
 			unifind =0; ind2 =0;
