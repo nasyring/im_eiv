@@ -25,7 +25,7 @@ BEGIN_RCPP
 END_RCPP
 }
 
-Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector propsd, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz,NumericVector bxseq, NumericVector sxseq, NumericVector lenseq, NumericVector plbxseq, NumericVector plbzseq, NumericVector lenplseq, NumericVector se2) {
+Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector propsd, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz,NumericVector bxseq, NumericVector sxseq, NumericVector lenseq, NumericVector plbxseq, NumericVector plbzseq, NumericVector lenplseq, NumericVector se2);
 RcppExport SEXP imeiv_plauscontourMCMCcond(SEXP sampsizeSEXP, SEXP statSEXP, SEXP delSEXP, SEXP propsdSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP truebxSEXP, SEXP truebzSEXP, SEXP bxseqSEXP, SEXP sxseqSEXP, SEXP lenseqSEXP, SEXP plbxseqSEXP, SEXP plbzseqSEXP, SEXP lenplseqSEXP, SEXP se2SEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
