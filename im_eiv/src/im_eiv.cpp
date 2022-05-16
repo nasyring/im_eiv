@@ -851,7 +851,7 @@ Rcpp::List plauscontourMCMC2(NumericVector par, NumericVector stat, NumericVecto
 }	
 
 
-Rcpp::List plauscontourMCMC(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector propsd, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz,NumericVector bxseq, NumericVector sxseq, NumericVector lenseq, NumericVector plbxseq, NumericVector plbzseq, NumericVector lenplseq, NumericVector se2) {
+Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector propsd, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz,NumericVector bxseq, NumericVector sxseq, NumericVector lenseq, NumericVector plbxseq, NumericVector plbzseq, NumericVector lenplseq, NumericVector se2) {
 
 	List result;
 	Rcpp::Function sortmat("sortmat");
