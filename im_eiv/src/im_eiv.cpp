@@ -985,7 +985,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
 				while(comp & (ind2 < (ind - 1))){
 					ind2 = ind2 + 1	;
-					comp = (samples(ind,5) < (densx[unifind] - offsetx[0]));
+					comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
 				}
 				NumericVector subset(size - ind2, 0.0);
 				for(int l = 0; l < (size - ind2); l++){
@@ -993,11 +993,11 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				}
 				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
 				if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-					plausestrux[0] = plausestrux[0]+(1.0/(ind));
+					plausestrux[0] = plausestrux[0]+(1.0/(size));
 				}
 				for(int l=0; l<pL; l++){
 					if(   (plbxseq[l] >= randsetslo[0]) & (plbxseq[l] <= randsetshi[0])   ){
-						plausesx[l] = plausesx[l]+(1.0/(ind));
+						plausesx[l] = plausesx[l]+(1.0/(size));
 					}
 				}
 			}
@@ -1020,7 +1020,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				comp = (samples(ind2,6) < (densz[unifind] - offsetz[0]));
 				while(comp & (ind2 < (ind - 1))){
 					ind2 = ind2 + 1	;
-					comp = (samples(ind,6) < (densz[unifind] - offsetz[0]));
+					comp = (samples(ind2,6) < (densz[unifind] - offsetz[0]));
 				}
 				NumericVector subset(size - ind2, 0.0);
 				for(int l = 0; l < (size - ind2); l++){
@@ -1028,11 +1028,11 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				}
 				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
 				if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
-					plausestruz[0] = plausestruz[0]+(1.0/(ind));
+					plausestruz[0] = plausestruz[0]+(1.0/(size));
 				}
 				for(int l=0; l<pL; l++){
 					if(   (plbzseq[l] >= randsetslo[0]) & (plbzseq[l] <= randsetshi[0])   ){
-						plausesz[l] = plausesz[l]+(1.0/(ind));
+						plausesz[l] = plausesz[l]+(1.0/(size));
 					}
 				}
 			}
