@@ -932,6 +932,24 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						samples(ind,3) = samples(ind,2) + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
 						ind = ind+1;
 					}
+				}else {
+					V1[0] = std::sqrt(sampcurr[0]); V3[0] = std::sqrt(omega[0]-c[0]*sampcurr[0]);
+					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
+					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector se(1,0.0);NumericVector mux(1,0.0);
+					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[ind]*L22[0])/V1[0]; 
+					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
+					bx[0] = L11[0]*L12[0]/sx[0];
+					se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
+					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
+					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
+					if((se[0] > 0.0) & (sx[0]>0.0)){
+						bxs[ind] = bx[0]; 
+						bzs[ind] = bz[0]; 
+						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; 
+						samples(ind,2) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);	
+						samples(ind,3) = samples(ind,2) + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
+						ind = ind+1;
+					}	
 				}
 			}
 			
