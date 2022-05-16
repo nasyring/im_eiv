@@ -25,6 +25,31 @@ BEGIN_RCPP
 END_RCPP
 }
 
+Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector propsd, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz,NumericVector bxseq, NumericVector sxseq, NumericVector lenseq, NumericVector plbxseq, NumericVector plbzseq, NumericVector lenplseq, NumericVector se2) {
+RcppExport SEXP imeiv_plauscontourMCMCcond(SEXP sampsizeSEXP, SEXP statSEXP, SEXP delSEXP, SEXP propsdSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP truebxSEXP, SEXP truebzSEXP, SEXP bxseqSEXP, SEXP sxseqSEXP, SEXP lenseqSEXP, SEXP plbxseqSEXP, SEXP plbzseqSEXP, SEXP lenplseqSEXP, SEXP se2SEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type sampsize(sampsizeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type propsd(propsdSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type truebx(truebxSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type truebz(truebzSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bxseq(bxseqSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sxseq(sxseqSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lenseq(lenseqSEXP);  
+    Rcpp::traits::input_parameter< NumericVector >::type plbxseq(plbxseqSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type plbzseq(plbzseqSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lenplseq(lenplseqSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type se2(se2SEXP);  
+    __result = Rcpp::wrap(plauscontourMCMCcond( sampsize ,  stat ,   del ,  propsd , type , n , truebx , truebz , bxseq , sxseq , lenseq , plbxseq , plbzseq , lenplseq , se2 ));
+    return __result;
+END_RCPP
+}
+
 Rcpp::List plauscontourMCMC2(NumericVector par, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector bxseq, NumericVector truebz, NumericVector bzseq, NumericVector randsettype);
 RcppExport SEXP imeiv_plauscontourMCMC2(SEXP parSEXP, SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP propsdSEXP, SEXP truebxSEXP , SEXP bxseqSEXP, SEXP truebzSEXP, SEXP bzseqSEXP, SEXP randsettypeSEXP){
 BEGIN_RCPP
