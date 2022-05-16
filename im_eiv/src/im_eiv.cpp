@@ -902,18 +902,18 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			}else {
 				sampcurr[0] = 0.5*omega[0]/c[0];	
 			}
-			denscurr[0] = R::dchisq(sampcurr[0], n[0] - 2.0, 1) + R::dchisq(omega[0]-c[0]*sampcurr[0], n[0] - 3.0, 1);
+			denscurr[0] = R::dchisq(sampcurr[0]*sampcurr[0], n[0] - 2.0, 1) + R::dchisq(std::pow(omega[0]-c[0]*sampcurr[0],2.0), n[0] - 3.0, 1);
 			ind = 0; 
 			while(ind < size){
 				sampprop[0] = R::rnorm(sampcurr[0], propsd[0]);
 				if(((omega[0]-c[0]*sampprop[0]) > 0.0) & (sampprop[0] > 0.0)){
-					densprop[0] = R::dchisq(sampprop[0], n[0] - 2.0, 1) + R::dchisq(omega[0]-c[0]*sampprop[0], n[0] - 3.0, 1);
+					densprop[0] = R::dchisq(sampprop[0]*sampprop[0], n[0] - 2.0, 1) + R::dchisq(std::pow(omega[0]-c[0]*sampprop[0],2.0), n[0] - 3.0, 1);
 					unif[0] = R::runif(0.0,1.0);
 				}else {
 					unif[0] = 2.0;	densprop[0] = denscurr[0];
 				}
 				if(unif[0] < std::exp(densprop[0] - denscurr[0])){
-					V1[0] = std::sqrt(sampprop[0]); V3[0] = std::sqrt(omega[0]-c[0]*sampprop[0]);
+					V1[0] = sampprop[0]; V3[0] = omega[0]-c[0]*sampprop[0];
 					denscurr[0] = densprop[0];
 					sampcurr[0] = sampprop[0];
 					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
