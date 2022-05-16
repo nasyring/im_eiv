@@ -963,23 +963,36 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			}
 			
 			// Compute plausibility
-			/*
+			
 			NumericVector plausesx(pL,0.0);
 			NumericVector plausestrux(1,0.0);
 			NumericVector plausesz(pL,0.0);
 			NumericVector plausestruz(1,0.0);
-			
-			samples = sortmat(samples,2);
+			std::sort(bxs.begin(), bxs.end());std::sort(bzs.begin(), bzs.end());
 			NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
-			for(int k=0; k<(ind-1); k++){
-				NumericVector subset(ind-k-1, 0.0);
-				for(int l=0; l<(ind-k-1); l++){
-					subset[l] = samples(l+k+1,0);	
+			
+			std::sort(densx.begin(), densx.end()); std::sort(densz.begin(), densz.end());
+			
+			NumericVector offset(1,0.0);
+			offset[0] = densx[step - 1] - samples(ind-1,5);
+			
+			samples = sortmat(samples,5);
+			int unifind =0; int ind2 =0;
+			bool comp = true;
+			for(int k=0; k<size; k++){
+				randsetslo[0] = bxs[(size-1)]; randsetshi[0] = bxs[0];
+				ind2 = 0;
+				unifind = round(R::runif(0.0,1.0)*(step-1));
+				comp = (samples(ind,5) < (densx[unifind] - offset[0]));
+				while(comp & (ind2 < (ind - 1))){
+					ind2 = ind2 + 1	;
+					comp = (samples(ind,5) < (densx[unifind] - offset[0]));
 				}
-				if(ind-j-1>1){
-					std::sort(subset.begin(), subset.end());
+				NumericVector subset(size - ind2, 0.0);
+				for(int l = 0; l < (size - ind2); l++){
+					subset[l] = samples(ind2+l,0);	
 				}
-				randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-k-2];
+				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
 				if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
 					plausestrux[0] = plausestrux[0]+(1.0/(ind-1.0));
 				}
@@ -989,22 +1002,31 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					}
 				}
 			}
+			
 			maxplausx[0] = std::max(maxplausx[0], plausestrux[0]);
 			for(int l=0; l<pL; l++){
 				maxplausesx[l] = std::max(maxplausesx[l], plausesx[l]);
 			}			
 
-			samples = sortmat(samples,3);
-			randsetslo(1,0.0); randsetshi(1,0.0);
-			for(int k=0; k<(ind-1); k++){
-				NumericVector subset(ind-k-1, 0.0);
-				for(int l=0; l<(ind-k-1); l++){
-					subset[l] = samples(l+k+1,1);	
+			offset[0] = densz[step - 1] - samples(ind-1,6);
+			
+			samples = sortmat(samples,6);
+			unifind =0; ind2 =0;
+			comp = true;
+			for(int k=0; k<size; k++){
+				randsetslo[0] = bzs[(size-1)]; randsetshi[0] = bzs[0];
+				ind2 = 0;
+				unifind = round(R::runif(0.0,1.0)*(step-1));
+				comp = (samples(ind,6) < (densz[unifind] - offset[0]));
+				while(comp & (ind2 < (ind - 1))){
+					ind2 = ind2 + 1	;
+					comp = (samples(ind,6) < (densz[unifind] - offset[0]));
 				}
-				if(ind-k-1>1){
-					std::sort(subset.begin(), subset.end());
+				NumericVector subset(size - ind2, 0.0);
+				for(int l = 0; l < (size - ind2); l++){
+					subset[l] = samples(ind2+l,1);	
 				}
-				randsetslo[0] = subset[0]; randsetshi[0] = subset[ind-k-2];
+				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
 				if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
 					plausestruz[0] = plausestruz[0]+(1.0/(ind-1.0));
 				}
@@ -1014,11 +1036,12 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					}
 				}
 			}
+			
 			maxplausz[0] = std::max(maxplausz[0], plausestruz[0]);
 			for(int l=0; l<pL; l++){
 				maxplausesz[l] = std::max(maxplausesz[l], plausesz[l]);
 			}
-			*/	
+				
 		}
 	}
 			
