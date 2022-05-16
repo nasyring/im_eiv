@@ -973,19 +973,19 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			
 			std::sort(densx.begin(), densx.end()); std::sort(densz.begin(), densz.end());
 			
-			NumericVector offset(1,0.0);
+			NumericVector offsetx(1,0.0);
 			samples = sortmat(samples,5);
-			offset[0] = densx[step - 1] - samples(ind-1,5);
+			offsetx[0] = densx[step - 1] - samples(ind-1,5);
 			int unifind =0; int ind2 =0;
 			bool comp = true;
 			for(int k=0; k<size; k++){
 				randsetslo[0] = bxs[(size-1)]; randsetshi[0] = bxs[0];
 				ind2 = 0;
 				unifind = round(R::runif(0.0,1.0)*(step-1));
-				comp = (samples(ind,5) < (densx[unifind] - offset[0]));
+				comp = (samples(ind,5) < (densx[unifind] - offsetx[0]));
 				while(comp & (ind2 < (ind - 1))){
 					ind2 = ind2 + 1	;
-					comp = (samples(ind,5) < (densx[unifind] - offset[0]));
+					comp = (samples(ind,5) < (densx[unifind] - offsetx[0]));
 				}
 				NumericVector subset(size - ind2, 0.0);
 				for(int l = 0; l < (size - ind2); l++){
@@ -1008,19 +1008,19 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			}			
 
 			
-			
+			NumericVector offsetx(1,0.0);
 			samples = sortmat(samples,6);
-			offset[0] = densz[step - 1] - samples(ind-1,6);
+			offsetz[0] = densz[step - 1] - samples(ind-1,6);
 			unifind =0; ind2 =0;
 			comp = true;
 			for(int k=0; k<size; k++){
 				randsetslo[0] = bzs[(size-1)]; randsetshi[0] = bzs[0];
 				ind2 = 0;
 				unifind = round(R::runif(0.0,1.0)*(step-1));
-				comp = (samples(ind,6) < (densz[unifind] - offset[0]));
+				comp = (samples(ind,6) < (densz[unifind] - offsetz[0]));
 				while(comp & (ind2 < (ind - 1))){
 					ind2 = ind2 + 1	;
-					comp = (samples(ind,6) < (densz[unifind] - offset[0]));
+					comp = (samples(ind,6) < (densz[unifind] - offsetz[0]));
 				}
 				NumericVector subset(size - ind2, 0.0);
 				for(int l = 0; l < (size - ind2); l++){
@@ -1045,7 +1045,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 		}
 	}
 			
-	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = maxplausx, Rcpp::Named("plauses_beta_x") = maxplausesx,   Rcpp::Named("plaus_beta_z") = maxplausz, Rcpp::Named("plauses_beta_z") = maxplausesz,  Rcpp::Named("samples") = samples,  Rcpp::Named("densx") = densx,  Rcpp::Named("densz") = densz);		
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = maxplausx, Rcpp::Named("plauses_beta_x") = maxplausesx,   Rcpp::Named("plaus_beta_z") = maxplausz, Rcpp::Named("plauses_beta_z") = maxplausesz,  Rcpp::Named("samples") = samples,  Rcpp::Named("densx") = densx,  Rcpp::Named("densz") = densz,  Rcpp::Named("offsetx") = offsetx,  Rcpp::Named("offsetz") = offsetz);		
 
 	return result;
 	
