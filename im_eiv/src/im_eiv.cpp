@@ -856,7 +856,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	List result;
 	Rcpp::Function sortmat("sortmat");
 	int size = round(sampsize[0]);
-	int L = round(lenseq[0]);  	int pL = round(lenseq[0]);
+	int L = round(lenseq[0]);  	int pL = round(lenplseq[0]);
 	
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
