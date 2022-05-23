@@ -875,7 +875,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	// for grid of (bxseq, sxseq) values generate (V1, omega) r.v.'s by MCMC 
 	
 	NumericVector denscurr(1,0.0); NumericVector densprop(1,0.0);
-	NumericVector omega(1,0.0); NumericVector c(1,0.0); NumericVector L110(1,0.0); NumericVector L220(1,0.0); NumericVector dL110(1,0.0); NumericVector dL220(1,0.0);
+	NumericVector omega(1,0.0); NumericVector c1(1,0.0); NumericVector c2(1,0.0); NumericVector L110(1,0.0); NumericVector L220(1,0.0); NumericVector dL110(1,0.0); NumericVector dL220(1,0.0);
 	NumericVector dV10(1,0.0); NumericVector dV30(1,0.0);
 	NumericVector sampcurr(1,0.0); NumericVector sampprop(1,0.0);
 	
