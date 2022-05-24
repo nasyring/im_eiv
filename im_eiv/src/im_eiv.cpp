@@ -890,6 +890,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	int step = 0;
 	int ind = 0; 
 	NumericVector unif(1,0.0);
+	NumericMatrix samples(size,7, zeroes7.begin());
 	
 	for(int i = 0; i < L; i++){
 		for(int j = 0; j < L; j++){
@@ -909,7 +910,6 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			eta[0] = c1[0]*V10[0] + c2[0]*V20[0] + V30[0]; 
 			denscurr[0] = log(std::abs(1.0/c2[0]))+R::dchisq(sampcurr[0]*sampcurr[0], n[0] - 2.0, 1) + R::dchisq(sampcurr[1]*sampcurr[1], n[0] - 3.0, 1) + R::dnorm((eta[0] -c1[0]*sampcurr[0] - sampcurr[1])/c2[0], 0.0, 1.0, 1);
 			ind = 0; step = 0;
-			NumericMatrix samples(size,7, zeroes7.begin());
 			NumericVector densx(1,0.0); NumericVector densz(1,0.0); NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); 
 			sampcurr[0] = std::sqrt(n[0]); sampcurr[1] = std::sqrt(n[0]);
 			while(ind < size){
@@ -928,18 +928,19 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					denscurr[0] = densprop[0];
 					sampcurr[0] = sampprop[0]; sampcurr[1] = sampprop[1];
 					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);
+					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
 					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
 					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
 					bx[0] = L11[0]*L12[0]/sx[0];
   					mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
+					se[0] = (L11[0]*L11[0])-bx[0]*bx[0]*sx[0];
 					densx[step] = denscurr[0];
 					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
 					if(sx[0] > 0.0){
 						bxs[ind] = bx[0]; 
 						bzs[ind] = bz[0]; 
-						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se2[0]; 
+						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
 						samples(ind,5) = densx[step];	
 						samples(ind,6) = densz[step];
 						ind = ind+1;
@@ -947,18 +948,19 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				}else {
 					V1[0] = sampcurr[0]; V3[0] = sampcurr[1]; V2[0] = (eta[0]-c1[0]*V1[0]-V3[0])/c2[0];
 					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);
+					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
 					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
 					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
 					bx[0] = L11[0]*L12[0]/sx[0];
   					mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
+					se[0] = (L11[0]*L11[0])-bx[0]*bx[0]*sx[0];
 					densx[step] = denscurr[0];
 					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
 					if(sx[0] > 0.0){
 						bxs[ind] = bx[0]; 
 						bzs[ind] = bz[0]; 
-						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se2[0]; 
+						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
 						samples(ind,5) = densx[step];	
 						samples(ind,6) = densz[step];
 						ind = ind+1;
@@ -1050,7 +1052,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 		}
 	}
 			
-	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = maxplausx, Rcpp::Named("plauses_beta_x") = maxplausesx,   Rcpp::Named("plaus_beta_z") = maxplausz, Rcpp::Named("plauses_beta_z") = maxplausesz);		
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = maxplausx, Rcpp::Named("plauses_beta_x") = maxplausesx,   Rcpp::Named("plaus_beta_z") = maxplausz, Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
 
 	return result;
 	
