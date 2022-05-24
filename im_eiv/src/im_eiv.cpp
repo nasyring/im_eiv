@@ -1041,9 +1041,6 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					subset[l] = samples(ind2+l,1);	
 				}
 				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
-				if(   (truebz[0] > randsetslo[0]) & (truebz[0] < randsetshi[0])   ){
-					plausestruz[0] = plausestruz[0]+(1.0/(size));
-				}
 				for(int l=0; l<pL; l++){
 					if(   (plbzseq[l] >= randsetslo[0]) & (plbzseq[l] <= randsetshi[0])   ){
 						plausesz[l] = plausesz[l]+(1.0/(size));
@@ -1051,7 +1048,6 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				}
 			}
 			
-			maxplausz[0] = std::max(maxplausz[0], plausestruz[0]);
 			for(int l=0; l<pL; l++){
 				maxplausesz[l] = std::max(maxplausesz[l], plausesz[l]);
 			}
