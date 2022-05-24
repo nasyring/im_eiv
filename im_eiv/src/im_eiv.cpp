@@ -931,11 +931,19 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 						NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
 						NumericVector t(1,0.0);
-						t[0] = std::pow(s11[0]/V1[0], 2.0)-se2[0];
+						/*t[0] = std::pow(s11[0]/V1[0], 2.0)-se2[0];
 						bx[0] = (V1[0]*t[0]/std::sqrt(se2[0] + t[0]))/(s12[0] - s22[0]*V2[0]/V3[0]);
 						sx[0] = t[0]/std::pow(bx[0], 2.0);
 						L11[0] = std::sqrt(se2[0] + bx[0]*bx[0]*sx[0]);
 						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
+						L12[0] = bx[0]*sx[0]/L11[0];*/
+						L11[0] = s11[0]/V1[0];
+						sx[0] = std::pow(s22[0]*L11[0], 2.0)/((std::pow(L11[0], 2.0)*(1.0+1.0/del[0])) -se2[0]);
+						bx[0] = std::sqrt((std::pow(s22[0], 2.0)-sx[0]/del[0])*std::pow(L11[0]/sx[0], 2.0));
+						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
+						if(s12[0] < V2[0]*L22[0]){
+							bx[0] = -bx[0];	
+						}
 						L12[0] = bx[0]*sx[0]/L11[0];
 						mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
 						bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
@@ -958,11 +966,19 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 						NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
 						NumericVector t(1,0.0);
-						t[0] = std::pow(s11[0]/V1[0], 2.0)-se2[0];
+						/*t[0] = std::pow(s11[0]/V1[0], 2.0)-se2[0];
 						bx[0] = (V1[0]*t[0]/std::sqrt(se2[0] + t[0]))/(s12[0] - s22[0]*V2[0]/V3[0]);
 						sx[0] = t[0]/std::pow(bx[0], 2.0);
 						L11[0] = std::sqrt(se2[0] + bx[0]*bx[0]*sx[0]);
 						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
+						L12[0] = bx[0]*sx[0]/L11[0];*/
+						L11[0] = s11[0]/V1[0];
+						sx[0] = std::pow(s22[0]*L11[0], 2.0)/((std::pow(L11[0], 2.0)*(1.0+1.0/del[0])) -se2[0]);
+						bx[0] = std::sqrt((std::pow(s22[0], 2.0)-sx[0]/del[0])*std::pow(L11[0]/sx[0], 2.0));
+						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
+						if(s12[0] < V2[0]*L22[0]){
+							bx[0] = -bx[0];	
+						}
 						L12[0] = bx[0]*sx[0]/L11[0];
 						mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
 						bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
