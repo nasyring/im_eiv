@@ -883,7 +883,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	
 	NumericVector zeroes7(size*10, 0.0);
 	
-	NumericVector maxplausesx(pL, 0.0); NumericVector maxplausesz(pL, 0.0); NumericVector maxplausx(1, 0.0); NumericVector maxplausz(1, 0.0);
+	NumericVector maxplausesx(L, 0.0); NumericVector maxplausesz(pL, 0.0); 
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
 	
 	
@@ -985,10 +985,8 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			
 			// Compute plausibility
 			
-			NumericVector plausesx(pL,0.0);
-			NumericVector plausestrux(1,0.0);
+			NumericVector plausesx(L,0.0);
 			NumericVector plausesz(pL,0.0);
-			NumericVector plausestruz(1,0.0);
 			std::sort(bxs.begin(), bxs.end());std::sort(bzs.begin(), bzs.end());
 			NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 			
@@ -1013,20 +1011,15 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					subset[l] = samples(ind2+l,0);	
 				}
 				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
-				if(   (truebx[0] > randsetslo[0]) & (truebx[0] < randsetshi[0])   ){
-					plausestrux[0] = plausestrux[0]+(1.0/(size));
-				}
-				for(int l=0; l<pL; l++){
-					if(   (plbxseq[l] >= randsetslo[0]) & (plbxseq[l] <= randsetshi[0])   ){
-						plausesx[l] = plausesx[l]+(1.0/(size));
+				for(int l=0; l<L; l++){
+					if(   (bxseq[i] >= randsetslo[0]) & (bxseq[i] <= randsetshi[0])   ){
+						plausesx[i] = plausesx[i]+(1.0/(size));
 					}
 				}
 			}
 			
-			maxplausx[0] = std::max(maxplausx[0], plausestrux[0]);
-			for(int l=0; l<pL; l++){
-				maxplausesx[l] = std::max(maxplausesx[l], plausesx[l]);
-			}			
+			maxplausesx[i] = std::max(maxplausesx[i], plausesx[i]);
+						
 
 			
 			
@@ -1066,7 +1059,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 		}
 	}
 			
-	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = maxplausx, Rcpp::Named("plauses_beta_x") = maxplausesx,   Rcpp::Named("plaus_beta_z") = maxplausz, Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
+	result = Rcpp::List::create(Rcpp::Named("plauses_beta_x") = maxplausesx,  Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
 
 	return result;
 	
