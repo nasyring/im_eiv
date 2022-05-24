@@ -881,7 +881,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	NumericVector V10(1,0.0); NumericVector V20(1,0.0); NumericVector V30(1,0.0); NumericVector eta(1,0.0);
 	NumericVector sampcurr(2,0.0); NumericVector sampprop(2,0.0);
 	
-	NumericVector zeroes7(size*8, 0.0);
+	NumericVector zeroes7(size*10, 0.0);
 	
 	NumericVector maxplausesx(pL, 0.0); NumericVector maxplausesz(pL, 0.0); NumericVector maxplausx(1, 0.0); NumericVector maxplausz(1, 0.0);
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
@@ -890,7 +890,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	int step = 0;
 	int ind = 0; 
 	NumericVector unif(1,0.0);
-	NumericMatrix samples(size,8, zeroes7.begin());
+	NumericMatrix samples(size,10, zeroes7.begin());
 	
 	for(int i = 0; i < L; i++){
 		for(int j = 0; j < L; j++){
@@ -930,13 +930,12 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						sampcurr[0] = sampprop[0]; sampcurr[1] = sampprop[1];
 						NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 						NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
-						sx[0] = std::pow(s22[0]/V3[0], 2.0)/(1/del[0] - ((std::pow(s11[0]/V1[0], 2.0)-se2[0]) / (std::pow(s11[0]/V1[0], 2.0))));
-						bx[0] = std::sqrt((std::pow(s11[0]/V1[0], 2.0)-se2[0]) / sx[0]);
+						NumericVector t(1,0.0);
+						t[0] = std::pow(s11[0]/V1[0], 2.0)-se2[0];
+						bx[0] = (V1[0]*t[0]/std::sqrt(se2[0] + t[0]))/(s12[0] - s22[0]*V2[0]/V3[0]);
+						sx[0] = t[0]/std::pow(bx[0], 2.0);
 						L11[0] = std::sqrt(se2[0] + bx[0]*bx[0]*sx[0]);
 						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
-						if(s12[0] < L22[0]*V2[0]){
-							bx[0] = -bx[0];	
-						}
 						L12[0] = bx[0]*sx[0]/L11[0];
 						mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
 						bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
@@ -948,7 +947,9 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
 						samples(ind,5) = densx[step];	
 						samples(ind,6) = densz[step];
-						samples(ind,7) = s12[0] - L12[0]*V1[0] - L22[0]*V2[0];
+						samples(ind,7) = s11[0] - L11[0]*V1[0];
+						samples(ind,8) = s12[0] - L12[0]*V1[0] - L22[0]*V2[0];
+						samples(ind,9) = s22[0] - L22[0]*V3[0];
 						ind = ind+1;
 					}
 				}else {
@@ -956,13 +957,12 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					if(std::pow(s11[0]/V1[0], 2.0)>se2[0]){
 						NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 						NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
-						sx[0] = std::pow(s22[0]/V3[0], 2.0)/(1/del[0] - ((std::pow(s11[0]/V1[0], 2.0)-se2[0]) / (std::pow(s11[0]/V1[0], 2.0))));
-						bx[0] = std::sqrt((std::pow(s11[0]/V1[0], 2.0)-se2[0]) / sx[0]);
+						NumericVector t(1,0.0);
+						t[0] = std::pow(s11[0]/V1[0], 2.0)-se2[0];
+						bx[0] = (V1[0]*t[0]/std::sqrt(se2[0] + t[0]))/(s12[0] - s22[0]*V2[0]/V3[0]);
+						sx[0] = t[0]/std::pow(bx[0], 2.0);
 						L11[0] = std::sqrt(se2[0] + bx[0]*bx[0]*sx[0]);
 						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
-						if(s12[0] < L22[0]*V2[0]){
-							bx[0] = -bx[0];	
-						}
 						L12[0] = bx[0]*sx[0]/L11[0];
 						mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
 						bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
@@ -974,7 +974,9 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
 						samples(ind,5) = densx[step];	
 						samples(ind,6) = densz[step];
-						samples(ind,7) = s12[0] - L12[0]*V1[0] - L22[0]*V2[0];
+						samples(ind,7) = s11[0] - L11[0]*V1[0];
+						samples(ind,8) = s12[0] - L12[0]*V1[0] - L22[0]*V2[0];
+						samples(ind,9) = s22[0] - L22[0]*V3[0];
 						ind = ind+1;
 					}	
 				}
