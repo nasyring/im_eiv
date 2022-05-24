@@ -1011,10 +1011,8 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					subset[l] = samples(ind2+l,0);	
 				}
 				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
-				for(int l=0; l<L; l++){
-					if(   (bxseq[i] >= randsetslo[0]) & (bxseq[i] <= randsetshi[0])   ){
-						plausesx[i] = plausesx[i]+(1.0/(size));
-					}
+				if(   (bxseq[i] >= randsetslo[0]) & (bxseq[i] <= randsetshi[0])   ){
+					plausesx[i] = plausesx[i]+(1.0/(size));
 				}
 			}
 			
