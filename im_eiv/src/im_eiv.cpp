@@ -938,8 +938,8 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
 						L12[0] = bx[0]*sx[0]/L11[0];*/
 						L11[0] = s11[0]/V1[0];
-						sx[0] = std::pow(s22[0]*L11[0], 2.0)/((std::pow(L11[0], 2.0)*(1.0+1.0/del[0])) -se2[0]);
-						bx[0] = std::sqrt((std::pow(s22[0], 2.0)-sx[0]/del[0])*std::pow(L11[0]/sx[0], 2.0));
+						sx[0] = -std::pow(s22[0]*L11[0], 2.0)/((std::pow(L11[0], 2.0)*(1.0-1.0/del[0])) -se2[0]);
+						bx[0] = std::sqrt((-std::pow(s22[0], 2.0)+sx[0]/del[0])*std::pow(L11[0]/sx[0], 2.0));
 						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
 						if(s12[0] < V2[0]*L22[0]){
 							bx[0] = -bx[0];	
@@ -973,8 +973,8 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
 						L12[0] = bx[0]*sx[0]/L11[0];*/
 						L11[0] = s11[0]/V1[0];
-						sx[0] = std::pow(s22[0]*L11[0], 2.0)/((std::pow(L11[0], 2.0)*(1.0+1.0/del[0])) -se2[0]);
-						bx[0] = std::sqrt((std::pow(s22[0], 2.0)-sx[0]/del[0])*std::pow(L11[0]/sx[0], 2.0));
+						sx[0] = -std::pow(s22[0]*L11[0], 2.0)/((std::pow(L11[0], 2.0)*(1.0-1.0/del[0])) -se2[0]);
+						bx[0] = std::sqrt((-std::pow(s22[0], 2.0)+sx[0]/del[0])*std::pow(L11[0]/sx[0], 2.0));
 						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
 						if(s12[0] < V2[0]*L22[0]){
 							bx[0] = -bx[0];	
