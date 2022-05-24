@@ -866,8 +866,8 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	
 	// Generate MC sample of aux rvs Z1, Z2, V2
 
-	NumericVector V2(size,0.0); V2 = Rcpp::rnorm(size,0.0,1.0);
 	NumericVector V1(1,0.0); 
+	NumericVector V2(1,0.0);
 	NumericVector V3(1,0.0); 
 	NumericVector Z1(size,0.0); Z1 = Rcpp::rnorm(size,0.0,std::sqrt(1.0/n[0]));
 	NumericVector Z2(size,0.0); Z2 = Rcpp::rnorm(size,0.0,std::sqrt(1.0/n[0]));
@@ -875,9 +875,11 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	// for grid of (bxseq, sxseq) values generate (V1, omega) r.v.'s by MCMC 
 	
 	NumericVector denscurr(1,0.0); NumericVector densprop(1,0.0);
-	NumericVector omega(1,0.0); NumericVector c1(1,0.0); NumericVector c2(1,0.0); NumericVector L110(1,0.0); NumericVector L220(1,0.0); NumericVector dL110(1,0.0); NumericVector dL220(1,0.0);
-	NumericVector dV10(1,0.0); NumericVector dV30(1,0.0);
-	NumericVector sampcurr(1,0.0); NumericVector sampprop(1,0.0);
+	NumericVector omega(1,0.0); NumericVector c1(1,0.0); NumericVector c2(1,0.0); NumericVector L110(1,0.0); NumericVector L220(1,0.0);NumericVector L120(1,0.0); 
+	NumericVector dL110bx(1,0.0); NumericVector dL220bx(1,0.0);NumericVector dL110sx(1,0.0); NumericVector dL220sx(1,0.0);NumericVector dL120bx(1,0.0);NumericVector dL120sx(1,0.0);
+	NumericVector dV10bx(1,0.0); NumericVector dV30bx(1,0.0);NumericVector dV10sx(1,0.0); NumericVector dV30sx(1,0.0);NumericVector dV20bx(1,0.0); NumericVector dV20sx(1,0.0);
+	NumericVector V10(1,0.0); NumericVector V20(1,0.0); NumericVector V30(1,0.0); NumericVector eta(1,0.0);
+	NumericVector sampcurr(2,0.0); NumericVector sampprop(2,0.0);
 	
 	NumericVector zeroes7(size*7, 0.0);
 	NumericVector densx(1,0.0); NumericVector densz(1,0.0); NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); NumericMatrix samples(size,7, zeroes7.begin());
@@ -893,43 +895,44 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	for(int i = 0; i < L; i++){
 		for(int j = 0; j < L; j++){
 			L110[0] = std::sqrt(se2[0] + bxseq[i]*bxseq[i]*sxseq[j]);
+			L120[0] = bxseq[i]*sxseq[j]/L110[0];
 			L220[0] = std::sqrt(sxseq[j]/del[0] - std::pow(sxseq[j]*bxseq[i],2.0)/std::pow(L110[0],2.0));
-			dL110[0] = bxseq[i]*sxseq[j]/L110[0];
-			dL220[0] = (std::pow(bxseq[i]*sxseq[j], 3.0) - bxseq[i]*std::pow(sxseq[j]*L110[0],2.0))/(std::pow(L110[0],4.0)*L220[0]);
-			dV10[0] = (-s11[0]/std::pow(L110[0],2.0)) * dL110[0];
-			dV30[0] = (-s22[0]/std::pow(L220[0],2.0)) * dL220[0];;
-			c[0] = -dV30[0]/dV10[0];
-			omega[0] = (c[0] * s11[0]/L110[0]) + (s22[0]/L220[0]); 
-			if(omega[0] < 0.0){
-				sampcurr[0] = 2.0*omega[0]/c[0];
-			}else {
-				sampcurr[0] = 0.5*omega[0]/c[0];	
-			}
-			denscurr[0] = R::dchisq(sampcurr[0]*sampcurr[0], n[0] - 2.0, 1) + R::dchisq(std::pow(omega[0]-c[0]*sampcurr[0],2.0), n[0] - 3.0, 1);
+			V10[0] = s11[0]/L110[0]; V30[0] = s22[0]/L220[0]; V20[0] = (s12[0] - L120[0]*V10[0])/L220[0];
+			dL110bx[0] = L120[0]; dL110sx[0] = bxseq[i]*bxseq[i]/(2.0*L110[0]);
+			dL120bx[0] = (sxseq[j] - std::pow(L120[0], 2.0))/L110[0]; dL120sx[0] = (bxseq[i]/L110[0])*(1.0 - 0.5*std::pow(L120[0], 2.0)/sxseq[j]);
+			dL220bx[0] = -L120[0]*dL120bx[0]/L220[0]; dL220sx[0] = -L120[0]*dL120sx[0]/L220[0];
+			dV10bx[0] = (-s11[0]/std::pow(L110[0],2.0)) * dL110bx[0];dV10sx[0] = (-s11[0]/std::pow(L110[0],2.0)) * dL110sx[0];
+			dV30bx[0] = (-s22[0]/std::pow(L220[0],2.0)) * dL220bx[0];dV30sx[0] = (-s22[0]/std::pow(L220[0],2.0)) * dL220sx[0];
+			dV20bx[0] = (-s12[0]/std::pow(L220[0],2.0)) * dL220bx[0] - (1.0/std::pow(L220[0],2.0))*( (dV10bx[0]*L120[0]+V10[0]*dL120bx[0])*L220[0] - dL220bx[0]*V10[0]*L120[0] );
+			dV20sx[0] = (-s12[0]/std::pow(L220[0],2.0)) * dL220sx[0] - (1.0/std::pow(L220[0],2.0))*( (dV10sx[0]*L120[0]+V10[0]*dL120sx[0])*L220[0] - dL220sx[0]*V10[0]*L120[0] );
+			c2[0] = (-dV30sx[0]+dV30bx[0]*dV10sx[0]/dV10bx[0])/((-dV20bx[0]/dV10bx[0])+dV20sx[0]);
+			c1[0] = (-c2[0]*dV20bx[0]-dV30bx[0])/dV10bx[0];
+			eta[0] = c1[0]*V10[0] + c2[0]*V20[0] + V30[0]; 
+			denscurr[0] = log(std::abs(1.0/c2[0]))+R::dchisq(sampcurr[0]*sampcurr[0], n[0] - 2.0, 1) + R::dchisq(sampcurr[1]*sampcurr[1], n[0] - 3.0, 1) + R::dnorm((eta[0] -c1[0]*sampcurr[0] - sampcurr[1])/c2[0], 0.0, 1.0, 1);
 			ind = 0; 
 			while(ind < size){
 				if(step > 0){
 					densx.push_back(0.0);	densz.push_back(0.0);
 				}
-				sampprop[0] = R::rnorm(sampcurr[0], propsd[0]);
-				if(((omega[0]-c[0]*sampprop[0]) > 0.0) & (sampprop[0] > 0.0)){
-					densprop[0] = R::dchisq(sampprop[0]*sampprop[0], n[0] - 2.0, 1) + R::dchisq(std::pow(omega[0]-c[0]*sampprop[0],2.0), n[0] - 3.0, 1);
+				sampprop[0] = R::rnorm(sampcurr[0], propsd[0]); sampprop[1] = R::rnorm(sampcurr[1], propsd[1]);
+				if((sampprop[0] > 0.0) & (sampprop[1] > 0.0)){
+					densprop[0] = log(std::abs(1.0/c2[0]))+R::dchisq(sampprop[0]*sampprop[0], n[0] - 2.0, 1) + R::dchisq(sampprop[1]*sampprop[1], n[0] - 3.0, 1) + R::dnorm((eta[0] -c1[0]*sampprop[0] - sampprop[1])/c2[0], 0.0, 1.0, 1);
 					unif[0] = R::runif(0.0,1.0);
 				}else {
 					unif[0] = 2.0;	densprop[0] = denscurr[0];
 				}
 				if(unif[0] < std::exp(densprop[0] - denscurr[0])){
-					V1[0] = sampprop[0]; V3[0] = omega[0]-c[0]*sampprop[0];
+					V1[0] = sampprop[0]; V3[0] = sampprop[1]; V2[0] = (eta[0]-c1[0]*V1[0]-V3[0])/c2[0];
 					denscurr[0] = densprop[0];
-					sampcurr[0] = sampprop[0];
+					sampcurr[0] = sampprop[0]; sampcurr[1] = sampprop[1];
 					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);
-					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[ind]*L22[0])/V1[0]; 
+					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
 					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
 					bx[0] = L11[0]*L12[0]/sx[0];
   					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
-					densx[step] = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);
+					densx[step] = denscurr[0];
 					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
 					if(sx[0] > 0.0){
 						bxs[ind] = bx[0]; 
@@ -940,15 +943,15 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						ind = ind+1;
 					}
 				}else {
-					V1[0] = sampcurr[0]; V3[0] = omega[0]-c[0]*sampcurr[0];
+					V1[0] = sampcurr[0]; V3[0] = sampcurr[1]; V2[0] = (eta[0]-c1[0]*V1[0]-V3[0])/c2[0];
 					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);
-					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[ind]*L22[0])/V1[0]; 
+					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
 					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
 					bx[0] = L11[0]*L12[0]/sx[0];
   					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
-					densx[step] = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[ind], 0.0, 1.0, 1);
+					densx[step] = denscurr[0];
 					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
 					if(sx[0] > 0.0){
 						bxs[ind] = bx[0]; 
