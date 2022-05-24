@@ -875,7 +875,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	// for grid of (bxseq, sxseq) values generate (V1, omega) r.v.'s by MCMC 
 	
 	NumericVector denscurr(1,0.0); NumericVector densprop(1,0.0);
-	NumericVector omega(1,0.0); NumericVector c1(1,0.0); NumericVector c2(1,0.0); NumericVector L110(1,0.0); NumericVector L220(1,0.0);NumericVector L120(1,0.0); 
+	NumericVector c1(1,0.0); NumericVector c2(1,0.0); NumericVector L110(1,0.0); NumericVector L220(1,0.0);NumericVector L120(1,0.0); 
 	NumericVector dL110bx(1,0.0); NumericVector dL220bx(1,0.0);NumericVector dL110sx(1,0.0); NumericVector dL220sx(1,0.0);NumericVector dL120bx(1,0.0);NumericVector dL120sx(1,0.0);
 	NumericVector dV10bx(1,0.0); NumericVector dV30bx(1,0.0);NumericVector dV10sx(1,0.0); NumericVector dV30sx(1,0.0);NumericVector dV20bx(1,0.0); NumericVector dV20sx(1,0.0);
 	NumericVector V10(1,0.0); NumericVector V20(1,0.0); NumericVector V30(1,0.0); NumericVector eta(1,0.0);
@@ -925,19 +925,24 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 				}
 				if(unif[0] < std::exp(densprop[0] - denscurr[0])){
 					V1[0] = sampprop[0]; V3[0] = sampprop[1]; V2[0] = (eta[0]-c1[0]*V1[0]-V3[0])/c2[0];
-					denscurr[0] = densprop[0];
-					sampcurr[0] = sampprop[0]; sampcurr[1] = sampprop[1];
-					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
-					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
-					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
-					bx[0] = L11[0]*L12[0]/sx[0];
-  					mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
-					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
-					se[0] = (L11[0]*L11[0])-bx[0]*bx[0]*sx[0];
-					densx[step] = denscurr[0];
-					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
-					if(sx[0] > 0.0){
+					if(std::pow(s11[0]/V1[0], 2.0)>se2[0]){
+						denscurr[0] = densprop[0];
+						sampcurr[0] = sampprop[0]; sampcurr[1] = sampprop[1];
+						NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
+						NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
+						sx[0] = std::pow(s22[0]/V3[0], 2.0)/(1/del[0] - ((std::pow(s11[0]/V1[0], 2.0)-se2[0]) / (std::pow(s11[0]/V1[0], 2.0))));
+						bx[0] = std::sqrt((std::pow(s11[0]/V1[0], 2.0)-se2[0]) / sx[0]);
+						L11[0] = std::sqrt(se2[0] + bx[0]*bx[0]*sx[0]);
+						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
+						if(s12[0] < L22[0]*V2[0]){
+							bx[0] = -bx[0];	
+						}
+						L12[0] = bx[0]*sx[0]/L11[0];
+						mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
+						bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
+						se[0] = (L11[0]*L11[0])-bx[0]*bx[0]*sx[0];
+						densx[step] = denscurr[0];
+						densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
 						bxs[ind] = bx[0]; 
 						bzs[ind] = bz[0]; 
 						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
@@ -947,17 +952,22 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					}
 				}else {
 					V1[0] = sampcurr[0]; V3[0] = sampcurr[1]; V2[0] = (eta[0]-c1[0]*V1[0]-V3[0])/c2[0];
-					NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-					NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
-					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
-					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
-					bx[0] = L11[0]*L12[0]/sx[0];
-  					mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
-					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
-					se[0] = (L11[0]*L11[0])-bx[0]*bx[0]*sx[0];
-					densx[step] = denscurr[0];
-					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
-					if(sx[0] > 0.0){
+					if(std::pow(s11[0]/V1[0], 2.0)>se2[0]){
+						NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
+						NumericVector sx(1,0.0);NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector se(1,0.0);
+						sx[0] = std::pow(s22[0]/V3[0], 2.0)/(1/del[0] - ((std::pow(s11[0]/V1[0], 2.0)-se2[0]) / (std::pow(s11[0]/V1[0], 2.0))));
+						bx[0] = std::sqrt((std::pow(s11[0]/V1[0], 2.0)-se2[0]) / sx[0]);
+						L11[0] = std::sqrt(se2[0] + bx[0]*bx[0]*sx[0]);
+						L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
+						if(s12[0] < L22[0]*V2[0]){
+							bx[0] = -bx[0];	
+						}
+						L12[0] = bx[0]*sx[0]/L11[0];
+						mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
+						bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
+						se[0] = (L11[0]*L11[0])-bx[0]*bx[0]*sx[0];
+						densx[step] = denscurr[0];
+						densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
 						bxs[ind] = bx[0]; 
 						bzs[ind] = bz[0]; 
 						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
