@@ -881,7 +881,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	NumericVector V10(1,0.0); NumericVector V20(1,0.0); NumericVector V30(1,0.0); NumericVector eta(1,0.0);
 	NumericVector sampcurr(2,0.0); NumericVector sampprop(2,0.0);
 	
-	NumericVector zeroes7(size*7, 0.0);
+	NumericVector zeroes7(size*8, 0.0);
 	
 	NumericVector maxplausesx(pL, 0.0); NumericVector maxplausesz(pL, 0.0); NumericVector maxplausx(1, 0.0); NumericVector maxplausz(1, 0.0);
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
@@ -890,7 +890,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	int step = 0;
 	int ind = 0; 
 	NumericVector unif(1,0.0);
-	NumericMatrix samples(size,7, zeroes7.begin());
+	NumericMatrix samples(size,8, zeroes7.begin());
 	
 	for(int i = 0; i < L; i++){
 		for(int j = 0; j < L; j++){
@@ -948,6 +948,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
 						samples(ind,5) = densx[step];	
 						samples(ind,6) = densz[step];
+						samples(ind,7) = s12[0] - L12[0]*V1[0] - L22[0]*V2[0];
 						ind = ind+1;
 					}
 				}else {
@@ -973,6 +974,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 						samples(ind,0) = bx[0]; samples(ind,1) = bz[0]; samples(ind,2) = mux[0]; samples(ind,3) = sx[0]; samples(ind,4) = se[0]; 
 						samples(ind,5) = densx[step];	
 						samples(ind,6) = densz[step];
+						samples(ind,7) = s12[0] - L12[0]*V1[0] - L22[0]*V2[0];
 						ind = ind+1;
 					}	
 				}
