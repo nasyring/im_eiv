@@ -882,7 +882,6 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	NumericVector sampcurr(2,0.0); NumericVector sampprop(2,0.0);
 	
 	NumericVector zeroes7(size*7, 0.0);
-	NumericVector densx(1,0.0); NumericVector densz(1,0.0); NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); NumericMatrix samples(size,7, zeroes7.begin());
 	
 	NumericVector maxplausesx(pL, 0.0); NumericVector maxplausesz(pL, 0.0); NumericVector maxplausx(1, 0.0); NumericVector maxplausz(1, 0.0);
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
@@ -909,7 +908,9 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			c1[0] = (-c2[0]*dV20bx[0]-dV30bx[0])/dV10bx[0];
 			eta[0] = c1[0]*V10[0] + c2[0]*V20[0] + V30[0]; 
 			denscurr[0] = log(std::abs(1.0/c2[0]))+R::dchisq(sampcurr[0]*sampcurr[0], n[0] - 2.0, 1) + R::dchisq(sampcurr[1]*sampcurr[1], n[0] - 3.0, 1) + R::dnorm((eta[0] -c1[0]*sampcurr[0] - sampcurr[1])/c2[0], 0.0, 1.0, 1);
-			ind = 0; 
+			ind = 0; step = 0;
+			NumericMatrix samples(size,7, zeroes7.begin());
+			NumericVector densx(1,0.0); NumericVector densz(1,0.0); NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); 
 			while(ind < size){
 				if(step > 0){
 					densx.push_back(0.0);	densz.push_back(0.0);
