@@ -931,7 +931,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
 					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
 					bx[0] = L11[0]*L12[0]/sx[0];
-  					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
+  					mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
 					densx[step] = denscurr[0];
 					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
@@ -950,7 +950,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 					L11[0] = s11[0]/V1[0]; L22[0] = s22[0]/V3[0]; L12[0] = (s12[0] - V2[0]*L22[0])/V1[0]; 
 					sx[0] = del[0]*(L22[0]*L22[0]+L12[0]*L12[0]);
 					bx[0] = L11[0]*L12[0]/sx[0];
-  					mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[ind];
+  					mux[0] = wbar[0] - L12[0]*Z1[ind]-L22[0]*Z2[ind];
 					bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[ind];
 					densx[step] = denscurr[0];
 					densz[step] = densx[step] + R::dnorm(Z1[ind], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[ind], 0.0, std::sqrt(1.0/n[0]), 1);
