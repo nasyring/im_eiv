@@ -911,6 +911,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 			ind = 0; step = 0;
 			NumericMatrix samples(size,7, zeroes7.begin());
 			NumericVector densx(1,0.0); NumericVector densz(1,0.0); NumericVector bxs(size,0.0); NumericVector bzs(size,0.0); 
+			sampcurr[0] = std::sqrt(n[0]); sampcurr[1] = std::sqrt(n[0]);
 			while(ind < size){
 				if(step > 0){
 					densx.push_back(0.0);	densz.push_back(0.0);
