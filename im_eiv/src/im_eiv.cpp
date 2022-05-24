@@ -1049,7 +1049,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 		}
 	}
 			
-	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = maxplausx, Rcpp::Named("plauses_beta_x") = maxplausesx,   Rcpp::Named("plaus_beta_z") = maxplausz, Rcpp::Named("plauses_beta_z") = maxplausesz,  Rcpp::Named("samples") = samples,  Rcpp::Named("densx") = densx,  Rcpp::Named("densz") = densz,  Rcpp::Named("offsetx") = offsetx,  Rcpp::Named("offsetz") = offsetz);		
+	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = maxplausx, Rcpp::Named("plauses_beta_x") = maxplausesx,   Rcpp::Named("plaus_beta_z") = maxplausz, Rcpp::Named("plauses_beta_z") = maxplausesz);		
 
 	return result;
 	
