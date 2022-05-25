@@ -1125,11 +1125,11 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector dV10bx(1,0.0); NumericVector dV30bx(1,0.0);NumericVector dV10sx(1,0.0); NumericVector dV30sx(1,0.0);NumericVector dV20bx(1,0.0); NumericVector dV20sx(1,0.0);
 	NumericVector V10(1,0.0); NumericVector V20(1,0.0); NumericVector V30(1,0.0); NumericVector eta(1,0.0);
 
-	NumericVector zeroes7(size*7, 0.0);
+	NumericVector zeroes7(size*7, 0.0);NumericVector zeroes(L*L, 0.0);
 	
 	NumericVector maxplausesx(L, 0.0); NumericVector maxplausesz(pL, 0.0); 
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
-	NumericMatrix plauses(L, L, 0.0);
+	NumericMatrix plauses(L, L, zeroes.begin());
 
 	NumericVector unif(1,0.0);
 	NumericMatrix samples(size,7, zeroes7.begin());
