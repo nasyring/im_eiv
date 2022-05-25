@@ -1094,6 +1094,8 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector tV1(1,0.0); NumericVector tV2(1,0.0); NumericVector tV3(1,0.0); NumericVector tZ1(1,0.0); NumericVector tZ2(1,0.0);
 	NumericVector sV1(size,0.0); NumericVector sV3(size,0.0); NumericVector sZ1(size,0.0); NumericVector sZ2(size,0.0);
 	NumericVector weights(size,0.0); NumericVector sumweights(1,0.0); IntegerVector indices(size); 
+	NumericVector densx(1,0.0); NumericVector densz(1,0.0);
+	NumericVector bxs(size,0.0);NumericVector bzs(size,0.0);
 	
 	int ind = 0; int ct = 0;
 	
@@ -1105,7 +1107,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		tV1[ct] = R::rchisq(n[0]-2.0);tV3[ct] = R::rchisq(n[0]-3.0);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
 		densx[ct] = R::dnorm(tV2[ct], 0.0, 1.0, 1) + R::dchisq(tV1[ct]*tV1[ct], n[0]-2.0, 1) + R::dchisq(tV3[ct]*tV3[ct], n[0]-3.0, 1);	
 		densz[ct] = densx[ct] + R::dnorm(tZ1[ct], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(tZ2[ct], 0.0, std::sqrt(1.0/n[0]), 1);
-		if((std::pow(s11[0], 2.0)/tV1[0])>se2[0])){
+		if((std::pow(s11[0], 2.0)/tV1[0])>se2[0]){
 			V1[ind] = std::sqrt(tV1[ct]); V2[ind] = tV2[ct]; V3[ind] = std::sqrt(tV3[ct]); Z1[ind] = tZ1[ct]; Z2[ind] = tZ2[ct];
 			ind = ind+1;
 		}
@@ -1114,22 +1116,17 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	
 	
 	// for grid of (bxseq, sxseq) values generate (V1, omega) r.v.'s by MCMC 
-	
-	NumericVector denscurr(1,0.0); NumericVector densprop(1,0.0);
+
 	NumericVector c1(1,0.0); NumericVector c2(1,0.0); NumericVector L110(1,0.0); NumericVector L220(1,0.0);NumericVector L120(1,0.0); 
 	NumericVector dL110bx(1,0.0); NumericVector dL220bx(1,0.0);NumericVector dL110sx(1,0.0); NumericVector dL220sx(1,0.0);NumericVector dL120bx(1,0.0);NumericVector dL120sx(1,0.0);
 	NumericVector dV10bx(1,0.0); NumericVector dV30bx(1,0.0);NumericVector dV10sx(1,0.0); NumericVector dV30sx(1,0.0);NumericVector dV20bx(1,0.0); NumericVector dV20sx(1,0.0);
 	NumericVector V10(1,0.0); NumericVector V20(1,0.0); NumericVector V30(1,0.0); NumericVector eta(1,0.0);
-	NumericVector sampcurr(2,0.0); NumericVector sampprop(2,0.0);
-	
+
 	NumericVector zeroes7(size*7, 0.0);
 	
 	NumericVector maxplausesx(L, 0.0); NumericVector maxplausesz(pL, 0.0); 
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
-	
-	
-	int step = 0;
-	int ind = 0; 
+
 	NumericVector unif(1,0.0);
 	NumericMatrix samples(size,7, zeroes7.begin());
 	
@@ -1153,17 +1150,17 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			sumweights[0] = 0.0;
 			for(int k = 0; k < size; k++){
 				weights[k] = std::exp(log(std::abs(1.0/c2[0])) + R::dnorm((eta[0] -c1[0]*V1[k] - V3[k])/c2[0], 0.0, 1.0, 1) - R::dnorm(V2[k], 0.0, 1.0, 1));
-				sumweights[0] = sumweights[0] + weight[k];
+				sumweights[0] = sumweights[0] + weights[k];
 			}
 			for(int k = 0; k < size; k++){
 				weights[k] = weights[k]/sumweights[0];
 			}
 			indices = Rcpp::sample(size, size, true, weights, true);
-			ind = 0; step = 0;
 			for(int k = 0; k < size; k++){
 				sV1[k] = V1[indices[k]-1]; sV3[k] = V3[indices[k]-1]; sZ1[k] = Z1[indices[k]-1]; sZ2[k] = Z2[indices[k]-1]; 
 			
 				NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
+				NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector sx(1,0.0);
 				L11[0] = s11[0]/sV1[k];
 				sx[0] = std::pow(s22[0]*L11[0]/sV3[k], 2.0)/((std::pow(L11[0], 2.0)*(-1.0+1.0/del[0])) +se2[0]);
 				bx[0] = std::sqrt((-std::pow(s22[0]/sV3[k], 2.0)+sx[0]/del[0])*std::pow(L11[0]/sx[0], 2.0));
@@ -1179,7 +1176,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 				
 				samples(k,0) = bx[0]; samples(k,1) = bz[0]; samples(k,2) = mux[0]; samples(k,3) = sx[0]; samples(k,4) = se2[0]; 
 				samples(k,5) = R::dnorm((eta[0] -c1[0]*sV1[k] - sV3[k]), 0.0, 1.0, 1) + R::dchisq(sV1[k]*sV1[k], n[0]-2.0, 1) + R::dchisq(sV3[k]*sV3[k], n[0]-3.0, 1);	
-				samples(k,6) = samples(ind,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
+				samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
 
 			}	
 			
