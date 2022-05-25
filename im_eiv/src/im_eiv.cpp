@@ -1175,7 +1175,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 				bzs[k] = bz[0]; 
 				
 				samples(k,0) = bx[0]; samples(k,1) = bz[0]; samples(k,2) = mux[0]; samples(k,3) = sx[0]; samples(k,4) = se2[0]; 
-				samples(k,5) = R::dnorm((eta[0] -c1[0]*sV1[k] - sV3[k]), 0.0, 1.0, 1) + R::dchisq(sV1[k]*sV1[k], n[0]-2.0, 1) + R::dchisq(sV3[k]*sV3[k], n[0]-3.0, 1);	
+				samples(k,5) = R::dnorm((eta[0] -c1[0]*sV1[k] - sV3[k])/c2[0], 0.0, 1.0, 1) + R::dchisq(sV1[k]*sV1[k], n[0]-2.0, 1) + R::dchisq(sV3[k]*sV3[k], n[0]-3.0, 1);	
 				samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
 
 			}	
@@ -1253,7 +1253,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		}
 	}
 			
-	result = Rcpp::List::create(Rcpp::Named("plauses") = plauses, Rcpp::Named("plauses_beta_x") = maxplausesx,  Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
+	result = Rcpp::List::create(Rcpp::Named("densx") = densx,Rcpp::Named("plauses") = plauses, Rcpp::Named("plauses_beta_x") = maxplausesx,  Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
 
 	return result;
 	
