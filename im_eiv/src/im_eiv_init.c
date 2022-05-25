@@ -7,6 +7,7 @@
 
 extern SEXP imeiv_plauscontourMCMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourMCMCcond(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP imeiv_plauscontourSIR(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourMCMC2(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_plauscontourMC2(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -16,6 +17,7 @@ extern SEXP imeiv_grow(SEXP, SEXP);
 static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourMCMC", (DL_FUNC) &imeiv_plauscontourMCMC, 11},
     {"imeiv_plauscontourMCMCcond", (DL_FUNC) &imeiv_plauscontourMCMCcond, 15},
+    {"imeiv_plauscontourSIR", (DL_FUNC) &imeiv_plauscontourSIR, 14},
     {"imeiv_plauscontourMCMC2", (DL_FUNC) &imeiv_plauscontourMCMC2, 11},
     {"imeiv_plauscontourMC", (DL_FUNC) &imeiv_plauscontourMC, 10},
     {"imeiv_plauscontourMC2", (DL_FUNC) &imeiv_plauscontourMC2, 10},
