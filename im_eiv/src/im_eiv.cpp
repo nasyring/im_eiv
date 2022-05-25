@@ -1107,12 +1107,10 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		tV1[ct] = R::rchisq(n[0]-2.0);tV3[ct] = R::rchisq(n[0]-3.0);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
 		densx[ct] = R::dnorm(tV2[ct], 0.0, 1.0, 1) + R::dchisq(tV1[ct]*tV1[ct], n[0]-2.0, 1) + R::dchisq(tV3[ct]*tV3[ct], n[0]-3.0, 1);	
 		densz[ct] = densx[ct] + R::dnorm(tZ1[ct], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(tZ2[ct], 0.0, std::sqrt(1.0/n[0]), 1);
-		//if((std::pow(s11[0], 2.0)/tV1[0])>se2[0]){
-		//	V1[ind] = std::sqrt(tV1[ct]); V2[ind] = tV2[ct]; V3[ind] = std::sqrt(tV3[ct]); Z1[ind] = tZ1[ct]; Z2[ind] = tZ2[ct];
-		//	ind = ind+1;
-		//}
-		V1[ind] = std::sqrt(tV1[ct]); V2[ind] = tV2[ct]; V3[ind] = std::sqrt(tV3[ct]); Z1[ind] = tZ1[ct]; Z2[ind] = tZ2[ct];
-		ind = ind+1;
+		if((std::pow(s11[0], 2.0)/tV1[0])>se2[0]){
+			V1[ind] = std::sqrt(tV1[ct]); V2[ind] = tV2[ct]; V3[ind] = std::sqrt(tV3[ct]); Z1[ind] = tZ1[ct]; Z2[ind] = tZ2[ct];
+			ind = ind+1;
+		}
 		ct = ct+1;
 	}
 	
@@ -1168,15 +1166,9 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 				NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
 				NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector sx(1,0.0);
 				L11[0] = s11[0]/sV1[k];
-				//sx[0] = std::pow(s22[0]*L11[0]/sV3[k], 2.0)/((std::pow(L11[0], 2.0)*(-1.0+1.0/del[0])) +se2[0]);
-				//bx[0] = std::sqrt((-std::pow(s22[0]/sV3[k], 2.0)+sx[0]/del[0])*std::pow(L11[0]/sx[0], 2.0));
-				
-				sx[0] = del[0]*(std::pow(s22[0]/sV3[k], 2.0)+std::pow((s12[0]-s22[0]*(eta[0] -c1[0]*sV1[k] - sV3[k])/sV3[k])/sV1[k], 2.0));
-				bx[0] = ((s11[0]*s12[0]/std::pow(sV1[k], 2.0)) - ((s11[0]*s22[0]*(eta[0] -c1[0]*sV1[k] - sV3[k]))/(sV3[k]*sV1[k]*sV1[k])))/sx[0];
+				sx[0] = std::pow((s12[0]*sV3[k]-s22[0]*sV2[k])*s11[0],2.0)/((std::pow(s11[0]/sV1[k],2.0)-se2[0])*std::pow(sV1[k],4.0));
+				bx[0] = (s12[0]*sV3[k]-s22[0]*sV2[k])*s11[0]/(sx[0]*std::pow(sV1[k],2.0));
 				L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
-				//if(s12[0] < ((eta[0] -c1[0]*sV1[k] - sV3[k])*L22[0])){
-				//	bx[0] = -bx[0];	
-				//}
 				L12[0] = bx[0]*sx[0]/L11[0];
 				mux[0] = wbar[0] - L12[0]*sZ1[k]-L22[0]*sZ2[k];
 				bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*sZ1[k];
