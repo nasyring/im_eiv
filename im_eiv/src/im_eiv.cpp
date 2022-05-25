@@ -1169,7 +1169,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 				//sx[0] = std::pow(s22[0]*L11[0]/sV3[k], 2.0)/((std::pow(L11[0], 2.0)*(-1.0+1.0/del[0])) +se2[0]);
 				//bx[0] = std::sqrt((-std::pow(s22[0]/sV3[k], 2.0)+sx[0]/del[0])*std::pow(L11[0]/sx[0], 2.0));
 				
-				sx[0] = del[0]*(std::pow(s22[0]/sV3[k], 2.0)+std::pow((s12[0]-s22[0]*(eta[0] -c1[0]*sV1[k] - sV3[k])/sV3[k])/sV1[k], 2.0))
+				sx[0] = del[0]*(std::pow(s22[0]/sV3[k], 2.0)+std::pow((s12[0]-s22[0]*(eta[0] -c1[0]*sV1[k] - sV3[k])/sV3[k])/sV1[k], 2.0));
 				bx[0] = ((s11[0]*s12[0]/std::pow(sV1[k], 2.0)) - ((s11[0]*s22[0]*(eta[0] -c1[0]*sV1[k] - sV3[k]))/(sV3[k]*sV1[k]*sV1[k])))/sx[0];
 				L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
 				//if(s12[0] < ((eta[0] -c1[0]*sV1[k] - sV3[k])*L22[0])){
