@@ -1093,7 +1093,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector V1(size,0.0); NumericVector V2(size,0.0); NumericVector V3(size,0.0); NumericVector Z1(size,0.0); NumericVector Z2(size,0.0);
 	NumericVector tV1(1,0.0); NumericVector tV2(1,0.0); NumericVector tV3(1,0.0); NumericVector tZ1(1,0.0); NumericVector tZ2(1,0.0);
 	NumericVector sV1(size,0.0); NumericVector sV3(size,0.0); NumericVector sZ1(size,0.0); NumericVector sZ2(size,0.0);
-	NumericVector weights(size,0.0); NumericVector sumweights(1,0.0); IntegerVector indices(size); 
+	NumericVector sumweights(1,0.0); IntegerVector indices(size); 
 	NumericVector densx(1,0.0); NumericVector densz(1,0.0);
 	NumericVector bxs(size,0.0);NumericVector bzs(size,0.0);
 	
@@ -1151,6 +1151,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			eta[0] = c1[0]*V10[0] + c2[0]*V20[0] + V30[0]; 
 			
 			sumweights[0] = 0.0;
+			NumericVector weights(size,0.0);
 			for(int k = 0; k < size; k++){
 				weights[k] = std::exp(R::dnorm((eta[0] -c1[0]*V1[k] - V3[k])/c2[0], 0.0, 1.0, 1) - R::dnorm(V2[k], 0.0, 1.0, 1));
 				weights[k] = std::max(std::min(weights[k], 100000.0), 0.00001);
@@ -1192,8 +1193,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			
 			// Compute plausibility
 			
-			NumericVector plausesx(L,0.0);
-			NumericVector plausesz(pL,0.0);
+			NumericVector plausesx(1,0.0);
 			std::sort(bxs.begin(), bxs.end());std::sort(bzs.begin(), bzs.end());
 			NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
 			
@@ -1219,11 +1219,11 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 				}
 				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
 				if(   (bxseq[i] >= randsetslo[0]) & (bxseq[i] <= randsetshi[0])   ){
-					plausesx[i] = plausesx[i]+(1.0/(size));
+					plausesx[0] = plausesx[0]+(1.0/(size));
 				}
 			}
 			
-			maxplausesx[i] = std::max(maxplausesx[i], plausesx[i]);
+			maxplausesx[i] = std::max(maxplausesx[i], plausesx[0]);
 						
 
 			/*
