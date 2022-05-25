@@ -1105,8 +1105,6 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			densx.push_back(0.0);	densz.push_back(0.0);
 		}
 		tV1[ct] = R::rchisq(n[0]-2.0);tV3[ct] = R::rchisq(n[0]-3.0);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
-		densx[ct] = R::dnorm(tV2[ct], 0.0, 1.0, 1) + R::dchisq(tV1[ct], n[0]-2.0, 1) + R::dchisq(tV3[ct], n[0]-3.0, 1);	
-		densz[ct] = densx[ct] + R::dnorm(tZ1[ct], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(tZ2[ct], 0.0, std::sqrt(1.0/n[0]), 1);
 		if((std::pow(s11[0], 2.0)/tV1[0])>se2[0]){
 			V1[ind] = std::sqrt(tV1[ct]); V2[ind] = tV2[ct]; V3[ind] = std::sqrt(tV3[ct]); Z1[ind] = tZ1[ct]; Z2[ind] = tZ2[ct];
 			ind = ind+1;
@@ -1148,6 +1146,11 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			c2[0] = (-dV30sx[0]+dV30bx[0]*dV10sx[0]/dV10bx[0])/((-dV20bx[0]/dV10bx[0])+dV20sx[0]);
 			c1[0] = (-c2[0]*dV20bx[0]-dV30bx[0])/dV10bx[0];
 			eta[0] = c1[0]*V10[0] + c2[0]*V20[0] + V30[0]; 
+			
+			for(int k = 0; k < ct; k++){
+				densx[k] = R::dnorm((eta[0] -c1[0]*std::sqrt(tV1[k]) - std::sqrt(tV3[k]))/c2[0], 0.0, 1.0, 1) + R::dchisq(tV1[k], n[0]-2.0, 1) + R::dchisq(tV3[k], n[0]-3.0, 1);	
+				densz[k] = densx[k] + R::dnorm(tZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(tZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);	
+			}
 			
 			sumweights[0] = 0.0;
 			NumericVector weights(size,0.0);
