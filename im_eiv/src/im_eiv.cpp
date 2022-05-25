@@ -1129,6 +1129,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	
 	NumericVector maxplausesx(L, 0.0); NumericVector maxplausesz(pL, 0.0); 
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
+	NumericMatrix plauses(L, L, 0.0);
 
 	NumericVector unif(1,0.0);
 	NumericMatrix samples(size,7, zeroes7.begin());
@@ -1222,6 +1223,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 					plausesx[0] = plausesx[0]+(1.0/(size));
 				}
 			}
+			plauses(i,j) = plausesx[0];
 			
 			maxplausesx[i] = std::max(maxplausesx[i], plausesx[0]);
 						
@@ -1260,7 +1262,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		}
 	}
 			
-	result = Rcpp::List::create(Rcpp::Named("plauses_beta_x") = maxplausesx,  Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
+	result = Rcpp::List::create(Rcpp::Named("plauses") = plauses, Rcpp::Named("plauses_beta_x") = maxplausesx,  Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
 
 	return result;
 	
