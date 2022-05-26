@@ -1154,7 +1154,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			sumweights[0] = 0.0;
 			NumericVector weights(size,0.0);
 			for(int k = 0; k < size; k++){
-				weights[k] = std::exp(R::dnorm((eta[0] -c1[0]*V1[k] - V3[k])/c2[0], 0.0, 1.0, 1);
+				weights[k] = std::exp(R::dnorm((eta[0] -c1[0]*V1[k] - V3[k])/c2[0], 0.0, 1.0, 1));
 				weights[k] = std::max(std::min(weights[k], 100000.0), 0.00001);
 				sumweights[0] = sumweights[0] + weights[k];
 			}
