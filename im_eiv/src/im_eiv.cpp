@@ -1127,7 +1127,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericMatrix plauses(L, L, zeroes.begin());
 
 	NumericVector unif(1,0.0);
-	NumericMatrix samples(size,9, zeroes7.begin());
+	NumericMatrix samples(size,10, zeroes7.begin());
 	
 	for(int i = 0; i < L; i++){
 		for(int j = 0; j < L; j++){
