@@ -1120,14 +1120,14 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector dV10bx(1,0.0); NumericVector dV30bx(1,0.0);NumericVector dV10sx(1,0.0); NumericVector dV30sx(1,0.0);NumericVector dV20bx(1,0.0); NumericVector dV20sx(1,0.0);
 	NumericVector V10(1,0.0); NumericVector V20(1,0.0); NumericVector V30(1,0.0); NumericVector eta(1,0.0);
 
-	NumericVector zeroes7(size*7, 0.0);NumericVector zeroes(L*L, 0.0);
+	NumericVector zeroes7(size*9, 0.0);NumericVector zeroes(L*L, 0.0);
 	
 	NumericVector maxplausesx(L, 0.0); NumericVector maxplausesz(pL, 0.0); 
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
 	NumericMatrix plauses(L, L, zeroes.begin());
 
 	NumericVector unif(1,0.0);
-	NumericMatrix samples(size,7, zeroes7.begin());
+	NumericMatrix samples(size,9, zeroes7.begin());
 	
 	for(int i = 0; i < L; i++){
 		for(int j = 0; j < L; j++){
@@ -1179,7 +1179,9 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 				samples(k,0) = bx[0]; samples(k,1) = bz[0]; samples(k,2) = mux[0]; samples(k,3) = sx[0]; samples(k,4) = se2[0]; 
 				samples(k,5) = R::dnorm((eta[0] -c1[0]*sV1[k] - sV3[k])/c2[0], 0.0, 1.0, 1) + R::dchisq(sV1[k]*sV1[k], n[0]-2.0, 1) + R::dchisq(sV3[k]*sV3[k], n[0]-3.0, 1);	
 				samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
-
+				samples(k,7) = sV1[k];
+				samples(k,8) = (eta[0] -c1[0]*sV1[k] - sV3[k])/c2[0];
+				samples(k,9) = sV3[k];
 			}	
 			
 
