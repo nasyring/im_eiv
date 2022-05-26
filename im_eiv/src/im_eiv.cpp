@@ -1258,7 +1258,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		}
 	}
 			
-	result = Rcpp::List::create(Rcpp::Named("densx") = densx,Rcpp::Named("plauses") = plauses, Rcpp::Named("plauses_beta_x") = maxplausesx,  Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
+	result = Rcpp::List::create(Rcpp::Named("eta") = eta,Rcpp::Named("c1") = c1,Rcpp::Named("c2") = c2,Rcpp::Named("densx") = densx,Rcpp::Named("plauses") = plauses, Rcpp::Named("plauses_beta_x") = maxplausesx,  Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
 
 	return result;
 	
