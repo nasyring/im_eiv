@@ -6,8 +6,8 @@ plauscontourMCMCcond <- function(sampsize ,  stat ,   del ,  propsd , type , n ,
     .Call(`imeiv_plauscontourMCMCcond`, sampsize ,  stat ,   del ,  propsd , type , n , truebx , truebz , bxseq , sxseq , lenseq , plbxseq , plbzseq , lenplseq , se2)
 }
  
-plauscontourSIR <- function(sampsize ,  stat ,   del  , type , n , truebx , truebz , bxseq , sxseq , lenseq , plbxseq , plbzseq , lenplseq , se2){
-    .Call(`imeiv_plauscontourSIR`, sampsize ,  stat ,   del  , type , n , truebx , truebz , bxseq , sxseq , lenseq , plbxseq , plbzseq , lenplseq , se2)
+plauscontourSIR <- function(sampsize ,  stat ,   del  , n , mode , local_pt, se2, cond_par ){
+    .Call(`imeiv_plauscontourSIR`, sampsize ,  stat ,   del  , n , mode , local_pt, se2, cond_par )
 }
 
 plauscontourMCMC2 <- function(par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzseq,randsettype){
