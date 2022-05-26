@@ -1111,14 +1111,8 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	}
 	
 	NumericVector densx(ct,0.0); NumericVector densz(ct,0.0);
-
-	NumericVector zeroes7(size*10, 0.0);NumericVector zeroes(L*L, 0.0);
-	
-	NumericVector maxplausesx(L, 0.0); NumericVector maxplausesz(pL, 0.0); 
+	NumericVector zeroes7(size*10, 0.0);
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
-	NumericMatrix plauses(L, L, zeroes.begin());
-
-	NumericVector unif(1,0.0);
 	NumericMatrix samples(size,11, zeroes7.begin());
 	
 
