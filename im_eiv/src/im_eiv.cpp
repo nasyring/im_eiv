@@ -1094,7 +1094,6 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector tV1(1,0.0); NumericVector tV2(1,0.0); NumericVector tV3(1,0.0); NumericVector tZ1(1,0.0); NumericVector tZ2(1,0.0);
 	NumericVector sV1(size,0.0); NumericVector sV3(size,0.0); NumericVector sZ1(size,0.0); NumericVector sZ2(size,0.0);
 	NumericVector sumweights(1,0.0); IntegerVector indices(size); 
-	NumericVector densx(1,0.0); NumericVector densz(1,0.0);
 	NumericVector bxs(size,0.0);NumericVector bzs(size,0.0);
 	
 	int ind = 0; int ct = 0;
@@ -1102,16 +1101,16 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	while(ind < size){
 		if(ct > 0){
 			tV1.push_back(0.0);tV2.push_back(0.0);tV3.push_back(0.0);tZ1.push_back(0.0);tZ2.push_back(0.0);	
-			densx.push_back(0.0);	densz.push_back(0.0);
 		}
 		tV1[ct] = R::rchisq(n[0]-2.0);tV3[ct] = R::rchisq(n[0]-3.0);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
-		if((std::pow(s11[0], 2.0)/tV1[0])>se2[0]){
+		if((std::pow(s11[0], 2.0)/tV1[ct])>se2[0]){
 			V1[ind] = std::sqrt(tV1[ct]); V2[ind] = tV2[ct]; V3[ind] = std::sqrt(tV3[ct]); Z1[ind] = tZ1[ct]; Z2[ind] = tZ2[ct];
 			ind = ind+1;
 		}
 		ct = ct+1;
 	}
 	
+	NumericVector densx(ct,0.0); NumericVector densz(ct,0.0);
 	
 	
 	// for grid of (bxseq, sxseq) values generate (V1, omega) r.v.'s by MCMC 
