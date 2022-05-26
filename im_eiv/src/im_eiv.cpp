@@ -1102,7 +1102,8 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		if(ct > 0){
 			tV1.push_back(0.0);tV2.push_back(0.0);tV3.push_back(0.0);tZ1.push_back(0.0);tZ2.push_back(0.0);	
 		}
-		tV1[ct] = R::rchisq(n[0]-2.0);tV3[ct] = R::rchisq(n[0]-3.0);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
+		//tV1[ct] = R::rchisq(n[0]-2.0);tV3[ct] = R::rchisq(n[0]-3.0);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
+		tV1[ct] = R::rchisq(985.0);tV3[ct] = R::rchisq(774.0);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
 		if((std::pow(s11[0], 2.0)/tV1[ct])>se2[0]){
 			V1[ind] = std::sqrt(tV1[ct]); V2[ind] = tV2[ct]; V3[ind] = std::sqrt(tV3[ct]); Z1[ind] = tZ1[ct]; Z2[ind] = tZ2[ct];
 			ind = ind+1;
@@ -1154,7 +1155,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			sumweights[0] = 0.0;
 			NumericVector weights(size,0.0);
 			for(int k = 0; k < size; k++){
-				weights[k] = std::exp(R::dnorm((eta[0] -c1[0]*V1[k] - V3[k])/c2[0], 0.0, 1.0, 1));
+				weights[k] = std::exp(R::dnorm((eta[0] -c1[0]*V1[k] - V3[k])/c2[0], 0.0, 1.0, 1) + R::dchisq(V1[k]*V1[k], n[0]-2.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-3.0, 1) - R::dchisq(V1[k]*V1[k], 985.0, 1) - R::dchisq(V3[k]*V3[k], 774.0, 1));
 				weights[k] = std::max(std::min(weights[k], 100000.0), 0.00001);
 				sumweights[0] = sumweights[0] + weights[k];
 			}
