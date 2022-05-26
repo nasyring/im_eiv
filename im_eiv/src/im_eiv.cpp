@@ -1435,6 +1435,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector bx(1,0.0); NumericVector sx(1,0.0); NumericVector se(1,0.0); NumericVector mux(1,0.0); NumericVector bz(1,0.0); 
 	NumericVector dens_samps_x(1,0.0); NumericVector dens_samps_z(1,0.0);
 	NumericVector bx_s(size, 0.0); NumericVector bz_s(size, 0.0);
+	NumericVector sxs(size,0.0); 
 	int ind = 0; int step = 0;
 	while(ind < size){
 		if(step > 0){
@@ -1474,6 +1475,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 				bzs(ind,0) = bz[0]; bz_s[ind] = bz[0]; 
 				bxs(ind,1) = R::dchisq(V1[0]*V1[0], n[0]-1, 1) + R::dchisq(V3[0]*V3[0], n[0]-2, 1)  + R::dnorm(V2[0], 0.0, 1.0, 1);	
 				bzs(ind,1) = bxs(ind,1) + R::dnorm(Z1[0], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(Z2[0], 0.0, std::sqrt(1.0/n[0]), 1);
+				sxs[ind] = sx[0];
 				ind = ind+1;
 			}		
 		}else {
@@ -1582,7 +1584,7 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 		}
 	}
 		
-	result = Rcpp::List::create(Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = bxs, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("step") = step, Rcpp::Named("dens_samps_x") = dens_samps_x, Rcpp::Named("dens_samps_z") = dens_samps_z);		
+	result = Rcpp::List::create(Rcpp::Named("sxs") = sxs, Rcpp::Named("plaus_beta_x") = plausestrux, Rcpp::Named("plauses_beta_x") = plausesx,  Rcpp::Named("samples_bx") = bxs, Rcpp::Named("plaus_beta_z") = plausestruz, Rcpp::Named("plauses_beta_z") = plausesz,  Rcpp::Named("samples_bz") = bzs, Rcpp::Named("bx_seq") = bx_seq, Rcpp::Named("bz_seq") = bz_seq, Rcpp::Named("step") = step, Rcpp::Named("dens_samps_x") = dens_samps_x, Rcpp::Named("dens_samps_z") = dens_samps_z);		
 
 	return result;
 	
