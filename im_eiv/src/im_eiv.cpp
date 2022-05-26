@@ -1075,12 +1075,11 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	
 }
 
-Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz,NumericVector bxseq, NumericVector sxseq, NumericVector lenseq, NumericVector plbxseq, NumericVector plbzseq, NumericVector lenplseq, NumericVector se2) {
+Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector n, NumericVector mode, NumericVector local_pt, NumericVector se2, NumericVector cond_par) {
 
 	List result;
 	Rcpp::Function sortmat("sortmat");
 	int size = round(sampsize[0]);
-	int L = round(lenseq[0]);  	int pL = round(lenplseq[0]);
 	
 	NumericVector s11(1,0.0); s11[0] = stat[0];
 	NumericVector s12(1,0.0); s12[0] = stat[1];	
@@ -1088,6 +1087,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector ybar(1,0.0); ybar[0] = stat[3];
 	NumericVector wbar(1,0.0); wbar[0] = stat[4];
 	
+		
 	// Generate MC sample of aux rvs Z1, Z2, V2
 
 	NumericVector V1(size,0.0); NumericVector V2(size,0.0); NumericVector V3(size,0.0); NumericVector Z1(size,0.0); NumericVector Z2(size,0.0);
@@ -1102,8 +1102,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		if(ct > 0){
 			tV1.push_back(0.0);tV2.push_back(0.0);tV3.push_back(0.0);tZ1.push_back(0.0);tZ2.push_back(0.0);	
 		}
-		//tV1[ct] = R::rchisq(n[0]-2.0);tV3[ct] = R::rchisq(n[0]-3.0);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
-		tV1[ct] = R::rchisq(985.0);tV3[ct] = R::rchisq(774.0);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
+		tV1[ct] = R::rchisq(mode[0]);tV3[ct] = R::rchisq(mode[1]);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
 		if((std::pow(s11[0], 2.0)/tV1[ct])>se2[0]){
 			V1[ind] = std::sqrt(tV1[ct]); V2[ind] = tV2[ct]; V3[ind] = std::sqrt(tV3[ct]); Z1[ind] = tZ1[ct]; Z2[ind] = tZ2[ct];
 			ind = ind+1;
@@ -1112,14 +1111,6 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	}
 	
 	NumericVector densx(ct,0.0); NumericVector densz(ct,0.0);
-	
-	
-	// for grid of (bxseq, sxseq) values generate (V1, omega) r.v.'s by MCMC 
-
-	NumericVector c1(1,0.0); NumericVector c2(1,0.0); NumericVector L110(1,0.0); NumericVector L220(1,0.0);NumericVector L120(1,0.0); 
-	NumericVector dL110bx(1,0.0); NumericVector dL220bx(1,0.0);NumericVector dL110sx(1,0.0); NumericVector dL220sx(1,0.0);NumericVector dL120bx(1,0.0);NumericVector dL120sx(1,0.0);
-	NumericVector dV10bx(1,0.0); NumericVector dV30bx(1,0.0);NumericVector dV10sx(1,0.0); NumericVector dV30sx(1,0.0);NumericVector dV20bx(1,0.0); NumericVector dV20sx(1,0.0);
-	NumericVector V10(1,0.0); NumericVector V20(1,0.0); NumericVector V30(1,0.0); NumericVector eta(1,0.0);
 
 	NumericVector zeroes7(size*10, 0.0);NumericVector zeroes(L*L, 0.0);
 	
@@ -1130,137 +1121,85 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector unif(1,0.0);
 	NumericMatrix samples(size,11, zeroes7.begin());
 	
-	for(int i = 0; i < L; i++){
-		for(int j = 0; j < L; j++){
-			L110[0] = std::sqrt(se2[0] + bxseq[i]*bxseq[i]*sxseq[j]);
-			L120[0] = bxseq[i]*sxseq[j]/L110[0];
-			L220[0] = std::sqrt(sxseq[j]/del[0] - std::pow(sxseq[j]*bxseq[i],2.0)/std::pow(L110[0],2.0));
-			V10[0] = s11[0]/L110[0]; V30[0] = s22[0]/L220[0]; V20[0] = (s12[0] - L120[0]*V10[0])/L220[0];
-			dL110bx[0] = L120[0]; dL110sx[0] = bxseq[i]*bxseq[i]/(2.0*L110[0]);
-			dL120bx[0] = (sxseq[j] - std::pow(L120[0], 2.0))/L110[0]; dL120sx[0] = (bxseq[i]/L110[0])*(1.0 - 0.5*std::pow(L120[0], 2.0)/sxseq[j]);
-			dL220bx[0] = -L120[0]*dL120bx[0]/L220[0]; dL220sx[0] = -L120[0]*dL120sx[0]/L220[0];
-			dV10bx[0] = (-s11[0]/std::pow(L110[0],2.0)) * dL110bx[0];dV10sx[0] = (-s11[0]/std::pow(L110[0],2.0)) * dL110sx[0];
-			dV30bx[0] = (-s22[0]/std::pow(L220[0],2.0)) * dL220bx[0];dV30sx[0] = (-s22[0]/std::pow(L220[0],2.0)) * dL220sx[0];
-			dV20bx[0] = (-s12[0]/std::pow(L220[0],2.0)) * dL220bx[0] - (1.0/std::pow(L220[0],2.0))*( (dV10bx[0]*L120[0]+V10[0]*dL120bx[0])*L220[0] - dL220bx[0]*V10[0]*L120[0] );
-			dV20sx[0] = (-s12[0]/std::pow(L220[0],2.0)) * dL220sx[0] - (1.0/std::pow(L220[0],2.0))*( (dV10sx[0]*L120[0]+V10[0]*dL120sx[0])*L220[0] - dL220sx[0]*V10[0]*L120[0] );
-			c2[0] = (-dV30sx[0]+dV30bx[0]*dV10sx[0]/dV10bx[0])/((-dV20bx[0]/dV10bx[0])+dV20sx[0]);
-			c1[0] = (-c2[0]*dV20bx[0]-dV30bx[0])/dV10bx[0];
-			eta[0] = c1[0]*V10[0] + c2[0]*V20[0] + V30[0]; 
-			
-			for(int k = 0; k < ct; k++){
-				densx[k] = R::dnorm((eta[0] -c1[0]*std::sqrt(tV1[k]) - std::sqrt(tV3[k]))/c2[0], 0.0, 1.0, 1) + R::dchisq(tV1[k], n[0]-2.0, 1) + R::dchisq(tV3[k], n[0]-3.0, 1);	
-				densz[k] = densx[k] + R::dnorm(tZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(tZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);	
-			}
-			
-			sumweights[0] = 0.0;
-			NumericVector weights(size,0.0);
-			for(int k = 0; k < size; k++){
-				weights[k] = std::exp(R::dnorm((eta[0] -c1[0]*V1[k] - V3[k])/c2[0], 0.0, 1.0, 1) + R::dchisq(V1[k]*V1[k], n[0]-2.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-3.0, 1) - R::dchisq(V1[k]*V1[k], 985.0, 1) - R::dchisq(V3[k]*V3[k], 774.0, 1));
-				//weights[k] = std::max(std::min(weights[k], 100000.0), 0.00001);
-				sumweights[0] = sumweights[0] + weights[k];
-			}
-			for(int k = 0; k < size; k++){
-				weights[k] = weights[k]/sumweights[0];
-			}
-			indices = Rcpp::sample(size, size, true, weights, true);
-			for(int k = 0; k < size; k++){
-				sV1[k] = V1[indices[k]-1]; sV3[k] = V3[indices[k]-1]; sZ1[k] = Z1[indices[k]-1]; sZ2[k] = Z2[indices[k]-1]; 
-				NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-				NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector sx(1,0.0);
-				L11[0] = s11[0]/sV1[k];
-				sx[0] = std::pow((s12[0]*sV3[k]-s22[0]*(eta[0] -c1[0]*sV1[k] - sV3[k])/c2[0])*s11[0],2.0)/((std::pow(s11[0]/sV1[k],2.0)-se2[0])*std::pow(sV1[k],4.0)*sV3[k]*sV3[k]);
-				bx[0] = (s12[0]*sV3[k]-s22[0]*(eta[0] -c1[0]*sV1[k] - sV3[k])/c2[0])*s11[0]/(sV3[k]*sx[0]*std::pow(sV1[k],2.0));
-				L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
-				L12[0] = bx[0]*sx[0]/L11[0];
-				mux[0] = wbar[0] - L12[0]*sZ1[k]-L22[0]*sZ2[k];
-				bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*sZ1[k];
-				bxs[k] = bx[0]; 
-				bzs[k] = bz[0]; 
-				
-				samples(k,0) = bx[0]; samples(k,1) = bz[0]; samples(k,2) = mux[0]; samples(k,3) = sx[0]; samples(k,4) = se2[0]; 
-				samples(k,5) = R::dnorm((eta[0] -c1[0]*sV1[k] - sV3[k])/c2[0], 0.0, 1.0, 1) + R::dchisq(sV1[k]*sV1[k], n[0]-2.0, 1) + R::dchisq(sV3[k]*sV3[k], n[0]-3.0, 1);	
-				samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
-				samples(k,7) = sV1[k];
-				samples(k,8) = (eta[0] -c1[0]*sV1[k] - sV3[k])/c2[0];
-				samples(k,9) = sV3[k];
-				samples(k,10) = weights[indices[k]-1];
-			}	
-			
 
-			
-			
-			// Compute plausibility
-			
-			NumericVector plausesx(1,0.0);
-			std::sort(bxs.begin(), bxs.end());std::sort(bzs.begin(), bzs.end());
-			NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
-			NumericVector randsetslo2(1,0.0);NumericVector randsetshi2(1,0.0);
-			std::sort(densx.begin(), densx.end()); std::sort(densz.begin(), densz.end());
-			
-			
-			samples = sortmat(samples,5);
-			offsetx[0] = densx[ct - 1] - samples(size-1,5);
-			int unifind =0; int ind2 =0;
-			bool comp = true;
-			for(int k=0; k<size; k++){
-				randsetslo[0] = bxs[(size-1)]; randsetshi[0] = bxs[0];
-				ind2 = 0;
-				unifind = round(R::runif(0.0,1.0)*(ct-1));
-				comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
-				while(comp & (ind2 < (size - 1))){
-					ind2 = ind2 + 1	;
-					comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
-				}
-				NumericVector subset(size - ind2, 0.0);NumericVector subset2(size - ind2, 0.0);
-				for(int l = 0; l < (size - ind2); l++){
-					subset[l] = samples(ind2+l,0);subset2[l] = samples(ind2+l,3);	
-				}
-				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
-				randsetslo2[0] = Rcpp::min(subset2);  randsetshi2[0] = Rcpp::max(subset2); 
-				if(   (bxseq[i] >= randsetslo[0]) & (bxseq[i] <= randsetshi[0]) & (sxseq[j] >= randsetslo2[0]) & (sxseq[j] <= randsetshi2[0]) ){
-					plausesx[0] = plausesx[0]+(1.0/(size));
-				}
-			}
-			plauses(i,j) = plausesx[0];
-			
-			maxplausesx[i] = std::max(maxplausesx[i], plausesx[0]);
-						
+					
+	for(int k = 0; k < ct; k++){
+		densx[k] = R::dnorm((cond_par[0] -cond_par[1]*std::sqrt(tV1[k]) - std::sqrt(tV3[k]))/cond_par[2], 0.0, 1.0, 1) + R::dchisq(tV1[k], n[0]-2.0, 1) + R::dchisq(tV3[k], n[0]-3.0, 1);	
+		densz[k] = densx[k] + R::dnorm(tZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(tZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);	
+	}
 
-			/*
-			
-			samples = sortmat(samples,6);
-			offsetz[0] = densz[step - 1] - samples(ind-1,6);
-			unifind =0; ind2 =0;
-			comp = true;
-			for(int k=0; k<size; k++){
-				randsetslo[0] = bzs[(size-1)]; randsetshi[0] = bzs[0];
-				ind2 = 0;
-				unifind = round(R::runif(0.0,1.0)*(step-1));
-				comp = (samples(ind2,6) < (densz[unifind] - offsetz[0]));
-				while(comp & (ind2 < (ind - 1))){
-					ind2 = ind2 + 1	;
-					comp = (samples(ind2,6) < (densz[unifind] - offsetz[0]));
-				}
-				NumericVector subset(size - ind2, 0.0);
-				for(int l = 0; l < (size - ind2); l++){
-					subset[l] = samples(ind2+l,1);	
-				}
-				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
-				for(int l=0; l<pL; l++){
-					if(   (plbzseq[l] >= randsetslo[0]) & (plbzseq[l] <= randsetshi[0])   ){
-						plausesz[l] = plausesz[l]+(1.0/(size));
-					}
-				}
-			}
-			
-			for(int l=0; l<pL; l++){
-				maxplausesz[l] = std::max(maxplausesz[l], plausesz[l]);
-			}
-			*/	
+	sumweights[0] = 0.0;
+	NumericVector weights(size,0.0);
+	for(int k = 0; k < size; k++){
+		weights[k] = std::exp(R::dnorm((cond_par[0] -cond_par[1]*V1[k] - V3[k])/cond_par[2], 0.0, 1.0, 1) + R::dchisq(V1[k]*V1[k], n[0]-2.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-3.0, 1) - R::dchisq(V1[k]*V1[k], mode[0], 1) - R::dchisq(V3[k]*V3[k], mode[1], 1));
+		sumweights[0] = sumweights[0] + weights[k];
+	}
+	for(int k = 0; k < size; k++){
+		weights[k] = weights[k]/sumweights[0];
+	}
+	indices = Rcpp::sample(size, size, true, weights, true);
+	for(int k = 0; k < size; k++){
+		sV1[k] = V1[indices[k]-1]; sV3[k] = V3[indices[k]-1]; sZ1[k] = Z1[indices[k]-1]; sZ2[k] = Z2[indices[k]-1]; 
+		NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
+		NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector sx(1,0.0);
+		L11[0] = s11[0]/sV1[k];
+		sx[0] = std::pow((s12[0]*sV3[k]-s22[0]*(cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2])*s11[0],2.0)/((std::pow(s11[0]/sV1[k],2.0)-se2[0])*std::pow(sV1[k],4.0)*sV3[k]*sV3[k]);
+		bx[0] = (s12[0]*sV3[k]-s22[0]*(cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2])*s11[0]/(sV3[k]*sx[0]*std::pow(sV1[k],2.0));
+		L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
+		L12[0] = bx[0]*sx[0]/L11[0];
+		mux[0] = wbar[0] - L12[0]*sZ1[k]-L22[0]*sZ2[k];
+		bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*sZ1[k];
+		bxs[k] = bx[0]; 
+		bzs[k] = bz[0]; 
+
+		samples(k,0) = bx[0]; samples(k,1) = bz[0]; samples(k,2) = mux[0]; samples(k,3) = sx[0]; samples(k,4) = se2[0]; 
+		samples(k,5) = R::dnorm((cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2], 0.0, 1.0, 1) + R::dchisq(sV1[k]*sV1[k], n[0]-2.0, 1) + R::dchisq(sV3[k]*sV3[k], n[0]-3.0, 1);	
+		samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
+		samples(k,7) = sV1[k];
+		samples(k,8) = (cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2];
+		samples(k,9) = sV3[k];
+		samples(k,10) = weights[indices[k]-1];
+	}	
+
+
+
+
+	// Compute plausibility
+
+	NumericVector plaus(1,0.0);
+	std::sort(bxs.begin(), bxs.end());std::sort(bzs.begin(), bzs.end());
+	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
+	NumericVector randsetslo2(1,0.0);NumericVector randsetshi2(1,0.0);
+	std::sort(densx.begin(), densx.end()); std::sort(densz.begin(), densz.end());
+
+
+	samples = sortmat(samples,5);
+	offsetx[0] = densx[ct - 1] - samples(size-1,5);
+	int unifind =0; int ind2 =0;
+	bool comp = true;
+	for(int k=0; k<size; k++){
+		randsetslo[0] = bxs[(size-1)]; randsetshi[0] = bxs[0];
+		ind2 = 0;
+		unifind = round(R::runif(0.0,1.0)*(ct-1));
+		comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
+		while(comp & (ind2 < (size - 1))){
+			ind2 = ind2 + 1	;
+			comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
+		}
+		NumericVector subset(size - ind2, 0.0);NumericVector subset2(size - ind2, 0.0);
+		for(int l = 0; l < (size - ind2); l++){
+			subset[l] = samples(ind2+l,0);subset2[l] = samples(ind2+l,3);	
+		}
+		randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
+		randsetslo2[0] = Rcpp::min(subset2);  randsetshi2[0] = Rcpp::max(subset2); 
+		if(   (local_pt[0] >= randsetslo[0]) & (local_pt[0] <= randsetshi[0]) & (local_pt[1] >= randsetslo2[0]) & (local_pt[1] <= randsetshi2[0]) ){
+			plaus[0] = plaus[0]+(1.0/(size));
 		}
 	}
+
+
 			
-	result = Rcpp::List::create(Rcpp::Named("eta") = eta,Rcpp::Named("c1") = c1,Rcpp::Named("c2") = c2,Rcpp::Named("densx") = densx,Rcpp::Named("plauses") = plauses, Rcpp::Named("plauses_beta_x") = maxplausesx,  Rcpp::Named("plauses_beta_z") = maxplausesz, Rcpp::Named("samples") = samples);		
+	result = Rcpp::List::create(Rcpp::Named("plaus") = plaus, Rcpp::Named("samples") = samples);		
 
 	return result;
 	
