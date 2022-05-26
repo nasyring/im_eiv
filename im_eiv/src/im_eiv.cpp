@@ -1191,7 +1191,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			NumericVector plausesx(1,0.0);
 			std::sort(bxs.begin(), bxs.end());std::sort(bzs.begin(), bzs.end());
 			NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
-			
+			NumericVector randsetslo2(1,0.0);NumericVector randsetshi2(1,0.0);
 			std::sort(densx.begin(), densx.end()); std::sort(densz.begin(), densz.end());
 			
 			
@@ -1208,12 +1208,13 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 					ind2 = ind2 + 1	;
 					comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
 				}
-				NumericVector subset(size - ind2, 0.0);
+				NumericVector subset(size - ind2, 0.0);NumericVector subset2(size - ind2, 0.0);
 				for(int l = 0; l < (size - ind2); l++){
-					subset[l] = samples(ind2+l,0);	
+					subset[l] = samples(ind2+l,0);subset2[l] = samples(ind2+l,3);	
 				}
 				randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
-				if(   (bxseq[i] >= randsetslo[0]) & (bxseq[i] <= randsetshi[0])   ){
+				randsetslo2[0] = Rcpp::min(subset2);  randsetshi2[0] = Rcpp::max(subset2); 
+				if(   (bxseq[i] >= randsetslo[0]) & (bxseq[i] <= randsetshi[0]) & (sxseq[j] >= randsetslo2[0]) & (sxseq[j] <= randsetshi2[0]) ){
 					plausesx[0] = plausesx[0]+(1.0/(size));
 				}
 			}
