@@ -50,9 +50,6 @@ BEGIN_RCPP
 END_RCPP
 }
 
-Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector n, NumericVector mode, NumericVector local_pt, NumericVector se2, NumericVector cond_par) {
-
-
 Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector n, NumericVector mode, NumericVector local_pt, NumericVector se2, NumericVector cond_par);
 RcppExport SEXP imeiv_plauscontourSIR(SEXP sampsizeSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP modeSEXP, SEXP local_ptSEXP, SEXP se2SEXP, SEXP cond_parSEXP){
 BEGIN_RCPP
