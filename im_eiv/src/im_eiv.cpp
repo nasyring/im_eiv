@@ -1121,14 +1121,14 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector dV10bx(1,0.0); NumericVector dV30bx(1,0.0);NumericVector dV10sx(1,0.0); NumericVector dV30sx(1,0.0);NumericVector dV20bx(1,0.0); NumericVector dV20sx(1,0.0);
 	NumericVector V10(1,0.0); NumericVector V20(1,0.0); NumericVector V30(1,0.0); NumericVector eta(1,0.0);
 
-	NumericVector zeroes7(size*9, 0.0);NumericVector zeroes(L*L, 0.0);
+	NumericVector zeroes7(size*10, 0.0);NumericVector zeroes(L*L, 0.0);
 	
 	NumericVector maxplausesx(L, 0.0); NumericVector maxplausesz(pL, 0.0); 
 	NumericVector offsetx(1,0.0);NumericVector offsetz(1,0.0);
 	NumericMatrix plauses(L, L, zeroes.begin());
 
 	NumericVector unif(1,0.0);
-	NumericMatrix samples(size,10, zeroes7.begin());
+	NumericMatrix samples(size,11, zeroes7.begin());
 	
 	for(int i = 0; i < L; i++){
 		for(int j = 0; j < L; j++){
@@ -1156,7 +1156,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			NumericVector weights(size,0.0);
 			for(int k = 0; k < size; k++){
 				weights[k] = std::exp(R::dnorm((eta[0] -c1[0]*V1[k] - V3[k])/c2[0], 0.0, 1.0, 1) + R::dchisq(V1[k]*V1[k], n[0]-2.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-3.0, 1) - R::dchisq(V1[k]*V1[k], 985.0, 1) - R::dchisq(V3[k]*V3[k], 774.0, 1));
-				weights[k] = std::max(std::min(weights[k], 100000.0), 0.00001);
+				//weights[k] = std::max(std::min(weights[k], 100000.0), 0.00001);
 				sumweights[0] = sumweights[0] + weights[k];
 			}
 			for(int k = 0; k < size; k++){
@@ -1183,6 +1183,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 				samples(k,7) = sV1[k];
 				samples(k,8) = (eta[0] -c1[0]*sV1[k] - sV3[k])/c2[0];
 				samples(k,9) = sV3[k];
+				samples(k,10) = weights[indices[k]-1];
 			}	
 			
 
