@@ -50,26 +50,23 @@ BEGIN_RCPP
 END_RCPP
 }
 
-Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector truebz,NumericVector bxseq, NumericVector sxseq, NumericVector lenseq, NumericVector plbxseq, NumericVector plbzseq, NumericVector lenplseq, NumericVector se2);
-RcppExport SEXP imeiv_plauscontourSIR(SEXP sampsizeSEXP, SEXP statSEXP, SEXP delSEXP, SEXP typeSEXP, SEXP nSEXP, SEXP truebxSEXP, SEXP truebzSEXP, SEXP bxseqSEXP, SEXP sxseqSEXP, SEXP lenseqSEXP, SEXP plbxseqSEXP, SEXP plbzseqSEXP, SEXP lenplseqSEXP, SEXP se2SEXP){
+Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector n, NumericVector mode, NumericVector local_pt, NumericVector se2, NumericVector cond_par) {
+
+
+Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector n, NumericVector mode, NumericVector local_pt, NumericVector se2, NumericVector cond_par);
+RcppExport SEXP imeiv_plauscontourSIR(SEXP sampsizeSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP modeSEXP, SEXP local_ptSEXP, SEXP se2SEXP, SEXP cond_parSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericVector >::type sampsize(sampsizeSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type type(typeSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type truebx(truebxSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type truebz(truebzSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type bxseq(bxseqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type sxseq(sxseqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type lenseq(lenseqSEXP);  
-    Rcpp::traits::input_parameter< NumericVector >::type plbxseq(plbxseqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type plbzseq(plbzseqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type lenplseq(lenplseqSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mode(modeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type local_pt(local_ptSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type se2(se2SEXP);  
-    __result = Rcpp::wrap(plauscontourSIR( sampsize ,  stat ,   del ,  type , n , truebx , truebz , bxseq , sxseq , lenseq , plbxseq , plbzseq , lenplseq , se2 ));
+    Rcpp::traits::input_parameter< NumericVector >::type cond_par(cond_parSEXP);
+    __result = Rcpp::wrap(plauscontourSIR( sampsize ,  stat ,   del  , n , mode , local_pt, se2, cond_par ));
     return __result;
 END_RCPP
 }
