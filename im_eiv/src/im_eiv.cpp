@@ -1198,7 +1198,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		
 		
 		for(int j=0; j<(size-1); j++){
-			NumericVector subset(size-j-1, 0.0);
+			NumericVector subset(size-j-1, 0.0);NumericVector subset2(size-j-1, 0.0);
 			for(int i=0; i<(size-j-1); i++){
 				subset[i] = samples(i+j+1,0);	subset2[i] = samples(i+j+1,3);	
 			}
