@@ -1075,7 +1075,7 @@ Rcpp::List plauscontourMCMCcond(NumericVector sampsize, NumericVector stat, Nume
 	
 }
 
-Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector n, NumericVector mode, NumericVector local_pt, NumericVector se2, NumericVector cond_par) {
+Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector n, NumericVector mode, NumericVector dens, NumericVector se2, NumericVector cond_par) {
 
 	List result;
 	Rcpp::Function sortmat("sortmat");
@@ -1161,9 +1161,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	// Compute plausibility
 
 	NumericVector plaus(1,0.0);
-	std::sort(bxs.begin(), bxs.end());std::sort(bzs.begin(), bzs.end());
-	NumericVector randsetslo(1,0.0);NumericVector randsetshi(1,0.0);
-	NumericVector randsetslo2(1,0.0);NumericVector randsetshi2(1,0.0);
+	NumericVector randsetdens(1,0.0);
 	std::sort(densx.begin(), densx.end()); std::sort(densz.begin(), densz.end());
 
 
@@ -1172,24 +1170,12 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	if(ct > size){
 	
 		offsetx[0] = densx[ct - 1] - samples(size-1,5);
-		int unifind =0; int ind2 =0;
+		int unifind =0;
 		bool comp = true;
 		for(int k=0; k<size; k++){
-			randsetslo[0] = bxs[(size-1)]; randsetshi[0] = bxs[0];
-			ind2 = 0;
 			unifind = round(R::runif(0.0,1.0)*(ct-1));
-			comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
-			while(comp & (ind2 < (size - 1))){
-				ind2 = ind2 + 1	;
-				comp = (samples(ind2,5) < (densx[unifind] - offsetx[0]));
-			}
-			NumericVector subset(size - ind2, 0.0);NumericVector subset2(size - ind2, 0.0);
-			for(int l = 0; l < (size - ind2); l++){
-				subset[l] = samples(ind2+l,0);subset2[l] = samples(ind2+l,3);	
-			}
-			randsetslo[0] = Rcpp::min(subset);  randsetshi[0] = Rcpp::max(subset); 
-			randsetslo2[0] = Rcpp::min(subset2);  randsetshi2[0] = Rcpp::max(subset2); 
-			if(   (local_pt[0] >= randsetslo[0]) & (local_pt[0] <= randsetshi[0]) & (local_pt[1] >= randsetslo2[0]) & (local_pt[1] <= randsetshi2[0]) ){
+			randsetdens[0] = (densx[unifind] - offsetx[0]);
+			if(   dens[0]>randsetdens[0] ){
 				plaus[0] = plaus[0]+(1.0/(size));
 			}
 		}
@@ -1197,16 +1183,9 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	}else {
 		
 		
-		for(int j=0; j<(size-1); j++){
-			NumericVector subset(size-j-1, 0.0);NumericVector subset2(size-j-1, 0.0);
-			for(int i=0; i<(size-j-1); i++){
-				subset[i] = samples(i+j+1,0);	subset2[i] = samples(i+j+1,3);	
-			}
-			if(ind-j-1>1){
-				std::sort(subset.begin(), subset.end());std::sort(subset2.begin(), subset2.end());
-			}
-			randsetslo[0] = subset[0]; randsetshi[0] = subset[size-j-2];randsetslo2[0] = subset2[0]; randsetshi2[0] = subset2[size-j-2];
-			if(   (local_pt[0] >= randsetslo[0]) & (local_pt[0] <= randsetshi[0]) & (local_pt[1] >= randsetslo2[0]) & (local_pt[1] <= randsetshi2[0]) ){
+		for(int j=0; j<size; j++){
+			randsetsdens[0] = samples(j,0);
+			if(   dens[0]>randsetdens[0] ){
 				plaus[0] = plaus[0]+(1.0/(size));
 			}
 		}
