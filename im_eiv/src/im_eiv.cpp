@@ -1183,7 +1183,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		
 		
 		for(int j=0; j<size; j++){
-			randsetdens[0] = samples(j,0);
+			randsetdens[0] = samples(j,5);
 			if(   dens[0]>randsetdens[0] ){
 				plaus[0] = plaus[0]+(1.0/(size));
 			}
