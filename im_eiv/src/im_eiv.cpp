@@ -1192,7 +1192,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	}
 
 			
-	result = Rcpp::List::create(Rcpp::Named("plaus") = plaus, Rcpp::Named("samples") = samples);		
+	result = Rcpp::List::create(Rcpp::Named("plaus") = plaus, Rcpp::Named("samples") = samples, Rcpp::Named("densx") = densx);		
 
 	return result;
 	
