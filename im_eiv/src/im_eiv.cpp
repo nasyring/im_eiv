@@ -1118,14 +1118,14 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 
 					
 	for(int k = 0; k < ct; k++){
-		densx[k] = R::dnorm((cond_par[0] -cond_par[1]*std::sqrt(tV1[k]) - std::sqrt(tV3[k]))/cond_par[2], 0.0, 1.0, 1) + R::dchisq(tV1[k], n[0]-2.0, 1) + R::dchisq(tV3[k], n[0]-3.0, 1);	
+		densx[k] = log(std::abs(1/cond_par[2]))+R::dnorm((cond_par[0] -cond_par[1]*std::sqrt(tV1[k]) - std::sqrt(tV3[k]))/cond_par[2], 0.0, 1.0, 1) + R::dchisq(tV1[k], n[0]-2.0, 1) + R::dchisq(tV3[k], n[0]-3.0, 1);	
 		densz[k] = densx[k] + R::dnorm(tZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(tZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);	
 	}
 
 	sumweights[0] = 0.0;
 	NumericVector weights(size,0.0);
 	for(int k = 0; k < size; k++){
-		weights[k] = std::exp(R::dnorm((cond_par[0] -cond_par[1]*V1[k] - V3[k])/cond_par[2], 0.0, 1.0, 1) + R::dchisq(V1[k]*V1[k], n[0]-2.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-3.0, 1) - R::dchisq(V1[k]*V1[k], mode[0], 1) - R::dchisq(V3[k]*V3[k], mode[1], 1));
+		weights[k] = std::exp(log(std::abs(1/cond_par[2]))+R::dnorm((cond_par[0] -cond_par[1]*V1[k] - V3[k])/cond_par[2], 0.0, 1.0, 1) + R::dchisq(V1[k]*V1[k], n[0]-2.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-3.0, 1) - R::dchisq(V1[k]*V1[k], mode[0], 1) - R::dchisq(V3[k]*V3[k], mode[1], 1));
 		sumweights[0] = sumweights[0] + weights[k];
 	}
 	for(int k = 0; k < size; k++){
@@ -1147,7 +1147,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		bzs[k] = bz[0]; 
 
 		samples(k,0) = bx[0]; samples(k,1) = bz[0]; samples(k,2) = mux[0]; samples(k,3) = sx[0]; samples(k,4) = se2[0]; 
-		samples(k,5) = R::dnorm((cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2], 0.0, 1.0, 1) + R::dchisq(sV1[k]*sV1[k], n[0]-2.0, 1) + R::dchisq(sV3[k]*sV3[k], n[0]-3.0, 1);	
+		samples(k,5) = log(std::abs(1/cond_par[2]))+R::dnorm((cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2], 0.0, 1.0, 1) + R::dchisq(sV1[k]*sV1[k], n[0]-2.0, 1) + R::dchisq(sV3[k]*sV3[k], n[0]-3.0, 1);	
 		samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
 		samples(k,7) = sV1[k];
 		samples(k,8) = (cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2];
