@@ -1171,7 +1171,6 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	
 		offsetx[0] = densx[ct - 1] - samples(size-1,5);
 		int unifind =0;
-		bool comp = true;
 		for(int k=0; k<size; k++){
 			unifind = round(R::runif(0.0,1.0)*(ct-1));
 			randsetdens[0] = (densx[unifind] - offsetx[0]);
@@ -1184,7 +1183,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		
 		
 		for(int j=0; j<size; j++){
-			randsetsdens[0] = samples(j,0);
+			randsetdens[0] = samples(j,0);
 			if(   dens[0]>randsetdens[0] ){
 				plaus[0] = plaus[0]+(1.0/(size));
 			}
