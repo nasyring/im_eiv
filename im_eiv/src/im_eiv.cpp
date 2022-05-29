@@ -1510,9 +1510,9 @@ Rcpp::List plauscontourMC2(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector inc(1, 0.0); inc[0] = (bx_s[size-1]-bx_s[0])/500.0;
 	NumericVector inc2(1, 0.0); inc2[0] = (bz_s[size-1]-bz_s[0])/500.0;
 	NumericVector bx_seq(500, 0.0);NumericVector bz_seq(500, 0.0);
-	bx_seq[0] = bx_s[0];
+	bx_seq[0] = bx_s[0];bz_seq[0] = bz_s[0];
 	for(int i = 1; i < 500; i++){
-		bx_seq[i] = bx_s[i-1]+inc[0]; bz_seq[i] = bz_s[i-1]+inc2[0];	
+		bx_seq[i] = bx_seq[i-1]+inc[0]; bz_seq[i] = bz_seq[i-1]+inc2[0];	
 	}
 	bx_seq[499] = bx_s[(size-1)];bz_seq[499] = bz_s[(size-1)];	
 	
