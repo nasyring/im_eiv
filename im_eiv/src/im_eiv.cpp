@@ -1115,6 +1115,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		weights[k] = std::exp(log(std::abs(1.0/cond_par[2]))+R::dnorm((cond_par[0] -cond_par[1]*V1[k] - V3[k])/cond_par[2], 0.0, 1.0, 1) + R::dchisq(V1[k]*V1[k], n[0]-1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) - R::dchisq(V1[k]*V1[k], mode[0], 1) - R::dchisq(V3[k]*V3[k], mode[1], 1));
 		sumweights[0] = sumweights[0] + weights[k];
 	}
+	if(sumweights[0]>0){
 	for(int k = 0; k < size; k++){
 		weights[k] = weights[k]/sumweights[0];
 	}
@@ -1128,7 +1129,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		samples(k,9) = sV3[k];
 		samples(k,10) = weights[indices[k]-1];
 	}	
-
+	}
 
 
 
@@ -1136,9 +1137,9 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 
 	NumericVector plaus(1,0.0);
 	NumericVector randsetdens(1,0.0);
-	
-
 	samples = sortmat(samples,5);
+/*
+	
 	bool check = true; int ind = 0;
 	while(check){
 		if(samples(size-1-ind, 7)>(s11[0]/std::sqrt(se2[0]))){
@@ -1151,7 +1152,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			check = false;
 		}
 	}
-
+*/
 	
 
 		
