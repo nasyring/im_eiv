@@ -1114,7 +1114,12 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		if(V3[k]>0){
 			V3[k] = std::sqrt(V3[k]);
 			if(((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1]) > 0.0){
-				weights[k] = std::exp(log(std::abs(1.0/cond_par[1]))+R::dnorm(V2[k], 0.0, 1.0, 1)-R::dnorm(V2[k], mode[0], 1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) - R::dchisq(V3[k]*V3[k], mode[1], 1) + R::dchisq(std::pow((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1],2.0), n[0]-2.0, 1));
+				weights[k] = log(std::abs(1.0/cond_par[1]))+R::dnorm(V2[k], 0.0, 1.0, 1)-R::dnorm(V2[k], mode[0], 1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) - R::dchisq(V3[k]*V3[k], mode[1], 1) + R::dchisq(std::pow((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1],2.0), n[0]-2.0, 1);
+				if(Rcpp::is_na(weights[k])){
+					weights[k] = 0.0;	
+				}else {
+					weights[k] = std::exp(weights[k]);	
+				}
 			}else {
 				weights[k] = 0.0;	
 			}
