@@ -1109,11 +1109,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericMatrix samples(size,11, zeroes7.begin());
 	
 
-					
-	for(int k = 0; k < ct; k++){
-		densx[k] = log(std::abs(1.0/cond_par[2]))+R::dnorm((cond_par[0] -cond_par[1]*std::sqrt(tV1[k]) - std::sqrt(tV3[k]))/cond_par[2], 0.0, 1.0, 1) + R::dchisq(tV1[k], n[0]-1.0, 1) + R::dchisq(tV3[k], n[0]-2.0, 1);	
-		densz[k] = densx[k] + R::dnorm(tZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(tZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);	
-	}
+	
 
 	sumweights[0] = 0.0;
 	NumericVector weights(size,0.0);
@@ -1148,7 +1144,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	bool check = true; int ind = 0;
 	while(check){
 		if(samples(size-1-ind, 7)>(s11[0]/std::sqrt(se2[0]))){
-			offset[0] = samples(size-1, 6) - samples(size-1-ind, 6) 	
+			offset[0] = samples(size-1, 6) - samples(size-1-ind, 6) ;	
 		}else {
 			check = false;	
 		}
@@ -1168,7 +1164,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 
 
 			
-	result = Rcpp::List::create(Rcpp::Named("plaus") = plaus, Rcpp::Named("samples") = samples, Rcpp::Named("densx") = densx);		
+	result = Rcpp::List::create(Rcpp::Named("plaus") = plaus, Rcpp::Named("samples") = samples);		
 
 	return result;
 	
