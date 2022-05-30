@@ -1135,12 +1135,12 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		samples(k,9) = sV3[k];
 		samples(k,10) = weights[indices[k]-1];
 	}	
-
-
+	
+	// Compute plausibility
+	NumericVector plaus(1,0.0);
 	if(sumweights[0]>0.0){
-		// Compute plausibility
-
-		NumericVector plaus(1,0.0);
+		
+		
 		NumericVector randsetdens(1,0.0);
 		samples = sortmat(samples,5);
 
