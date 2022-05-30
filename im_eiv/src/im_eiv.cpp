@@ -1096,7 +1096,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	
 	
 	for(int k = 0; k < size; k++){
-		V2[k] = R::rnorm(mode[0], 1.0);V3[k] = R::chisq(mode[1]);Z1[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));Z2[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
+		V2[k] = R::rnorm(mode[0], 1.0);V3[k] = R::rchisq(mode[1]);Z1[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));Z2[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
 	}
 	V2[0] = mode[0];V3[0] = mode[1];
 	
