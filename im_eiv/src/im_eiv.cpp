@@ -1096,8 +1096,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	
 	
 	for(int k = 0; k < size; k++){
-		V2[k] = R::rnorm(mode[0], 1.0);V3[k] = R::rchisq(mode[1]);Z1[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));Z2[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
-		V3[k] = std::sqrt(V3[k]);
+		V2[k] = R::rnorm(mode[0], 1.0);V3[k] = R::rnorm(mode[1], 2.0);Z1[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));Z2[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
 	}
 	
 	
@@ -1112,7 +1111,8 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	sumweights[0] = 0.0;
 	NumericVector weights(size,0.0);
 	for(int k = 0; k < size; k++){
-		if((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1] > 0.0){
+		if(((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1] > 0.0) & V3[k]>0){
+			V3[k] = std::sqrt(V3[k]);
 			weights[k] = std::exp(log(std::abs(1.0/cond_par[1]))+R::dnorm(V2[k], 0.0, 1.0, 1)-R::dnorm(V2[k], mode[0], 1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) - R::dchisq(V3[k]*V3[k], mode[1], 1) + R::dchisq(std::pow((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1],2.0), n[0]-2.0, 1));
 		}else {
 			weights[k] = 0.0;	
