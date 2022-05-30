@@ -1126,7 +1126,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		sV2[k] = V2[indices[k]-1]; sV3[k] = V3[indices[k]-1]; sZ1[k] = Z1[indices[k]-1]; sZ2[k] = Z2[indices[k]-1]; 
 		samples(k,5) = log(std::abs(1.0/cond_par[1]))+R::dnorm(V2[k], 0.0, 1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) + R::dchisq(std::pow((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1],2.0), n[0]-2.0, 1);	
 		samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
-		samples(k,7) = sV1[k];
+		samples(k,7) = sV2[k];
 		samples(k,8) = (cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1];
 		samples(k,9) = sV3[k];
 		samples(k,10) = weights[indices[k]-1];
