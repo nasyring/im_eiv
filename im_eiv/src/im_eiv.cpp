@@ -1149,6 +1149,9 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			check = false;	
 		}
 		ind = ind+1;
+		if(ind==(size)){
+			check = false;
+		}
 	}
 
 	
