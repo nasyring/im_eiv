@@ -1091,10 +1091,8 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	// Generate MC sample of aux rvs Z1, Z2, V2
 
 	NumericVector V1(size,0.0); NumericVector V2(size,0.0); NumericVector V3(size,0.0); NumericVector Z1(size,0.0); NumericVector Z2(size,0.0);
-	NumericVector tV1(1,0.0); NumericVector tV2(1,0.0); NumericVector tV3(1,0.0); NumericVector tZ1(1,0.0); NumericVector tZ2(1,0.0);
 	NumericVector sV1(size,0.0); NumericVector sV3(size,0.0); NumericVector sZ1(size,0.0); NumericVector sZ2(size,0.0);
 	NumericVector sumweights(1,0.0); IntegerVector indices(size); 
-	NumericVector bxs(size,0.0);NumericVector bzs(size,0.0);
 	
 	
 	for(int k = 0; k < size; k++){
