@@ -1111,7 +1111,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	sumweights[0] = 0.0;
 	NumericVector weights(size,0.0);
 	for(int k = 0; k < size; k++){
-		if(((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1] > 0.0) & V3[k]>0){
+		if(((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1] > 0.0) & (V3[k]>0)){
 			V3[k] = std::sqrt(V3[k]);
 			weights[k] = std::exp(log(std::abs(1.0/cond_par[1]))+R::dnorm(V2[k], 0.0, 1.0, 1)-R::dnorm(V2[k], mode[0], 1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) - R::dchisq(V3[k]*V3[k], mode[1], 1) + R::dchisq(std::pow((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1],2.0), n[0]-2.0, 1));
 		}else {
@@ -1120,10 +1120,11 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		sumweights[0] = sumweights[0] + weights[k];
 	}
 	if(sumweights[0]>0){
-	for(int k = 0; k < size; k++){
-		weights[k] = weights[k]/sumweights[0];
+		for(int k = 0; k < size; k++){
+			weights[k] = weights[k]/sumweights[0];
+		}
+		indices = Rcpp::sample(size, size, true, weights, true);
 	}
-	indices = Rcpp::sample(size, size, true, weights, true);
 	for(int k = 0; k < size; k++){
 		samples(k,0) = V2[k];samples(k,1) = V3[k];samples(k,2) = (cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1];
 		sV2[k] = V2[indices[k]-1]; sV3[k] = V3[indices[k]-1]; sZ1[k] = Z1[indices[k]-1]; sZ2[k] = Z2[indices[k]-1]; 
@@ -1134,15 +1135,14 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		samples(k,9) = sV3[k];
 		samples(k,10) = weights[indices[k]-1];
 	}	
-	}
 
 
+	if(sumweights[0]>0.0){
+		// Compute plausibility
 
-	// Compute plausibility
-
-	NumericVector plaus(1,0.0);
-	NumericVector randsetdens(1,0.0);
-	samples = sortmat(samples,5);
+		NumericVector plaus(1,0.0);
+		NumericVector randsetdens(1,0.0);
+		samples = sortmat(samples,5);
 
 		
 		for(int j=0; j<size; j++){
@@ -1152,7 +1152,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			}
 		}
 		
-
+	}
 
 			
 	result = Rcpp::List::create(Rcpp::Named("plaus") = plaus, Rcpp::Named("samples") = samples);		
