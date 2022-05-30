@@ -1090,6 +1090,91 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 		
 	// Generate MC sample of aux rvs Z1, Z2, V2
 
+	NumericVector V2(size,0.0); NumericVector V3(size,0.0); NumericVector Z1(size,0.0); NumericVector Z2(size,0.0);
+	NumericVector sV1(size,0.0); NumericVector sV3(size,0.0); NumericVector sZ1(size,0.0); NumericVector sZ2(size,0.0);
+	NumericVector sumweights(1,0.0); IntegerVector indices(size); 
+	
+	
+	for(int k = 0; k < size; k++){
+		V2[k] = R::rnorm(mode[0], 1.0);V3[k] = R::rchisq(mode[1]);Z1[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));Z2[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
+		V3[k] = std::sqrt(V3[k]);
+	}
+	
+	
+	
+	NumericVector zeroes7(size*10, 0.0);
+	NumericVector offset(1,0.0);
+	NumericMatrix samples(size,11, zeroes7.begin());
+	
+
+	
+
+	sumweights[0] = 0.0;
+	NumericVector weights(size,0.0);
+	for(int k = 0; k < size; k++){
+		if((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1] > 0.0){
+			weights[k] = std::exp(log(std::abs(1.0/cond_par[1]))+R::dnorm(V2[k], 0.0, 1.0, 1)-R::dnorm(V2[k], mode[0], 1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) - R::dchisq(V3[k]*V3[k], mode[1], 1) + R::dchisq(std::pow((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1],2.0), n[0]-2.0, 1));
+		}		
+		sumweights[0] = sumweights[0] + weights[k];
+	}
+	if(sumweights[0]>0){
+	for(int k = 0; k < size; k++){
+		weights[k] = weights[k]/sumweights[0];
+	}
+	indices = Rcpp::sample(size, size, true, weights, true);
+	for(int k = 0; k < size; k++){
+		sV2[k] = V2[indices[k]-1]; sV3[k] = V3[indices[k]-1]; sZ1[k] = Z1[indices[k]-1]; sZ2[k] = Z2[indices[k]-1]; 
+		samples(k,5) = log(std::abs(1.0/cond_par[1]))+R::dnorm(V2[k], 0.0, 1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) + R::dchisq(std::pow((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1],2.0), n[0]-2.0, 1);	
+		samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
+		samples(k,7) = sV1[k];
+		samples(k,8) = (cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1];
+		samples(k,9) = sV3[k];
+		samples(k,10) = weights[indices[k]-1];
+	}	
+	}
+
+
+
+	// Compute plausibility
+
+	NumericVector plaus(1,0.0);
+	NumericVector randsetdens(1,0.0);
+	samples = sortmat(samples,5);
+
+		
+		for(int j=0; j<size; j++){
+			randsetdens[0] = samples(j,5);
+			if(   dens[0]>(randsetdens[0]-offset[0]) ){
+				plaus[0] = plaus[0]+(1.0/(size));
+			}
+		}
+		
+
+
+			
+	result = Rcpp::List::create(Rcpp::Named("plaus") = plaus, Rcpp::Named("samples") = samples);		
+
+	return result;
+	
+}
+
+
+/*
+Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector n, NumericVector mode, NumericVector dens, NumericVector se2, NumericVector cond_par) {
+
+	List result;
+	Rcpp::Function sortmat("sortmat");
+	int size = round(sampsize[0]);
+	
+	NumericVector s11(1,0.0); s11[0] = stat[0];
+	NumericVector s12(1,0.0); s12[0] = stat[1];	
+	NumericVector s22(1,0.0); s22[0] = stat[2];
+	NumericVector ybar(1,0.0); ybar[0] = stat[3];
+	NumericVector wbar(1,0.0); wbar[0] = stat[4];
+	
+		
+	// Generate MC sample of aux rvs Z1, Z2, V2
+
 	NumericVector V1(size,0.0); NumericVector V2(size,0.0); NumericVector V3(size,0.0); NumericVector Z1(size,0.0); NumericVector Z2(size,0.0);
 	NumericVector sV1(size,0.0); NumericVector sV3(size,0.0); NumericVector sZ1(size,0.0); NumericVector sZ2(size,0.0);
 	NumericVector sumweights(1,0.0); IntegerVector indices(size); 
@@ -1138,21 +1223,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector plaus(1,0.0);
 	NumericVector randsetdens(1,0.0);
 	samples = sortmat(samples,5);
-/*
-	
-	bool check = true; int ind = 0;
-	while(check){
-		if(samples(size-1-ind, 7)>(s11[0]/std::sqrt(se2[0]))){
-			offset[0] = samples(size-1, 5) - samples(size-1-ind, 5) ;	
-		}else {
-			check = false;	
-		}
-		ind = ind+1;
-		if(ind==(size)){
-			check = false;
-		}
-	}
-*/
+
 	
 
 		
@@ -1172,6 +1243,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	
 }
 
+*/
 
 
 Rcpp::List plauscontourMC(NumericVector sampsize, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector truebx, NumericVector bxseq,NumericVector truebz, NumericVector bzseq, NumericVector randsettype) {
