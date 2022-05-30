@@ -1144,7 +1144,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	bool check = true; int ind = 0;
 	while(check){
 		if(samples(size-1-ind, 7)>(s11[0]/std::sqrt(se2[0]))){
-			offset[0] = samples(size-1, 6) - samples(size-1-ind, 6) ;	
+			offset[0] = samples(size-1, 5) - samples(size-1-ind, 5) ;	
 		}else {
 			check = false;	
 		}
