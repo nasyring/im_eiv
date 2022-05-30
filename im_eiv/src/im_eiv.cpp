@@ -1114,7 +1114,9 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	for(int k = 0; k < size; k++){
 		if((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1] > 0.0){
 			weights[k] = std::exp(log(std::abs(1.0/cond_par[1]))+R::dnorm(V2[k], 0.0, 1.0, 1)-R::dnorm(V2[k], mode[0], 1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) - R::dchisq(V3[k]*V3[k], mode[1], 1) + R::dchisq(std::pow((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1],2.0), n[0]-2.0, 1));
-		}		
+		}else {
+			weights[k] = 0.0;	
+		}
 		sumweights[0] = sumweights[0] + weights[k];
 	}
 	if(sumweights[0]>0){
@@ -1123,6 +1125,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	}
 	indices = Rcpp::sample(size, size, true, weights, true);
 	for(int k = 0; k < size; k++){
+		samples(k,0) = V2[k];samples(k,1) = V3[k];samples(k,0) = (cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1];
 		sV2[k] = V2[indices[k]-1]; sV3[k] = V3[indices[k]-1]; sZ1[k] = Z1[indices[k]-1]; sZ2[k] = Z2[indices[k]-1]; 
 		samples(k,5) = log(std::abs(1.0/cond_par[1]))+R::dnorm(V2[k], 0.0, 1.0, 1) + R::dchisq(V3[k]*V3[k], n[0]-2.0, 1) + R::dchisq(std::pow((cond_par[0]-V3[k]-cond_par[2]*V2[k])/cond_par[1],2.0), n[0]-2.0, 1);	
 		samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
