@@ -1096,19 +1096,13 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	NumericVector sumweights(1,0.0); IntegerVector indices(size); 
 	NumericVector bxs(size,0.0);NumericVector bzs(size,0.0);
 	
-	int ind = 0; int ct = 0;
 	
-	while(ind < size){
-		if(ct > 0){
-			tV1.push_back(0.0);tV2.push_back(0.0);tV3.push_back(0.0);tZ1.push_back(0.0);tZ2.push_back(0.0);	
-		}
-		tV1[ct] = R::rchisq(mode[0]);tV3[ct] = R::rchisq(mode[1]);tV2[ct] = R::rnorm(0.0, 1.0);tZ1[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));tZ2[ct] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
-		if((std::pow(s11[0], 2.0)/tV1[ct])>se2[0]){
-			V1[ind] = std::sqrt(tV1[ct]); V2[ind] = tV2[ct]; V3[ind] = std::sqrt(tV3[ct]); Z1[ind] = tZ1[ct]; Z2[ind] = tZ2[ct];
-			ind = ind+1;
-		}
-		ct = ct+1;
+	for(int k = 0; k < size; k++){
+		V1[k] = R::rchisq(mode[0]);V3[k] = R::rchisq(mode[1]);Z1[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));Z2[k] = R::rnorm(0.0, std::sqrt(1.0/n[0]));
+		V1[k] = std::sqrt(V1[k]);V3[k] = std::sqrt(V3[k]);
 	}
+	
+	
 	
 	NumericVector densx(ct,0.0); NumericVector densz(ct,0.0);
 	NumericVector zeroes7(size*10, 0.0);
@@ -1134,19 +1128,6 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 	indices = Rcpp::sample(size, size, true, weights, true);
 	for(int k = 0; k < size; k++){
 		sV1[k] = V1[indices[k]-1]; sV3[k] = V3[indices[k]-1]; sZ1[k] = Z1[indices[k]-1]; sZ2[k] = Z2[indices[k]-1]; 
-		NumericVector L11(1,0.0);NumericVector L12(1,0.0);NumericVector L22(1,0.0);
-		NumericVector bx(1,0.0);NumericVector bz(1,0.0);NumericVector mux(1,0.0);NumericVector sx(1,0.0);
-		L11[0] = s11[0]/sV1[k];
-		sx[0] = std::pow((s12[0]*sV3[k]-s22[0]*(cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2])*s11[0],2.0)/((std::pow(s11[0]/sV1[k],2.0)-se2[0])*std::pow(sV1[k],4.0)*sV3[k]*sV3[k]);
-		bx[0] = (s12[0]*sV3[k]-s22[0]*(cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2])*s11[0]/(sV3[k]*sx[0]*std::pow(sV1[k],2.0));
-		L22[0] = std::sqrt(sx[0]/del[0] - std::pow(bx[0]*sx[0]/L11[0], 2.0));
-		L12[0] = bx[0]*sx[0]/L11[0];
-		mux[0] = wbar[0] - L12[0]*sZ1[k]-L22[0]*sZ2[k];
-		bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*sZ1[k];
-		bxs[k] = bx[0]; 
-		bzs[k] = bz[0]; 
-
-		samples(k,0) = bx[0]; samples(k,1) = bz[0]; samples(k,2) = mux[0]; samples(k,3) = sx[0]; samples(k,4) = se2[0]; 
 		samples(k,5) = log(std::abs(1.0/cond_par[2]))+R::dnorm((cond_par[0] -cond_par[1]*sV1[k] - sV3[k])/cond_par[2], 0.0, 1.0, 1) + R::dchisq(sV1[k]*sV1[k], n[0]-1.0, 1) + R::dchisq(sV3[k]*sV3[k], n[0]-2.0, 1);	
 		samples(k,6) = samples(k,5) + R::dnorm(sZ1[k], 0.0, std::sqrt(1.0/n[0]), 1) + R::dnorm(sZ2[k], 0.0, std::sqrt(1.0/n[0]), 1);
 		samples(k,7) = sV1[k];
@@ -1162,12 +1143,20 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 
 	NumericVector plaus(1,0.0);
 	NumericVector randsetdens(1,0.0);
-	std::sort(densx.begin(), densx.end()); std::sort(densz.begin(), densz.end());
-
+	
 
 	samples = sortmat(samples,5);
+	bool check = true; int ind = 0;
+	while(check){
+		if(samples(size-1-ind, 7)>(s11[0]/std::sqrt(se2))){
+			offset[0] = samples(size-1, 6) - samples(size-1-ind, 6) 	
+		}else {
+			check = false;	
+		}
+		ind = ind+1;
+	}
+
 	
-	if(ct > size){
 	
 		offsetx[0] = densx[ct - 1] - samples(size-1,5);
 		int unifind =0;
@@ -1179,8 +1168,6 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			}
 		}
 
-	}else {
-		
 		
 		for(int j=0; j<size; j++){
 			randsetdens[0] = samples(j,5);
@@ -1189,7 +1176,7 @@ Rcpp::List plauscontourSIR(NumericVector sampsize, NumericVector stat, NumericVe
 			}
 		}
 		
-	}
+
 
 			
 	result = Rcpp::List::create(Rcpp::Named("plaus") = plaus, Rcpp::Named("samples") = samples, Rcpp::Named("densx") = densx);		
