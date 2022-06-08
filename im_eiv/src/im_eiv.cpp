@@ -1728,6 +1728,46 @@ Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericV
 }
 	
 	
+Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n, NumericVector M) {
+	
+	Rcpp::Function loglik("loglik");
+	Rcpp::Function maxloglik("maxloglik");
+	
+	
+	int N = nrow(thetas);
+	int m = round(M[0]);
+	
+	
+	
+	NumericVector theta(3, 0.0);
+	NumericVector hdata(N,0.0);
+	NumericVector num(1,0.0);
+	NumericVector denom(1,0.0);
+	denom[0] = maxloglik(thetas, stat, del, n);
+	for(int i = 0; i < N; i++){
+		theta[0] = thetas(i,0); theta[1] = thetas(i,1); theta[2] = thetas(i,2);
+		num[0] = loglik(theta, stat, del, n);
+		if(is_finite(num)){
+			hdata[i] = std::exp(num[0] - denom[0]);
+		}
+	}
+	
+	
+	NumericMatrix hsims(N,m);
+	
+	for(int i = 0; i < N; i++){
+		for(int j = 0; j < m; j++){
+
+			
+			
+			
+		}
+	}
+	
+	
+	
+	
+}
 	
 	
 	
