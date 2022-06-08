@@ -1675,15 +1675,57 @@ Rcpp::NumericVector loglik(NumericVector theta, NumericVector stat, NumericVecto
 		L22[0] = std::sqrt(L22[0]);	
 		LL[0] = R::dchisq((s11[0]/L11[0])*(s11[0]/L11[0]), nn-1, 1) + R::dchisq((s22[0]/L22[0])*(s22[0]/L22[0]), nn-2, 1) + R::dnorm((s12[0] - L12[0]*s11[0]/L11[0])/L22[0], 0.0, 1.0, 1);
 	}else {
-		LL = R_NegInf;
+		LL[0] = R_NegInf;
 	}
 	
 	return(LL);
 	
 }
 
+
+
+Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n) {
 	
+	int N = nrow(thetas);
 	
+	int nn = round(n[0]);
+	
+	NumericVector LL(1, 0.0);
+	
+	NumericVector beta_x(1, 0.0); 
+	NumericVector s_x2(1, 0.0); 
+	NumericVector s_e2(1, 0.0); 
+
+	NumericVector s11(1, 0.0); s11[0] = stat[0];
+	NumericVector s12(1, 0.0); s12[0] = stat[1];
+	NumericVector s12(1, 0.0); s22[0] = stat[2];
+	
+	NumericVector L11(1, 0.0); 
+	NumericVector L12(1, 0.0); 
+	NumericVector L22(1, 0.0);
+	
+	NumericVector LL(1, R_NegInf);
+	
+	for(int i = 0; i < N; i++){
+	
+		beta_x[0] = thetas(i,0);
+		s_x2[0] = thetas(i,1);
+		s_e2[0] = thetas(i,2);
+		
+		L11[0] = std::sqrt(beta_x[0]*beta_x[0]*s_x2[0]+s_e2[0]);
+		L12[0] = beta_x[0]*s_x2[0]/L11[0];
+		L22[0] = s_x2[0]/del[0] - (L12[0]*L12[0]);
+		
+		if(L22[0] > 0.0){
+			L22[0] = std::sqrt(L22[0]);	
+			LL[0] = std::max(LL[0], R::dchisq((s11[0]/L11[0])*(s11[0]/L11[0]), nn-1, 1) + R::dchisq((s22[0]/L22[0])*(s22[0]/L22[0]), nn-2, 1) + R::dnorm((s12[0] - L12[0]*s11[0]/L11[0])/L22[0], 0.0, 1.0, 1));
+		}
+				
+	}
+
+	return(LL);
+	
+}
 	
 	
 	
