@@ -26,9 +26,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourMC2", (DL_FUNC) &imeiv_plauscontourMC2, 10},
     {"imeiv_sortmat", (DL_FUNC) &imeiv_sortmat, 2},
     {"imeiv_grow", (DL_FUNC) &imeiv_grow, 1},
-    {"imeiv_grow", (DL_FUNC) &imeiv_loglik, 4},
-    {"imeiv_grow", (DL_FUNC) &imeiv_maxloglik, 4},
-    {"imeiv_grow", (DL_FUNC) &imeiv_genIMplaus, 5},
+    {"imeiv_loglik", (DL_FUNC) &imeiv_loglik, 4},
+    {"imeiv_maxloglik", (DL_FUNC) &imeiv_maxloglik, 4},
+    {"imeiv_genIMplaus", (DL_FUNC) &imeiv_genIMplaus, 5},
     {NULL, NULL, 0}
 };
 
