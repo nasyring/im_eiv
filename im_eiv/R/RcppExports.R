@@ -29,3 +29,17 @@ sortmat <- function(x,col){
 grow <- function(x){
     .Call(`imeiv_grow`, x)
 }
+
+loglik <- function(theta, stat, del, n){
+    .Call(`imeiv_loglik`, theta, stat, del, n)
+}
+
+
+maxloglik <- function(thetas, stat, del, n){
+    .Call(`imeiv_maxloglik`, thetas, stat, del, n)
+}
+
+
+genIMplaus <- function(thetas, stat, del, n, M){
+    .Call(`imeiv_genIMplaus`, thetas, stat, del, n, M)
+}
