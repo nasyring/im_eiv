@@ -20,7 +20,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type truebz(truebzSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bzseq(bzseqSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type randsettype(randsettypeSEXP);   
-    __result = Rcpp::wrap(plauscontourMCMC(par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzseq,randsettypeSEXP));
+    __result = Rcpp::wrap(plauscontourMCMC(par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzseq,randsettype));
     return __result;
 END_RCPP
 }
@@ -169,12 +169,12 @@ END_RCPP
 }
 
 
-Rcpp::NumericVector maxloglik(NumericVector thetas, NumericVector stat, NumericVector del, NumericVector n);
+Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n);
 RcppExport SEXP imeiv_maxloglik(SEXP thetasSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type thetas(thetasSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type thetas(thetasSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
@@ -184,12 +184,12 @@ END_RCPP
 }
 
 
-Rcpp::NumericVector genIMplaus(NumericVector thetas, NumericVector stat, NumericVector del, NumericVector n, NumericVector M);
+Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n, NumericVector M);
 RcppExport SEXP imeiv_genIMplaus(SEXP thetasSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP MSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type thetas(thetasSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type thetas(thetasSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
