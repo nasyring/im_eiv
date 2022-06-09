@@ -1678,7 +1678,7 @@ Rcpp::NumericVector loglik(NumericVector theta, NumericVector stat, NumericVecto
 		LL[0] = R_NegInf;
 	}
 	
-	return(LL);
+	return LL;
 	
 }
 
@@ -1721,7 +1721,7 @@ Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericV
 				
 	}
 
-	return(LL);
+	return LL;
 	
 }
 	
@@ -1795,7 +1795,7 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 		}	
 	}
 	
-	return(plauses);
+	return plauses;
 	
 }
 	
