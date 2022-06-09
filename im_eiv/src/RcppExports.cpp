@@ -154,5 +154,49 @@ END_RCPP
 }
 
 
+Rcpp::NumericVector loglik(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n);
+RcppExport SEXP imeiv_loglik(SEXP thetaSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
+    __result = Rcpp::wrap(loglik(theta, stat, del, n));
+    return __result;
+END_RCPP    
+}
+
+
+Rcpp::NumericVector maxloglik(NumericVector thetas, NumericVector stat, NumericVector del, NumericVector n);
+RcppExport SEXP imeiv_maxloglik(SEXP thetasSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type thetas(thetasSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
+    __result = Rcpp::wrap(maxloglik(thetas, stat, del, n));
+    return __result;
+END_RCPP    
+}
+
+
+Rcpp::NumericVector genIMplaus(NumericVector thetas, NumericVector stat, NumericVector del, NumericVector n, NumericVector M);
+RcppExport SEXP imeiv_genIMplaus(SEXP thetasSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP MSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type thetas(thetasSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type M(MSEXP);
+    __result = Rcpp::wrap(genIMplaus(thetas, stat, del, n, M));
+    return __result;
+END_RCPP    
+}
 
 
