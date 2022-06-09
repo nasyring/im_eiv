@@ -1733,7 +1733,7 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 	Rcpp::Function loglik("loglik");
 	Rcpp::Function maxloglik("maxloglik");
 	
-	
+	int nn = round(n[0]);
 	int N = nrow(thetas);
 	int m = round(M[0]);
 	
@@ -1754,18 +1754,47 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 	
 	
 	NumericMatrix hsims(N,m);
+	NumericVector V1(1, 0.0);
+	NumericVector V2(1, 0.0);
+	NumericVector V3(1, 0.0);
+	NumericVector L11(1, 0.0);
+	NumericVector L12(1, 0.0);
+	NumericVector L22(1, 0.0);
+	NumericVector statMC(3, 0.0);
 	
 	for(int i = 0; i < N; i++){
+		theta[0] = thetas(i,0); theta[1] = thetas(i,1); theta[2] = thetas(i,2);
+		L11[0] = std::sqrt(theta[0]*theta[0]*theta[1]+theta[2]);
+		L12[0] = theta[0]*theta[1]/L11[0];
+		L22[0] = std::sqrt((theta[1]/del[0]) - (L12[0]*L12[0]));
 		for(int j = 0; j < m; j++){
-
-			
-			
-			
+			V1[0] = std::sqrt(R::rchisq(nn[0]-1));
+			V3[0] = std::sqrt(R::rchisq(nn[0]-2));
+			V2[0] = R::rnorm(0.0, 1.0);
+			statMC[0] = L11[0]*V1[0];
+			statMC[1] = L12[0]*V1[0]+L22[0]*V2[0];
+			statMC[2] = L22[0]*V3[0];
+			denom[0] = maxloglik(thetas, statMC, del, n);
+			num[0] = loglik(theta, statMC, del, n);
+			if(is_finite(num)){
+				hsims(i,j) = std::exp(num[0] - denom[0]);
+			}else {
+				hsims(i,j) = 0.0;
+			}
 		}
 	}
 	
+	NumericVector plauses(N,0.0);
 	
+	for(int i = 0; i < N; i++){
+		for(int j = 0; j < m; j++){
+			if(hsims(i,j)<=hdata[i]){
+				plauses[i] = plauses[i] + 1.0/M;
+			}
+		}	
+	}
 	
+	return(plauses)
 	
 }
 	
