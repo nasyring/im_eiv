@@ -1666,7 +1666,7 @@ Rcpp::NumericVector loglik(NumericVector theta, NumericVector stat, NumericVecto
 
 	NumericVector s11(1, 0.0); s11[0] = stat[0];
 	NumericVector s12(1, 0.0); s12[0] = stat[1];
-	NumericVector s12(1, 0.0); s22[0] = stat[2];
+	NumericVector s22(1, 0.0); s22[0] = stat[2];
 	
 	NumericVector L11(1, 0.0); L11[0] = std::sqrt(beta_x[0]*beta_x[0]*s_x2[0]+s_e2[0]);
 	NumericVector L12(1, 0.0); L12[0] = beta_x[0]*s_x2[0]/L11[0];
@@ -1686,11 +1686,9 @@ Rcpp::NumericVector loglik(NumericVector theta, NumericVector stat, NumericVecto
 
 Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n) {
 	
-	int N = nrow(thetas);
+	int N = round(thetas.nrow());
 	
 	int nn = round(n[0]);
-	
-	NumericVector LL(1, 0.0);
 	
 	NumericVector beta_x(1, 0.0); 
 	NumericVector s_x2(1, 0.0); 
@@ -1698,7 +1696,7 @@ Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericV
 
 	NumericVector s11(1, 0.0); s11[0] = stat[0];
 	NumericVector s12(1, 0.0); s12[0] = stat[1];
-	NumericVector s12(1, 0.0); s22[0] = stat[2];
+	NumericVector s22(1, 0.0); s22[0] = stat[2];
 	
 	NumericVector L11(1, 0.0); 
 	NumericVector L12(1, 0.0); 
@@ -1734,7 +1732,7 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 	Rcpp::Function maxloglik("maxloglik");
 	
 	int nn = round(n[0]);
-	int N = nrow(thetas);
+	int N = round(thetas.nrow());
 	int m = round(M[0]);
 	
 	
@@ -1743,11 +1741,13 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 	NumericVector hdata(N,0.0);
 	NumericVector num(1,0.0);
 	NumericVector denom(1,0.0);
-	denom[0] = maxloglik(thetas, stat, del, n);
+	LogicalVector check(1);
+	denom = maxloglik(thetas, stat, del, n);
 	for(int i = 0; i < N; i++){
 		theta[0] = thetas(i,0); theta[1] = thetas(i,1); theta[2] = thetas(i,2);
-		num[0] = loglik(theta, stat, del, n);
-		if(is_finite(num)){
+		num = loglik(theta, stat, del, n);
+		check = is_finite(num);
+		if(check[0]){
 			hdata[i] = std::exp(num[0] - denom[0]);
 		}
 	}
@@ -1761,6 +1761,7 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 	NumericVector L12(1, 0.0);
 	NumericVector L22(1, 0.0);
 	NumericVector statMC(3, 0.0);
+	LogicalVector check(1);
 	
 	for(int i = 0; i < N; i++){
 		theta[0] = thetas(i,0); theta[1] = thetas(i,1); theta[2] = thetas(i,2);
@@ -1774,9 +1775,10 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 			statMC[0] = L11[0]*V1[0];
 			statMC[1] = L12[0]*V1[0]+L22[0]*V2[0];
 			statMC[2] = L22[0]*V3[0];
-			denom[0] = maxloglik(thetas, statMC, del, n);
-			num[0] = loglik(theta, statMC, del, n);
-			if(is_finite(num)){
+			denom = maxloglik(thetas, statMC, del, n);
+			num = loglik(theta, statMC, del, n);
+			check = is_finite(num);
+			if(check[0]){
 				hsims(i,j) = std::exp(num[0] - denom[0]);
 			}else {
 				hsims(i,j) = 0.0;
@@ -1789,12 +1791,12 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 	for(int i = 0; i < N; i++){
 		for(int j = 0; j < m; j++){
 			if(hsims(i,j)<=hdata[i]){
-				plauses[i] = plauses[i] + 1.0/M;
+				plauses[i] = plauses[i] + 1.0/m;
 			}
 		}	
 	}
 	
-	return(plauses)
+	return(plauses);
 	
 }
 	
