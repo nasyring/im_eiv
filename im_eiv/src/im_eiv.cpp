@@ -1761,7 +1761,6 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 	NumericVector L12(1, 0.0);
 	NumericVector L22(1, 0.0);
 	NumericVector statMC(3, 0.0);
-	LogicalVector check(1);
 	
 	for(int i = 0; i < N; i++){
 		theta[0] = thetas(i,0); theta[1] = thetas(i,1); theta[2] = thetas(i,2);
@@ -1769,8 +1768,8 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 		L12[0] = theta[0]*theta[1]/L11[0];
 		L22[0] = std::sqrt((theta[1]/del[0]) - (L12[0]*L12[0]));
 		for(int j = 0; j < m; j++){
-			V1[0] = std::sqrt(R::rchisq(nn[0]-1));
-			V3[0] = std::sqrt(R::rchisq(nn[0]-2));
+			V1[0] = std::sqrt(R::rchisq(nn-1));
+			V3[0] = std::sqrt(R::rchisq(nn-2));
 			V2[0] = R::rnorm(0.0, 1.0);
 			statMC[0] = L11[0]*V1[0];
 			statMC[1] = L12[0]*V1[0]+L22[0]*V2[0];
