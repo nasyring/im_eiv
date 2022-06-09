@@ -13,6 +13,9 @@ extern SEXP imeiv_plauscontourMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,
 extern SEXP imeiv_plauscontourMC2(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_sortmat(SEXP, SEXP);
 extern SEXP imeiv_grow(SEXP, SEXP);
+extern SEXP loglik(SEXP, SEXP, SEXP, SEXP);
+extern SEXP maxloglik(SEXP, SEXP, SEXP, SEXP);
+extern SEXP genIMplaus(SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourMCMC", (DL_FUNC) &imeiv_plauscontourMCMC, 11},
@@ -23,6 +26,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourMC2", (DL_FUNC) &imeiv_plauscontourMC2, 10},
     {"imeiv_sortmat", (DL_FUNC) &imeiv_sortmat, 2},
     {"imeiv_grow", (DL_FUNC) &imeiv_grow, 1},
+    {"imeiv_grow", (DL_FUNC) &imeiv_loglik, 4},
+    {"imeiv_grow", (DL_FUNC) &imeiv_maxloglik, 4},
+    {"imeiv_grow", (DL_FUNC) &imeiv_genIMplaus, 5},
     {NULL, NULL, 0}
 };
 
