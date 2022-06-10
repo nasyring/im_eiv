@@ -1703,7 +1703,7 @@ Rcpp::NumericVector negloglik(NumericVector theta, NumericVector stat, NumericVe
 		L22[0] = std::sqrt(L22[0]);	
 		LL[0] = -1.0*(R::dchisq((s11[0]/L11[0])*(s11[0]/L11[0]), nn-1, 1) + R::dchisq((s22[0]/L22[0])*(s22[0]/L22[0]), nn-2, 1) + R::dnorm((s12[0] - L12[0]*s11[0]/L11[0])/L22[0], 0.0, 1.0, 1));
 	}else {
-		LL[0] = 0.0;
+		LL[0] = R_PosInf;
 	}
 	
 	return LL;
