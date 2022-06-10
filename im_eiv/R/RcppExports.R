@@ -35,6 +35,16 @@ loglik <- function(theta, stat, del, n){
 }
 
 
+negloglik <- function(theta, stat, del, n){
+    .Call(`imeiv_negloglik`, theta, stat, del, n)
+}
+
+
+optimrcpp <- function(theta, stat, del, n){
+    .Call(`imeiv_optimrcpp`, theta, stat, del, n)
+}
+
+
 maxloglik <- function(thetas, stat, del, n){
     .Call(`imeiv_maxloglik`, thetas, stat, del, n)
 }
