@@ -184,7 +184,7 @@ END_RCPP
 }
 
 
-Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n, NumericVector M);
+Rcpp::List genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n, NumericVector M);
 RcppExport SEXP imeiv_genIMplaus(SEXP thetasSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP, SEXP MSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
