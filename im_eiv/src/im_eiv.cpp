@@ -1753,7 +1753,7 @@ Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericV
 }
 	
 	
-Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n, NumericVector M) {
+Rcpp::List genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n, NumericVector M) {
 	
 	Rcpp::Function loglik("loglik");
 	Rcpp::Function maxloglik("maxloglik");
@@ -1822,7 +1822,10 @@ Rcpp::NumericVector genIMplaus(NumericMatrix thetas, NumericVector stat, Numeric
 		}	
 	}
 	
-	return plauses;
+	
+	result = Rcpp::List::create(Rcpp::Named("plauses") = plauses,Rcpp::Named("hsims") = hsims,Rcpp::Named("hdata") = hdata);		
+
+	return result;
 	
 }
 	
