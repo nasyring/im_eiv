@@ -1,14 +1,15 @@
 #include "RcppArmadillo.h"
 #include <RcppParallel.h>
 #include <Rcpp.h>
+#include <roptim.h>
 #include <math.h>
 using namespace RcppParallel;
 using namespace Rcpp;
 using namespace arma;
 using namespace std;
+using namespace roptim;
 #include <cmath>
 #include <algorithm>
-
 
 Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector bxseq, NumericVector truebz, NumericVector bzseq, NumericVector randsettype) {
 
@@ -1681,8 +1682,34 @@ Rcpp::NumericVector loglik(NumericVector theta, NumericVector stat, NumericVecto
 	return LL;
 	
 }
+/*
+Rcpp::NumericVector grloglik(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n) {
 
-
+	Rcpp::Function loglik("loglik");
+	NumericVector thetastar(3,0.0);NumericVector grad(3,0.0);
+	thetastar[0] = theta[0]; thetastar[1] = theta[1]; thetastar[2] = theta[2];
+	
+	thetastar[0] = thetastar[0] + 0.01;
+	grad[0] = loglik(thetastar, stat, del, n);
+	thetastar[0] = thetastar[0] - 0.02;
+	grad[0] = (grad[0] - loglik(thetastar, stat, del, n))/0.02;
+	thetastar[0] = thetastar[0] + 0.01;
+	
+	thetastar[1] = thetastar[1] + 0.01;
+	grad[1] = loglik(thetastar, stat, del, n);
+	thetastar[1] = thetastar[1] - 0.02;
+	grad[1] = (grad[1] - loglik(thetastar, stat, del, n))/0.02;
+	thetastar[1] = thetastar[1] + 0.01;
+	
+	thetastar[2] = thetastar[2] + 0.01;
+	grad[2] = loglik(thetastar, stat, del, n);
+	thetastar[2] = thetastar[2] - 0.02;
+	grad[2] = (grad[2] - loglik(thetastar, stat, del, n))/0.02;
+	thetastar[2] = thetastar[2] + 0.01;
+	
+	return grad;	
+}
+*/
 
 Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n) {
 	
