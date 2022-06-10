@@ -1778,7 +1778,7 @@ Rcpp::List genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector de
 	}
 	
 	
-	NumericMatrix hsims(N,m);
+	NumericVector hsims(m, 0.0);
 	NumericVector V1(1, 0.0);
 	NumericVector V2(1, 0.0);
 	NumericVector V3(1, 0.0);
@@ -1786,7 +1786,8 @@ Rcpp::List genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector de
 	NumericVector L12(1, 0.0);
 	NumericVector L22(1, 0.0);
 	NumericVector statMC(3, 0.0);
-	
+	NumericVector plauses(N,0.0);
+		
 	for(int i = 0; i < N; i++){
 		theta[0] = thetas(i,0); theta[1] = thetas(i,1); theta[2] = thetas(i,2);
 		L11[0] = std::sqrt(theta[0]*theta[0]*theta[1]+theta[2]);
@@ -1803,21 +1804,15 @@ Rcpp::List genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector de
 			num = loglik(theta, statMC, del, n);
 			check = is_finite(num);
 			if(check[0]){
-				hsims(i,j) = std::exp(num[0] - denom[0]);
+				hsims[j] = std::exp(num[0] - denom[0]);
 			}else {
-				hsims(i,j) = 0.0;
+				hsims[j] = 0.0;
 			}
-		}
-	}
-	
-	NumericVector plauses(N,0.0);
-	
-	for(int i = 0; i < N; i++){
-		for(int j = 0; j < m; j++){
-			if(hsims(i,j)<=hdata[i]){
+			if(hsims[j]<=hdata[i]){
 				plauses[i] = plauses[i] + 1.0/m;
 			}
-		}	
+		}
+		
 	}
 	
 	Rcpp::List result;
