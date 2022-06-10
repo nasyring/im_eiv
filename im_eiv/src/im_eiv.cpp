@@ -1820,6 +1820,7 @@ Rcpp::List genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector de
 		}	
 	}
 	
+	Rcpp::List result;
 	
 	result = Rcpp::List::create(Rcpp::Named("plauses") = plauses,Rcpp::Named("hsims") = hsims,Rcpp::Named("hdata") = hdata);		
 
