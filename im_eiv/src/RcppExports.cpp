@@ -168,21 +168,6 @@ BEGIN_RCPP
 END_RCPP    
 }
 
-Rcpp::NumericVector negloglik(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n);
-RcppExport SEXP imeiv_negloglik(SEXP thetaSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP){
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type n(nSEXP);
-    __result = Rcpp::wrap(negloglik(theta, stat, del, n));
-    return __result;
-END_RCPP    
-}
-
-
 Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n);
 RcppExport SEXP imeiv_maxloglik(SEXP thetasSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP){
 BEGIN_RCPP
