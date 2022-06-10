@@ -1817,7 +1817,7 @@ Rcpp::List genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector de
 	
 	Rcpp::List result;
 	
-	result = Rcpp::List::create(Rcpp::Named("plauses") = plauses,Rcpp::Named("hsims") = hsims,Rcpp::Named("hdata") = hdata);		
+	result = Rcpp::List::create(Rcpp::Named("plauses") = plauses,Rcpp::Named("hsims") = hsims,Rcpp::Named("hdata") = hdata, Rcpp::Named("V1") = V1, Rcpp::Named("V2") = V2, Rcpp::Named("V3") = V3, Rcpp::Named("statMC") = statMC, Rcpp::Named("num") = num, Rcpp::Named("denom") = denom);		
 
 	return result;
 	
