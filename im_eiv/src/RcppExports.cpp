@@ -214,7 +214,7 @@ END_RCPP
 }
 
 
-Rcpp::NumericVector optimrcpp(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n);
+Rcpp::List optimrcpp(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n);
 RcppExport SEXP imeiv_optimrcpp(SEXP thetaSEXP, SEXP statSEXP, SEXP delSEXP, SEXP nSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
