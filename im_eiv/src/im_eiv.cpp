@@ -1738,7 +1738,7 @@ Rcpp::NumericVector grloglik(NumericVector theta, NumericVector stat, NumericVec
 }
 */
 
-NumericVector optim_rcpp(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n){
+NumericVector optimrcpp(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n){
 
   // Extract R's optim function
   Rcpp::Environment stats("package:stats"); 
