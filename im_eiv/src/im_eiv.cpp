@@ -1680,6 +1680,35 @@ Rcpp::NumericVector loglik(NumericVector theta, NumericVector stat, NumericVecto
 	return LL;
 	
 }
+
+
+Rcpp::NumericVector negloglik(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n) {
+
+	int nn = round(n[0]);
+	
+	NumericVector LL(1, 0.0);
+	
+	NumericVector beta_x(1, 0.0); beta_x[0] = theta[0];
+	NumericVector s_x2(1, 0.0); s_x2[0] = theta[1];
+	NumericVector s_e2(1, 0.0); s_e2[0] = theta[2];
+
+	NumericVector s11(1, 0.0); s11[0] = stat[0];
+	NumericVector s12(1, 0.0); s12[0] = stat[1];
+	NumericVector s22(1, 0.0); s22[0] = stat[2];
+	
+	NumericVector L11(1, 0.0); L11[0] = std::sqrt(beta_x[0]*beta_x[0]*s_x2[0]+s_e2[0]);
+	NumericVector L12(1, 0.0); L12[0] = beta_x[0]*s_x2[0]/L11[0];
+	NumericVector L22(1, 0.0); L22[0] = s_x2[0]/del[0] - (L12[0]*L12[0]);
+	if(L22[0] > 0.0){
+		L22[0] = std::sqrt(L22[0]);	
+		LL[0] = -1.0*(R::dchisq((s11[0]/L11[0])*(s11[0]/L11[0]), nn-1, 1) + R::dchisq((s22[0]/L22[0])*(s22[0]/L22[0]), nn-2, 1) + R::dnorm((s12[0] - L12[0]*s11[0]/L11[0])/L22[0], 0.0, 1.0, 1));
+	}else {
+		LL[0] = 0.0;
+	}
+	
+	return LL;
+	
+}
 /*
 Rcpp::NumericVector grloglik(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n) {
 
@@ -1708,6 +1737,30 @@ Rcpp::NumericVector grloglik(NumericVector theta, NumericVector stat, NumericVec
 	return grad;	
 }
 */
+
+NumericVector optim_rcpp(NumericVector theta, NumericVector stat, NumericVector del, NumericVector n){
+
+  // Extract R's optim function
+  Rcpp::Environment stats("package:stats"); 
+  Rcpp::Function optim = stats["optim"];
+
+  NumericVector lower(3,0.0); lower[0] = -1000; lower[1] = 0.01; lower[2] = 0.01;
+
+  // Call the optim function from R in C++ 
+  Rcpp::List opt_results = optim(Rcpp::_["par"]    = theta,
+                                 // Make sure this function is not exported!
+                                 Rcpp::_["fn"]     = Rcpp::InternalFunction(&negloglik),
+                                 Rcpp::_["method"] = "L-BFGS-B",
+				 Rcpp::_["lower"] = lower,
+                                 // Pass in the other parameters as everything
+                                 // is scoped environmentally
+                                 Rcpp::_["stat"] = stat,
+                                 Rcpp::_["del"] = del,
+                                 Rcpp::_["n"] = n);
+
+  // Return results
+  return opt_results;
+}
 
 Rcpp::NumericVector maxloglik(NumericMatrix thetas, NumericVector stat, NumericVector del, NumericVector n) {
 	
@@ -1809,7 +1862,7 @@ Rcpp::List genIMplaus(NumericMatrix thetas, NumericVector stat, NumericVector de
 				hsims[j] = 0.0;
 			}
 			if(hsims[j]<=hdata[i]){
-				plauses[i] = plauses[i] + 1.0/m;
+				plauses[i] = plauses[i] + (1.0/M[0]);
 			}
 		}
 		
