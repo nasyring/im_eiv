@@ -1,13 +1,11 @@
 #include "RcppArmadillo.h"
 #include <RcppParallel.h>
 #include <Rcpp.h>
-#include <roptim.h>
 #include <math.h>
 using namespace RcppParallel;
 using namespace Rcpp;
 using namespace arma;
 using namespace std;
-using namespace roptim;
 #include <cmath>
 #include <algorithm>
 
