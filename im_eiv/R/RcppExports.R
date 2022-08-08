@@ -1,5 +1,5 @@
-plausMC <- function(theta, grid, stat, del, df){
-    .Call(`imeiv_plausMC`, theta, grid, stat, del, df)
+plausMC <- function(theta, grid, stat, del, df, m_samps){
+    .Call(`imeiv_plausMC`, theta, grid, stat, del, df, m_samps)
 }
 
 
