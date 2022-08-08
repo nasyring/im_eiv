@@ -7,8 +7,8 @@ using namespace std;
 
 
 
-Rcpp::List plaus_mc(NumericVector theta, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df);
-RcppExport SEXP imeiv_plaus_mc(SEXP thetaSEXP, SEXP gridSEXP, SEXP statSEXP, SEXP delSEXP, SEXP dfSEXP){
+Rcpp::List plausMC(NumericVector theta, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df);
+RcppExport SEXP imeiv_plausMC(SEXP thetaSEXP, SEXP gridSEXP, SEXP statSEXP, SEXP delSEXP, SEXP dfSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -17,7 +17,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type df(dfSEXP);
-    __result = Rcpp::wrap(plaus_mc(theta, grid, stat, del, df));
+    __result = Rcpp::wrap(plausMC(theta, grid, stat, del, df));
     return __result;
 END_RCPP
 }    
