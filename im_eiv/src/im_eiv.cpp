@@ -10,7 +10,7 @@ using namespace std;
 #include <algorithm>
 
 
-Rcpp::List plaus_mc(NumericVector theta, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector aux, NumericVector df){
+Rcpp::List plaus_mc(NumericVector theta, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df){
 
 	List result;
 	int m_the = theta.length();
@@ -20,6 +20,10 @@ Rcpp::List plaus_mc(NumericVector theta, NumericMatrix grid, NumericVector stat,
 	NumericVector L11(1,0.0);
 	NumericVector L12(1,0.0);
 	NumericVector L22(1,0.0);
+	
+	NumericVector s11(1,0.0); s11[0] = stat[0];
+	NumericVector s12(1,0.0); s12[0] = stat[1];
+	NumericVector s22(1,0.0); s22[0] = stat[2];
 
 	NumericVector V1(m_samps, 0.0); V1 = Rcpp::rchisq(10000,df[0]);
 	NumericVector V2(m_samps, 0.0); V2 = Rcpp::rnorm(10000,0.0,1.0);	
