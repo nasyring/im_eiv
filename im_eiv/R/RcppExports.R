@@ -1,3 +1,9 @@
+plaus_mc <- function(theta, grid, stat, del, df){
+    .Call(`imeiv_plaus_mc`, theta, grid, stat, del, df)
+}
+
+
+
 plauscontourMCMC <- function(par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzseq,randsettype){
     .Call(`imeiv_plauscontourMCMC`, par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzseq,randsettype)
 }
