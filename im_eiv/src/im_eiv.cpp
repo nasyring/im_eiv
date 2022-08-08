@@ -9,6 +9,72 @@ using namespace std;
 #include <cmath>
 #include <algorithm>
 
+
+Rcpp::List plaus_mc(NumericVector theta, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector aux, NumericVector df){
+
+	List result;
+	int m_the = theta.length();
+	int m_samps = 10000;
+	int m_grid = grid.nrow();
+	
+	NumericVector L11(1,0.0);
+	NumericVector L12(1,0.0);
+	NumericVector L22(1,0.0);
+
+	NumericVector V1(m_samps, 0.0); V1 = Rcpp::rchisq(10000,df[0]);
+	NumericVector V2(m_samps, 0.0); V2 = Rcpp::rnorm(10000,0.0,1.0);	
+	NumericVector V3(m_samps, 0.0); V3 = Rcpp::rchisq(10000,df[1]);	
+	
+	NumericVector plaus_theta_temp(1, 0.0);
+	NumericVector plaus_theta(m_the, 0.0);
+		
+	for(int i = 0; i < m_the; i++){
+		for(int j = 0; j < m_grid; j++){
+			L11[0] = std::sqrt( grid(j, 1) + grid(j, 0)*theta[i]*theta[i] );
+			L12[0] = grid(j,0)*theta[i]/L11[0];
+			L22[0] = std::sqrt(grid(j,0)/del[0] - std::pow(L12[0], 2.0));
+			plaus_theta_temp[0] = 0.0;
+			for(int k = 0; k< m_samps; k++){
+				if( (R::dchisq(V1[k], df[0], 0)*R::dnorm(V2[k],0.0,1.0,0)*R::dchisq(V3[k],df[1],0)) <= (R::dchisq(std::pow(s11[0]/L11[0],2.0), df[0], 0)*R::dnorm((s12[0]-L12[0]*s11[0]/L11[0])/L22[0],0.0,1.0,0)*R::dchisq(std::pow(s22[0]/L22[0],2.0),df[1],0)) ){
+					plaus_theta_temp[0] = plaus_theta_temp[0] + 1.0/m_samps;	
+				}
+			}
+			if(plaus_theta[i] < plaus_theta_temp[0]){
+				plaus_theta[i] = plaus_theta_temp[0];
+			}
+		}
+	}
+	
+
+	
+	result = Rcpp::List::create(Rcpp::Named("plauses.theta") = plaus_theta);
+	return result;
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Rcpp::List plauscontourMCMC(NumericVector par, NumericVector stat, NumericVector del, NumericVector type, NumericVector n, NumericVector propsd, NumericVector truebx, NumericVector bxseq, NumericVector truebz, NumericVector bzseq, NumericVector randsettype) {
 
 	List result;
