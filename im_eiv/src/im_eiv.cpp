@@ -10,11 +10,10 @@ using namespace std;
 #include <algorithm>
 
 
-Rcpp::List plausMC(NumericVector theta, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df){
+Rcpp::List plausMC(NumericVector theta, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df, int m_samps){
 
 	List result;
 	int m_the = theta.length();
-	int m_samps = 10000;
 	int m_grid = grid.nrow();
 	
 	NumericVector L11(1,0.0);
