@@ -9,7 +9,7 @@ using namespace std;
 #include <cmath>
 #include <algorithm>
 
-
+/*
 Rcpp::List plausMC(NumericVector theta, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df){
 
 	List result;
@@ -25,9 +25,9 @@ Rcpp::List plausMC(NumericVector theta, NumericMatrix grid, NumericVector stat, 
 	NumericVector s12(1,0.0); s12[0] = stat[1];
 	NumericVector s22(1,0.0); s22[0] = stat[2];
 
-	NumericVector V1(m_samps, 0.0); V1 = Rcpp::rchisq(10000,df[0]);
-	NumericVector V2(m_samps, 0.0); V2 = Rcpp::rnorm(10000,0.0,1.0);	
-	NumericVector V3(m_samps, 0.0); V3 = Rcpp::rchisq(10000,df[1]);	
+	NumericVector V1(m_samps, 0.0); V1 = Rcpp::rchisq(m_samps,df[0]);
+	NumericVector V2(m_samps, 0.0); V2 = Rcpp::rnorm(m_samps,0.0,1.0);	
+	NumericVector V3(m_samps, 0.0); V3 = Rcpp::rchisq(m_samps,df[1]);	
 	
 	NumericVector plaus_theta_temp(1, 0.0);
 	NumericVector plaus_theta(m_the, 0.0);
@@ -54,6 +54,47 @@ Rcpp::List plausMC(NumericVector theta, NumericMatrix grid, NumericVector stat, 
 					plaus_theta[i] = plaus_theta_temp[0];
 				}
 			}
+		}
+	}
+	
+
+	
+	result = Rcpp::List::create(Rcpp::Named("plauses.theta") = plaus_theta);
+	return result;
+	
+}
+*/
+
+Rcpp::List plausMC(NumericVector theta, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df){
+
+	List result;
+	int m_the = theta.length();
+	int m_samps = 10000;
+	int m_grid = grid.nrow();
+	
+	NumericVector L11(1,0.0);
+	NumericVector L12(1,0.0);
+	NumericVector L22(1,0.0);
+	
+	NumericVector s11(1,0.0); s11[0] = stat[0];
+	NumericVector s12(1,0.0); s12[0] = stat[1];
+	NumericVector s22(1,0.0); s22[0] = stat[2];
+
+	NumericVector V1(m_samps, 0.0); V1 = Rcpp::rchisq(m_samps,df[0]);
+	NumericVector V2(m_samps, 0.0); V2 = Rcpp::rnorm(m_samps,0.0,1.0);	
+	NumericVector V3(m_samps, 0.0); V3 = Rcpp::rchisq(m_samps,df[1]);	
+	
+	NumericVector plaus_theta_temp(1, 0.0);
+	NumericVector plaus_theta(m_the, 0.0);
+	
+	NumericVector dens1(1, 0.0);
+	NumericVector dens2(1, 0.0);
+		
+	for(int i = 0; i < m_the; i++){
+		for(int j = 0; j < m_grid; j++){
+			L11[0] = std::sqrt( grid(j, 1) + grid(j, 0)*theta[i]*theta[i] );
+			L12[0] = grid(j,0)*theta[i]/L11[0];
+			L22[0] = (grid(j,0)/del[0]) - std::pow(L12[0], 2.0);
 		}
 	}
 	
