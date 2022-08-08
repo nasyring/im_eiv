@@ -31,6 +31,9 @@ Rcpp::List plausMC(NumericVector theta, NumericMatrix grid, NumericVector stat, 
 	
 	NumericVector plaus_theta_temp(1, 0.0);
 	NumericVector plaus_theta(m_the, 0.0);
+	
+	NumericVector dens1(1, 0.0);
+	NumericVector dens2(1, 0.0);
 		
 	for(int i = 0; i < m_the; i++){
 		for(int j = 0; j < m_grid; j++){
@@ -41,13 +44,15 @@ Rcpp::List plausMC(NumericVector theta, NumericMatrix grid, NumericVector stat, 
 				L22[0] = std::sqrt(L22[0]);
 				plaus_theta_temp[0] = 0.0;
 				for(int k = 0; k< m_samps; k++){
-					if( (R::dchisq(V1[k], df[0], 0)*R::dnorm(V2[k],0.0,1.0,0)*R::dchisq(V3[k],df[1],0)) <= (R::dchisq(std::pow(s11[0]/L11[0],2.0), df[0], 0)*R::dnorm((s12[0]-L12[0]*s11[0]/L11[0])/L22[0],0.0,1.0,0)*R::dchisq(std::pow(s22[0]/L22[0],2.0),df[1],0)) ){
+					dens1[0] = R::dchisq(V1[k], df[0], 0)*R::dnorm(V2[k],0.0,1.0,0)*R::dchisq(V3[k],df[1],0);
+					dens2[0] = R::dchisq(std::pow(s11[0]/L11[0],2.0), df[0], 0)*R::dnorm((s12[0]-L12[0]*s11[0]/L11[0])/L22[0],0.0,1.0,0)*R::dchisq(std::pow(s22[0]/L22[0],2.0),df[1],0);
+					if( dens1[0] <= dens2[0] ){
 						plaus_theta_temp[0] = plaus_theta_temp[0] + 1.0/m_samps;	
 					}
 				}
-			}
-			if(plaus_theta[i] < plaus_theta_temp[0]){
-				plaus_theta[i] = plaus_theta_temp[0];
+				if(plaus_theta[i] < plaus_theta_temp[0]){
+					plaus_theta[i] = plaus_theta_temp[0];
+				}
 			}
 		}
 	}
