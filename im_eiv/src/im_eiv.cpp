@@ -45,7 +45,7 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 	if(intercept){
 		NumericVector plaus_intcpt_temp(1, 0.0);
 		NumericVector plaus_intcpt(m_int, 0.0);
-		NumericVector Z(m_samps, 0.0); Z = Rcpp::rnorm(m_samps,0.0,1.0);
+		NumericVector Z(m_samps, 0.0); Z = Rcpp::rnorm(m_samps,0.0,1.0/std::sqrt(df[0]+1.0));
 		for(int l = 0; l < m_int; l++){	
 			for(int i = 0; i < m_the; i++){
 				for(int j = 0; j < m_grid; j++){
@@ -59,8 +59,8 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 						for(int k = 0; k< m_samps; k++){
 							dens1[0] = R::dchisq(V1[k], df[0], 0)*R::dnorm(V2[k],0.0,1.0,0)*R::dchisq(V3[k],df[1],0);
 							dens2[0] = R::dchisq(std::pow(s11[0]/L11[0],2.0), df[0], 0)*R::dnorm((s12[0]-L12[0]*s11[0]/L11[0])/L22[0],0.0,1.0,0)*R::dchisq(std::pow(s22[0]/L22[0],2.0),df[1],0);
-							dens3[0] = dens1[0]*R::dnorm(Z[k], 0.0, 1.0, 0);
-							dens4[0] = dens2[0]*R::dnorm((ybar[0] - intcpt[l]-theta[i]*wbar[0])/std::sqrt(std::pow(L12[0]*theta[i]+L11[0], 2)+std::pow(theta[i]*L22[0], 2)), 0.0, 1.0, 0);
+							dens3[0] = dens1[0]*R::dnorm(Z[k], 0.0, 1.0/std::sqrt(df[0]+1.0), 0);
+							dens4[0] = dens2[0]*R::dnorm((ybar[0] - intcpt[l]-theta[i]*wbar[0])/std::sqrt(std::pow(L12[0]*theta[i]+L11[0], 2)+std::pow(theta[i]*L22[0], 2)), 0.0, 1.0/std::sqrt(df[0]+1.0), 0);
 							if( dens1[0] <= dens2[0] ){
 								plaus_theta_temp[0] = plaus_theta_temp[0] + 1.0/m_samps;	
 							}
