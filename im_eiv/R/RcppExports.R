@@ -1,7 +1,6 @@
-plausMC <- function(theta, grid, stat, del, df, m_samps){
-    .Call(`imeiv_plausMC`, theta, grid, stat, del, df, m_samps)
+plausMC <- function(theta, intcpt, grid, stat, del, df, m_samps, intercept){
+    .Call(`imeiv_plausMC`, theta, intcpt, grid, stat, del, df, m_samps, intercept)
 }
-
 
 
 plauscontourMCMC <- function(par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzseq,randsettype){
