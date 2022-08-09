@@ -17,7 +17,7 @@ extern SEXP imeiv_loglik(SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_maxloglik(SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_genIMplaus(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP imeiv_optimrcpp(SEXP, SEXP, SEXP, SEXP);
-extern SEXP imeiv_plausMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP imeiv_plausMC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"imeiv_plauscontourMCMC", (DL_FUNC) &imeiv_plauscontourMCMC, 11},
@@ -32,7 +32,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"imeiv_maxloglik", (DL_FUNC) &imeiv_maxloglik, 4},
     {"imeiv_genIMplaus", (DL_FUNC) &imeiv_genIMplaus, 5},
     {"imeiv_optimrcpp", (DL_FUNC) &imeiv_genIMplaus, 4},
-    {"imeiv_plausMC", (DL_FUNC) &imeiv_plausMC, 6},
+    {"imeiv_plausMC", (DL_FUNC) &imeiv_plausMC, 8},
     {NULL, NULL, 0}
 };
 
