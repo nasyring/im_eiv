@@ -67,7 +67,7 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 			std::sort(aux_var.begin(), aux_var.end());
 			for(int i = 0; i < 100; i++){
 				thetapts[i] = aux_var[i*100];
-				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0)
+				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0);
 			}
 			thetapts[100] = aux_var[9999];
 			thetaplaus[0] = 0.0001; thetaplaus[100] = 0.0001;
@@ -76,7 +76,7 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 			std::sort(aux_var2.begin(), aux_var2.end());
 			for(int i = 0; i < 100; i++){
 				intpts[i] = aux_var2[i*100];
-				intplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0)
+				intplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0);
 			}
 			intpts[100] = aux_var2[9999];
 			intplaus[0] = 0.0001; intplaus[100] = 0.0001;
@@ -94,7 +94,7 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 			std::sort(aux_var.begin(), aux_var.end());
 			for(int i = 0; i < 100; i++){
 				thetapts[i] = aux_var[i*100];
-				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0)
+				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0);
 			}
 			thetapts[100] = aux_var[9999];
 			thetaplaus[0] = 0.0001; thetaplaus[100] = 0.0001;
