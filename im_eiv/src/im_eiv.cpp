@@ -43,7 +43,7 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 	
 	bool marginalize = TRUE;
 	for(int i = 0; i < m_samps; i++){
-		if(std::pow((1/V1[i])*(s12[0]-s22[0]*V2[i]/V3[i]), 2.0)>1.0){
+		if(std::pow((1/std::sqrt(V1[i]))*(s12[0]-s22[0]*V2[i]/std::sqrt(V3[i])), 2.0)>1.0){
 			marginalize = FALSE;	
 		}
 	}
@@ -57,10 +57,10 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 			NumericVector aux_var(m_samps,0.0);
 			NumericVector aux_var2(m_samps,0.0);
 			for(int k = 0; k< m_samps; k++){
-				temp1[0] = (1/V1[k])*(s12[0]-s22[0]*V2[k]/V3[k]);
-				temp2[0] = del[0]*(std::pow(s22[0]/V3[k],2.0)+std::pow(temp1[0],2.0));
-				aux_var[k] = (s11[0]/V1[k])*temp1[0]/temp2[0];
-				aux_var2[k] = stat[3] - aux_var[k]*stat[4] - Z[k]*std::sqrt(std::pow(aux_var[k]*temp1[0]+(s11[0]/V1[k]), 2.0) + std::pow(aux_var[k]*(s22[0]/V3[k]), 2.0));
+				temp1[0] = (1/std::sqrt(V1[k]))*(s12[0]-s22[0]*V2[k]/std::sqrt(V3[k]));
+				temp2[0] = del[0]*(std::pow(s22[0]/std::sqrt(V3[k]),2.0)+std::pow(temp1[0],2.0));
+				aux_var[k] = (s11[0]/std::sqrt(V1[k]))*temp1[0]/temp2[0];
+				aux_var2[k] = stat[3] - aux_var[k]*stat[4] - Z[k]*std::sqrt(std::pow(aux_var[k]*temp1[0]+(s11[0]/std::sqrt(V1[k])), 2.0) + std::pow(aux_var[k]*(s22[0]/std::sqrt(V3[k])), 2.0));
 			}
 			NumericVector thetapts(101,0.0);
 			NumericVector thetaplaus(101,0.0);
@@ -85,9 +85,9 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 			NumericVector temp1(1, 0.0); NumericVector temp2(1, 0.0); NumericVector temp3(1, 0.0);
 			NumericVector aux_var(m_samps,0.0);
 			for(int k = 0; k< m_samps; k++){
-				temp1[0] = (1/V1[k])*(s12[0]-s22[0]*V2[k]/V3[k]);
-				temp2[0] = del[0]*(std::pow(s22[0]/V3[k],2.0)+std::pow(temp1[0],2.0));
-				aux_var[k] = (s11[0]/V1[k])*temp1[0]/temp2[0];
+				temp1[0] = (1/std::sqrt(V1[k]))*(s12[0]-s22[0]*V2[k]/std::sqrt(V3[k]));
+				temp2[0] = del[0]*(std::pow(s22[0]/std::sqrt(V3[k]),2.0)+std::pow(temp1[0],2.0));
+				aux_var[k] = (s11[0]/std::sqrt(V1[k]))*temp1[0]/temp2[0];
 			}
 			NumericVector thetapts(101,0.0);
 			NumericVector thetaplaus(101,0.0);
