@@ -92,9 +92,11 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 			NumericVector thetapts(101,0.0);
 			NumericVector thetaplaus(101,0.0);
 			std::sort(aux_var.begin(), aux_var.end());
+			int index;
 			for(int i = 0; i < 100; i++){
-				thetapts[i] = aux_var[i*100];
-				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0);
+				index = round(i*100.0);
+				thetapts[i] = aux_var[index];
+				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100.0) - 1.0);
 			}
 			thetapts[100] = aux_var[9999];
 			thetaplaus[0] = 0.0001; thetaplaus[100] = 0.0001;
