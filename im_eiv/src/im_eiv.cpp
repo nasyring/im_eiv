@@ -65,13 +65,13 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 			NumericVector thetaplaus(101,0.0);
 			std::sort(aux_var.begin(), aux_var.end());
 			for(int i = 0; i < 100; i++){
-				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0);
+				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100.0) - 1.0);
 			}
 			thetaplaus[0] = 0.0001; thetaplaus[100] = 0.0001;
 			NumericVector intplaus(101,0.0);
 			std::sort(aux_var2.begin(), aux_var2.end());
 			for(int i = 0; i < 100; i++){
-				intplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0);
+				intplaus[i] = 1.0 - std::abs(2.0 * (i/100.0) - 1.0);
 			}
 			intplaus[0] = 0.0001; intplaus[100] = 0.0001;
 			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = aux_var, Rcpp::Named("plauses.intercept") = intplaus, Rcpp::Named("intercepts") = aux_var2, Rcpp::Named("marginalize") = marginalize);					      		      
