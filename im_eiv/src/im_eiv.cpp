@@ -98,7 +98,7 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 			}
 			thetapts[100] = aux_var[9999];
 			thetaplaus[0] = 0.0001; thetaplaus[100] = 0.0001;
-			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = thetapts, Rcpp::Named("marginalize") = marginalize);					      		      
+			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = thetapts, Rcpp::Named("marginalize") = marginalize, Rcpp::Named("aux.var") = aux_var);					      		      
 		}
 	}else {
 		if(intercept){
