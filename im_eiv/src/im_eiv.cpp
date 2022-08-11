@@ -62,25 +62,19 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 				aux_var[k] = (s11[0]/std::sqrt(V1[k]))*temp1[0]/temp2[0];
 				aux_var2[k] = stat[3] - aux_var[k]*stat[4] - Z[k]*std::sqrt(std::pow(aux_var[k]*temp1[0]+(s11[0]/std::sqrt(V1[k])), 2.0) + std::pow(aux_var[k]*(s22[0]/std::sqrt(V3[k])), 2.0));
 			}
-			NumericVector thetapts(101,0.0);
 			NumericVector thetaplaus(101,0.0);
 			std::sort(aux_var.begin(), aux_var.end());
 			for(int i = 0; i < 100; i++){
-				thetapts[i] = aux_var[i*100];
 				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0);
 			}
-			thetapts[100] = aux_var[9999];
 			thetaplaus[0] = 0.0001; thetaplaus[100] = 0.0001;
-			NumericVector intpts(101,0.0);
 			NumericVector intplaus(101,0.0);
 			std::sort(aux_var2.begin(), aux_var2.end());
 			for(int i = 0; i < 100; i++){
-				intpts[i] = aux_var2[i*100];
 				intplaus[i] = 1.0 - std::abs(2.0 * (i/100) - 1.0);
 			}
-			intpts[100] = aux_var2[9999];
 			intplaus[0] = 0.0001; intplaus[100] = 0.0001;
-			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = thetapts, Rcpp::Named("plauses.intercept") = intplaus, Rcpp::Named("intercepts") = intpts, Rcpp::Named("marginalize") = marginalize);					      		      
+			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = aux_var, Rcpp::Named("plauses.intercept") = intplaus, Rcpp::Named("intercepts") = aux_var2, Rcpp::Named("marginalize") = marginalize);					      		      
 		}else {
 			NumericVector temp1(1, 0.0); NumericVector temp2(1, 0.0); NumericVector temp3(1, 0.0);
 			NumericVector aux_var(m_samps,0.0);
@@ -89,18 +83,13 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 				temp2[0] = del[0]*(std::pow(s22[0]/std::sqrt(V3[k]),2.0)+std::pow(temp1[0],2.0));
 				aux_var[k] = (s11[0]/std::sqrt(V1[k]))*temp1[0]/temp2[0];
 			}
-			NumericVector thetapts(101,0.0);
 			NumericVector thetaplaus(101,0.0);
 			std::sort(aux_var.begin(), aux_var.end());
-			int index;
 			for(int i = 0; i < 100; i++){
-				index = round(i*100.0);
-				thetapts[i] = aux_var[index];
 				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100.0) - 1.0);
 			}
-			thetapts[100] = aux_var[9999];
 			thetaplaus[0] = 0.0001; thetaplaus[100] = 0.0001;
-			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = thetapts, Rcpp::Named("marginalize") = marginalize, Rcpp::Named("aux.var") = aux_var);					      		      
+			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = aux_var, Rcpp::Named("marginalize") = marginalize);					      		      
 		}
 	}else {
 		if(intercept){
