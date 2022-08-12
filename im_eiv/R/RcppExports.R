@@ -2,6 +2,14 @@ plausMC <- function(theta, intcpt, grid, stat, del, df, m_samps, intercept){
     .Call(`imeiv_plausMC`, theta, intcpt, grid, stat, del, df, m_samps, intercept)
 }
 
+plausMCratio <- function(theta, intcpt, grid, stat, del, df, m_samps, intercept){
+    .Call(`imeiv_plausMCratio`, theta, intcpt, grid, stat, del, df, m_samps, intercept)
+}
+
+plausMCvar <- function(theta, intcpt, grid, stat, del, df, m_samps, intercept){
+    .Call(`imeiv_plausMCvar`, theta, intcpt, grid, stat, del, df, m_samps, intercept)
+}
+
 
 plauscontourMCMC <- function(par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzseq,randsettype){
     .Call(`imeiv_plauscontourMCMC`, par,stat,del,type,n,propsd,truebx,bxseq,truebz,bzseq,randsettype)
