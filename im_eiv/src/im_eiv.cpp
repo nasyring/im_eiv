@@ -371,8 +371,8 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 				temp1[0] = std::pow(s12[0] - s22[0]*V2[k]/std::sqrt(V3[k]), 2.0)/V1[k];
 				temp2[0] = std::pow(s22[0],2.0)/V3[k];
 				temp3[0] = temp2[0]/((1/del[0]) + (V1[k]/std::pow(s11[0],2.0)));
-				aux_var[k] = temp1[0] + std::pow(s22[0],2.0)/V3[k] - (1/del[0])*temp3[0];
-				aux_var[k] = ;
+				temp4[0] = temp1[0] + std::pow(s22[0],2.0)/V3[k] - (1/del[0])*temp3[0];
+				aux_var[k] = std::sqrt(temp1[0])*(s11[0]/std::sqrt(V1[k]))/temp4[0];
 				aux_var2[k] = stat[3] - aux_var[k]*stat[4] - Z[k]*std::sqrt(std::pow(aux_var[k]*std::sqrt(temp1[0])+(s11[0]/std::sqrt(V1[k])), 2.0) + std::pow(aux_var[k]*(s22[0]/std::sqrt(V3[k])), 2.0));
 			}
 			NumericVector thetaplaus(101,0.0);
@@ -389,13 +389,14 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 			intplaus[0] = 0.0001; intplaus[100] = 0.0001;
 			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = aux_var, Rcpp::Named("plauses.intercept") = intplaus, Rcpp::Named("intercepts") = aux_var2, Rcpp::Named("marginalize") = marginalize);					      		      
 		}else {
-			NumericVector temp1(1, 0.0); NumericVector temp2(1, 0.0); NumericVector temp3(1, 0.0);
+			NumericVector temp1(1, 0.0); NumericVector temp2(1, 0.0); NumericVector temp3(1, 0.0);NumericVector temp4(1, 0.0);
 			NumericVector aux_var(m_samps,0.0);
 			for(int k = 0; k< m_samps; k++){
 				temp1[0] = std::pow(s12[0] - s22[0]*V2[k]/std::sqrt(V3[k]), 2.0)/V1[k];
 				temp2[0] = std::pow(s22[0],2.0)/V3[k];
 				temp3[0] = temp2[0]/((1/del[0]) + (V1[k]/std::pow(s11[0],2.0)));
-				aux_var[k] = temp1[0] + std::pow(s22[0],2.0)/V3[k] - (1/del[0])*temp3[0];
+				temp4[0] = temp1[0] + std::pow(s22[0],2.0)/V3[k] - (1/del[0])*temp3[0];
+				aux_var[k] = std::sqrt(temp1[0])*(s11[0]/std::sqrt(V1[k]))/temp4[0];
 			}
 			NumericVector thetaplaus(101,0.0);
 			std::sort(aux_var.begin(), aux_var.end());
