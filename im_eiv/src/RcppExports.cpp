@@ -25,6 +25,43 @@ BEGIN_RCPP
 END_RCPP
 }    
     
+Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df, int m_samps, bool intercept);
+RcppExport SEXP imeiv_plausMCratio(SEXP thetaSEXP, SEXP intcptSEXP, SEXP gridSEXP, SEXP statSEXP, SEXP delSEXP, SEXP dfSEXP, SEXP m_sampsSEXP, SEXP interceptSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type intcpt(intcptSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type grid(gridSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< int >::type m_samps(m_sampsSEXP);
+    Rcpp::traits::input_parameter< bool >::type intercept(interceptSEXP);
+    __result = Rcpp::wrap(plausMCratio(theta, intcpt, grid, stat, del, df, m_samps, intercept));
+    return __result;
+END_RCPP
+}   
+
+Rcpp::List plausMCvar(NumericVector theta, NumericVector intcpt, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df, int m_samps, bool intercept);
+RcppExport SEXP imeiv_plausMCvar(SEXP thetaSEXP, SEXP intcptSEXP, SEXP gridSEXP, SEXP statSEXP, SEXP delSEXP, SEXP dfSEXP, SEXP m_sampsSEXP, SEXP interceptSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type intcpt(intcptSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type grid(gridSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type stat(statSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type del(delSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< int >::type m_samps(m_sampsSEXP);
+    Rcpp::traits::input_parameter< bool >::type intercept(interceptSEXP);
+    __result = Rcpp::wrap(plausMCvar(theta, intcpt, grid, stat, del, df, m_samps, intercept));
+    return __result;
+END_RCPP
+}   
+
+
     
 
 
