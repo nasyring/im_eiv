@@ -349,10 +349,12 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 	bool marginalize = TRUE;
 	NumericVector t1(1,0.0);
 	NumericVector t2(1,0.0);
+	NumericVector t3(1,0.0);
 	for(int i = 0; i < m_samps; i++){
 		t1[0] = std::pow(s12[0] - s22[0]*V2[i]/std::sqrt(V3[i]), 2.0)/V1[i];
 		t2[0] = std::pow(s11[0],2.0)/V1[i];
-		if( (t2[0] - ( (t2[0]*t1[0])/( (del[0]/(1.0+del[0]))*(t1[0] + std::pow(s22[0],2.0)/V3[i])  )  ))   <  0   ){
+		t3[0] = std::pow(s22[0],2.0)/V3[i];
+		if( (t3[0]*(1.0 - (1.0/(1.0 + (del[0] * V1[i]/std::pow(s11[0],2.0)) )) ) + t1[0]) < 0.0  ){
 			marginalize = FALSE;	
 		}
 	}
@@ -362,14 +364,16 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 		if(intercept){
 			NumericVector plaus_intcpt(m_int, 0.0);
 			NumericVector Z(m_samps, 0.0); Z = Rcpp::rnorm(m_samps,0.0,1.0/std::sqrt(df[0]+1.0));
-			NumericVector temp1(1, 0.0); NumericVector temp2(1, 0.0); NumericVector temp3(1, 0.0);
+			NumericVector temp1(1, 0.0); NumericVector temp2(1, 0.0); NumericVector temp3(1, 0.0); NumericVector temp4(1, 0.0);
 			NumericVector aux_var(m_samps,0.0);
 			NumericVector aux_var2(m_samps,0.0);
 			for(int k = 0; k< m_samps; k++){
-				temp1[0] = (1/std::sqrt(V1[k]))*(s12[0]-s22[0]*V2[k]/std::sqrt(V3[k]));
-				temp2[0] = (del[0]/(1.0+del[0]))*(std::pow(s22[0]/std::sqrt(V3[k]),2.0)+std::pow(temp1[0],2.0));
-				aux_var[k] = (s11[0]/std::sqrt(V1[k]))*temp1[0]/temp2[0];
-				aux_var2[k] = stat[3] - aux_var[k]*stat[4] - Z[k]*std::sqrt(std::pow(aux_var[k]*temp1[0]+(s11[0]/std::sqrt(V1[k])), 2.0) + std::pow(aux_var[k]*(s22[0]/std::sqrt(V3[k])), 2.0));
+				temp1[0] = std::pow(s12[0] - s22[0]*V2[k]/std::sqrt(V3[k]), 2.0)/V1[k];
+				temp2[0] = std::pow(s22[0],2.0)/V3[k];
+				temp3[0] = temp2[0]/((1/del[0]) + (V1[k]/std::pow(s11[0],2.0)));
+				aux_var[k] = temp1[0] + std::pow(s22[0],2.0)/V3[k] - (1/del[0])*temp3[0];
+				aux_var[k] = ;
+				aux_var2[k] = stat[3] - aux_var[k]*stat[4] - Z[k]*std::sqrt(std::pow(aux_var[k]*std::sqrt(temp1[0])+(s11[0]/std::sqrt(V1[k])), 2.0) + std::pow(aux_var[k]*(s22[0]/std::sqrt(V3[k])), 2.0));
 			}
 			NumericVector thetaplaus(101,0.0);
 			std::sort(aux_var.begin(), aux_var.end());
@@ -388,9 +392,10 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 			NumericVector temp1(1, 0.0); NumericVector temp2(1, 0.0); NumericVector temp3(1, 0.0);
 			NumericVector aux_var(m_samps,0.0);
 			for(int k = 0; k< m_samps; k++){
-				temp1[0] = (1/std::sqrt(V1[k]))*(s12[0]-s22[0]*V2[k]/std::sqrt(V3[k]));
-				temp2[0] = (del[0]/(1.0+del[0]))*(std::pow(s22[0]/std::sqrt(V3[k]),2.0)+std::pow(temp1[0],2.0));
-				aux_var[k] = (s11[0]/std::sqrt(V1[k]))*temp1[0]/temp2[0];
+				temp1[0] = std::pow(s12[0] - s22[0]*V2[k]/std::sqrt(V3[k]), 2.0)/V1[k];
+				temp2[0] = std::pow(s22[0],2.0)/V3[k];
+				temp3[0] = temp2[0]/((1/del[0]) + (V1[k]/std::pow(s11[0],2.0)));
+				aux_var[k] = temp1[0] + std::pow(s22[0],2.0)/V3[k] - (1/del[0])*temp3[0];
 			}
 			NumericVector thetaplaus(101,0.0);
 			std::sort(aux_var.begin(), aux_var.end());
@@ -410,7 +415,7 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 					for(int j = 0; j < m_grid; j++){
 						L11[0] = std::sqrt( grid(j, 1) + grid(j, 0)*theta[i]*theta[i] );
 						L12[0] = grid(j,0)*theta[i]/L11[0];
-						L22[0] = (grid(j,0)*(del[0]+1.0)/del[0]) - std::pow(L12[0], 2.0);
+						L22[0] = (grid(j,0) + grid(j,1)/del[0]) - std::pow(L12[0], 2.0);
 						if(L22[0] > 0.0){
 							L22[0] = std::sqrt(L22[0]);
 							plaus_theta_temp[0] = 0.0;
@@ -443,7 +448,7 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 				for(int j = 0; j < m_grid; j++){
 					L11[0] = std::sqrt( grid(j, 1) + grid(j, 0)*theta[i]*theta[i] );
 					L12[0] = grid(j,0)*theta[i]/L11[0];
-					L22[0] = (grid(j,0)*(del[0]+1.0)/del[0]) - std::pow(L12[0], 2.0);
+					L22[0] = (grid(j,0) + grid(j,1)/del[0]) - std::pow(L12[0], 2.0);
 					if(L22[0] > 0.0){
 						L22[0] = std::sqrt(L22[0]);
 						plaus_theta_temp[0] = 0.0;
