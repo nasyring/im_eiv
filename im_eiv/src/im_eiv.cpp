@@ -159,6 +159,161 @@ Rcpp::List plausMC(NumericVector theta, NumericVector intcpt, NumericMatrix grid
 	
 }
 
+Rcpp::List plausMCvar(NumericVector theta, NumericVector intcpt, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df, int m_samps, bool intercept){
+
+	List result;
+	int m_the = theta.length();
+	int m_grid = grid.nrow();
+	int m_int = intcpt.length();
+	
+	NumericVector L11(1,0.0);
+	NumericVector L12(1,0.0);
+	NumericVector L22(1,0.0);
+	
+	NumericVector s11(1,0.0); s11[0] = stat[0];
+	NumericVector s12(1,0.0); s12[0] = stat[1];
+	NumericVector s22(1,0.0); s22[0] = stat[2];
+	NumericVector ybar(1,0.0); ybar[0] = stat[3];
+	NumericVector wbar(1,0.0); wbar[0] = stat[4];
+	
+
+	NumericVector V1(m_samps, 0.0); V1 = Rcpp::rchisq(m_samps,df[0]);
+	NumericVector V2(m_samps, 0.0); V2 = Rcpp::rnorm(m_samps,0.0,1.0);	
+	NumericVector V3(m_samps, 0.0); V3 = Rcpp::rchisq(m_samps,df[1]);	
+	
+	NumericVector plaus_theta_temp(1, 0.0);
+	NumericVector plaus_theta(m_the, 0.0);
+	
+	
+	NumericVector dens1(1, 0.0);
+	NumericVector dens2(1, 0.0);
+	NumericVector dens3(1, 0.0);
+	NumericVector dens4(1, 0.0);
+	
+	bool marginalize = TRUE;
+	NumericVector t1(1,0.0);
+	NumericVector t2(1,0.0);
+	NumericVector t3(1,0.0);
+	NumericVector t4(1,0.0);
+	for(int i = 0; i < m_samps; i++){
+		t1[0] = std::pow(s21[0] - s22[0]*V2[i]/std::sqrt(V3[i]), 2.0)/V1[i];
+		t2[0] = std::pow(s11[0],2.0)/V1[i];
+		t3[0] = (std::pow(s22[0],2.0)/V3[i]) - del[0] + t1[0];
+		t4[0] = t2[0] - ((t2[0] * t1[0]) / t3[0]);
+		if( (t3[0] < 0) || (t4[0] < 0)   ){
+			marginalize = FALSE;	
+		}
+	}
+	
+	
+	if(marginalize){
+		if(intercept){
+			NumericVector plaus_intcpt(m_int, 0.0);
+			NumericVector Z(m_samps, 0.0); Z = Rcpp::rnorm(m_samps,0.0,1.0/std::sqrt(df[0]+1.0));
+			NumericVector temp1(1, 0.0); NumericVector temp2(1, 0.0); NumericVector temp3(1, 0.0);
+			NumericVector aux_var(m_samps,0.0);
+			NumericVector aux_var2(m_samps,0.0);
+			for(int k = 0; k< m_samps; k++){
+				temp1[0] = (s21[0] - s22[0]*V2[k]/std::sqrt(V3[k]))/std::sqrt(V1[k]);
+				aux_var[k] = (s11[0]/std::sqrt(V1[k]))*temp1[0]/( (std::pow(s22[0],2.0)/V3[k]) - del[0] + std::pow(temp1[0],2.0) );
+				aux_var2[k] = stat[3] - aux_var[k]*stat[4] - Z[k]*std::sqrt(std::pow(aux_var[k]*temp1[0]+(s11[0]/std::sqrt(V1[k])), 2.0) + std::pow(aux_var[k]*(s22[0]/std::sqrt(V3[k])), 2.0));
+			}
+			NumericVector thetaplaus(101,0.0);
+			std::sort(aux_var.begin(), aux_var.end());
+			for(int i = 0; i < 100; i++){
+				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100.0) - 1.0);
+			}
+			thetaplaus[0] = 0.0001; thetaplaus[100] = 0.0001;
+			NumericVector intplaus(101,0.0);
+			std::sort(aux_var2.begin(), aux_var2.end());
+			for(int i = 0; i < 100; i++){
+				intplaus[i] = 1.0 - std::abs(2.0 * (i/100.0) - 1.0);
+			}
+			intplaus[0] = 0.0001; intplaus[100] = 0.0001;
+			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = aux_var, Rcpp::Named("plauses.intercept") = intplaus, Rcpp::Named("intercepts") = aux_var2, Rcpp::Named("marginalize") = marginalize);					      		      
+		}else {
+			NumericVector temp1(1, 0.0); NumericVector temp2(1, 0.0); NumericVector temp3(1, 0.0);
+			NumericVector aux_var(m_samps,0.0);
+			for(int k = 0; k< m_samps; k++){
+				temp1[0] = (s21[0] - s22[0]*V2[k]/std::sqrt(V3[k]))/std::sqrt(V1[k]);
+				aux_var[k] = (s11[0]/std::sqrt(V1[k]))*temp1[0]/( (std::pow(s22[0],2.0)/V3[k]) - del[0] + std::pow(temp1[0],2.0) );
+			}
+			NumericVector thetaplaus(101,0.0);
+			std::sort(aux_var.begin(), aux_var.end());
+			for(int i = 0; i < 100; i++){
+				thetaplaus[i] = 1.0 - std::abs(2.0 * (i/100.0) - 1.0);
+			}
+			thetaplaus[0] = 0.0001; thetaplaus[100] = 0.0001;
+			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = aux_var, Rcpp::Named("marginalize") = marginalize);					      		      
+		}
+	}else {
+		if(intercept){
+			NumericVector plaus_intcpt_temp(1, 0.0);
+			NumericVector plaus_intcpt(m_int, 0.0);
+			NumericVector Z(m_samps, 0.0); Z = Rcpp::rnorm(m_samps,0.0,1.0/std::sqrt(df[0]+1.0));
+			for(int l = 0; l < m_int; l++){	
+				for(int i = 0; i < m_the; i++){
+					for(int j = 0; j < m_grid; j++){
+						L11[0] = std::sqrt( grid(j, 1) + grid(j, 0)*theta[i]*theta[i] );
+						L12[0] = grid(j,0)*theta[i]/L11[0];
+						L22[0] = (grid(j,0) + del[0]) - std::pow(L12[0], 2.0);
+						if(L22[0] > 0.0){
+							L22[0] = std::sqrt(L22[0]);
+							plaus_theta_temp[0] = 0.0;
+							plaus_intcpt_temp[0] = 0.0;
+							for(int k = 0; k< m_samps; k++){
+								dens1[0] = R::dchisq(V1[k], df[0], 0)*R::dnorm(V2[k],0.0,1.0,0)*R::dchisq(V3[k],df[1],0);
+								dens2[0] = R::dchisq(std::pow(s11[0]/L11[0],2.0), df[0], 0)*R::dnorm((s12[0]-L12[0]*s11[0]/L11[0])/L22[0],0.0,1.0,0)*R::dchisq(std::pow(s22[0]/L22[0],2.0),df[1],0);
+								dens3[0] = dens1[0]*R::dnorm(Z[k], 0.0, 1.0/std::sqrt(df[0]+1.0), 0);
+								dens4[0] = dens2[0]*R::dnorm((ybar[0] - intcpt[l]-theta[i]*wbar[0])/std::sqrt(std::pow(L12[0]*theta[i]+L11[0], 2)+std::pow(theta[i]*L22[0], 2)), 0.0, 1.0/std::sqrt(df[0]+1.0), 0);
+								if( dens1[0] <= dens2[0] ){
+									plaus_theta_temp[0] = plaus_theta_temp[0] + 1.0/m_samps;	
+								}
+								if( dens3[0] <= dens4[0] ){
+									plaus_intcpt_temp[0] = plaus_intcpt_temp[0] + 1.0/m_samps;	
+								}						
+							}
+							if(plaus_theta[i] < plaus_theta_temp[0]){
+								plaus_theta[i] = plaus_theta_temp[0];
+							}
+							if(plaus_intcpt[l] < plaus_intcpt_temp[0]){
+								plaus_intcpt[l] = plaus_intcpt_temp[0];
+							}						
+						}
+					}
+				}	
+			}
+			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = plaus_theta, Rcpp::Named("plauses.intercept") = plaus_intcpt, Rcpp::Named("marginalize") = marginalize);
+		}else {
+			for(int i = 0; i < m_the; i++){
+				for(int j = 0; j < m_grid; j++){
+					L11[0] = std::sqrt( grid(j, 1) + grid(j, 0)*theta[i]*theta[i] );
+					L12[0] = grid(j,0)*theta[i]/L11[0];
+					L22[0] = (grid(j,0) + del[0]) - std::pow(L12[0], 2.0);
+					if(L22[0] > 0.0){
+						L22[0] = std::sqrt(L22[0]);
+						plaus_theta_temp[0] = 0.0;
+						for(int k = 0; k< m_samps; k++){
+							dens1[0] = R::dchisq(V1[k], df[0], 0)*R::dnorm(V2[k],0.0,1.0,0)*R::dchisq(V3[k],df[1],0);
+							dens2[0] = R::dchisq(std::pow(s11[0]/L11[0],2.0), df[0], 0)*R::dnorm((s12[0]-L12[0]*s11[0]/L11[0])/L22[0],0.0,1.0,0)*R::dchisq(std::pow(s22[0]/L22[0],2.0),df[1],0);
+							if( dens1[0] <= dens2[0] ){
+								plaus_theta_temp[0] = plaus_theta_temp[0] + 1.0/m_samps;	
+							}
+						}
+						if(plaus_theta[i] < plaus_theta_temp[0]){
+							plaus_theta[i] = plaus_theta_temp[0];
+						}
+					}
+				}
+			}
+			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = plaus_theta, Rcpp::Named("marginalize") = marginalize);
+		}
+	}	
+	
+	return result;
+	
+}
+
 
 Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix grid, NumericVector stat, NumericVector del, NumericVector df, int m_samps, bool intercept){
 
@@ -195,9 +350,9 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 	NumericVector t1(1,0.0);
 	NumericVector t2(1,0.0);
 	for(int i = 0; i < m_samps; i++){
-		t1[0] = std::pow(s21[0] - s22[0]*std::sqrt(V2[i]/V3[i]), 2.0)/V1[i];
-		t2[0] = std::pow(s11[0],2.0)/V1[0];
-		if( (t2[0] - ( (t2[0]*t1[0])/( (del[0]/(1.0+del[0]))*(t1[0] + std::pow(s22[0],2.0)/V3[0])  )  ))   <  0   ){
+		t1[0] = std::pow(s21[0] - s22[0]*V2[i]/std::sqrt(V3[i]), 2.0)/V1[i];
+		t2[0] = std::pow(s11[0],2.0)/V1[i];
+		if( (t2[0] - ( (t2[0]*t1[0])/( (del[0]/(1.0+del[0]))*(t1[0] + std::pow(s22[0],2.0)/V3[i])  )  ))   <  0   ){
 			marginalize = FALSE;	
 		}
 	}
