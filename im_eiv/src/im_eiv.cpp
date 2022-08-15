@@ -350,10 +350,12 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 	
 
 	bool marginalize = TRUE;
-
+	NumericVector t1(1,0.0);NumericVector t2(1,0.0);
 	for(int i = 0; i < m_samps; i++){
 		L11[0] = s11[0]/std::sqrt(V1[i]); L22[0] = s22[0]/std::sqrt(V3[i]); L12[0] = (s12[0] - V2[i]*L22[0])/std::sqrt(V1[i]); 
-		sx[0] = 0.5*(-(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]) + std::sqrt(((L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0])*(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]))+4*L11[0]*L11[0]*L12[0]*L12[0]/del[0]));
+		t1[0] = (std::pow(L11[0],2) / del[0]) - std::pow(L12[0],2) - std::pow(L22[0],2);
+		t2[0] = (std::pow(L11[0],2) / del[0]) * std::pow(L12[0],2); 
+		sx[0] = 0.5*(t1[0] + std::sqrt(std::pow(t1[0],2.0) + 4.0*t2[0]));
 		bx[0] = L11[0]*L12[0]/sx[0];
 		se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
 		if( se[0] < 0.0  ){
@@ -371,7 +373,9 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 			NumericVector aux_var2(m_samps,0.0);
 			for(int k = 0; k< m_samps; k++){
 				L11[0] = s11[0]/std::sqrt(V1[k]); L22[0] = s22[0]/std::sqrt(V3[k]); L12[0] = (s12[0] - V2[k]*L22[0])/std::sqrt(V1[k]); 
-				sx[0] = 0.5*(-(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]) + std::sqrt(((L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0])*(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]))+4*L11[0]*L11[0]*L12[0]*L12[0]/del[0]));
+				t1[0] = (std::pow(L11[0],2) / del[0]) - std::pow(L12[0],2) - std::pow(L22[0],2);
+				t2[0] = (std::pow(L11[0],2) / del[0]) * std::pow(L12[0],2); 
+				sx[0] = 0.5*(t1[0] + std::sqrt(std::pow(t1[0],2.0) + 4.0*t2[0]));
 				bx[0] = L11[0]*L12[0]/sx[0];
 				se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
 				aux_var[k] = bx[0];
@@ -394,7 +398,9 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 			NumericVector aux_var(m_samps,0.0);
 			for(int k = 0; k< m_samps; k++){
 				L11[0] = s11[0]/std::sqrt(V1[k]); L22[0] = s22[0]/std::sqrt(V3[k]); L12[0] = (s12[0] - V2[k]*L22[0])/std::sqrt(V1[k]); 
-				sx[0] = 0.5*(-(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]) + std::sqrt(((L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0])*(L11[0]*L11[0]/del[0] - L22[0]*L22[0] - L12[0]*L12[0]))+4*L11[0]*L11[0]*L12[0]*L12[0]/del[0]));
+				t1[0] = (std::pow(L11[0],2) / del[0]) - std::pow(L12[0],2) - std::pow(L22[0],2);
+				t2[0] = (std::pow(L11[0],2) / del[0]) * std::pow(L12[0],2); 
+				sx[0] = 0.5*(t1[0] + std::sqrt(std::pow(t1[0],2.0) + 4.0*t2[0]));
 				bx[0] = L11[0]*L12[0]/sx[0];
 				se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
 				aux_var[k] = bx[0];
