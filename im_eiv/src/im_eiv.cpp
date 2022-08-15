@@ -375,7 +375,7 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 				bx[0] = L11[0]*L12[0]/sx[0];
 				se[0] = L11[0]*L11[0]-sx[0]*bx[0]*bx[0];
 				aux_var[k] = bx[0];
-				aux_var2[k] = stat[3] - aux_var[k]*stat[4] - Z[k]*std::sqrt(std::pow(aux_var[k]*std::sqrt(temp1[0])+(s11[0]/std::sqrt(V1[k])), 2.0) + std::pow(aux_var[k]*(s22[0]/std::sqrt(V3[k])), 2.0));
+				aux_var2[k] = stat[3] - aux_var[k]*stat[4] - Z[k]*std::sqrt(std::pow(aux_var[k]*L12[0]+L11[0]), 2.0) + std::pow(aux_var[k]*L22[0], 2.0));
 			}
 			NumericVector thetaplaus(101,0.0);
 			std::sort(aux_var.begin(), aux_var.end());
