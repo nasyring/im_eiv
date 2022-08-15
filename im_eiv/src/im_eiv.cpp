@@ -340,7 +340,7 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 	NumericVector plaus_theta_temp(1, 0.0);
 	NumericVector plaus_theta(m_the, 0.0);
 	
-	
+	NumericVector dens1(1, 0.0); NumericVector dens2(1, 0.0); NumericVector dens3(1, 0.0); NumericVector dens4(1, 0.0);
 	NumericVector sx(1, 0.0);
 	NumericVector bx(1, 0.0);
 	NumericVector se(1, 0.0);
@@ -348,12 +348,7 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 	NumericVector mux(1, 0.0);
 	
 	
-	
-		mux[0] = wbar[0] - L12[0]*Z1[0]-L22[0]*Z2[0];
-		bz[0] = ybar[0] - bx[0]*mux[0]-L11[0]*Z1[0];
 
-	
-	
 	bool marginalize = TRUE;
 
 	for(int i = 0; i < m_samps; i++){
