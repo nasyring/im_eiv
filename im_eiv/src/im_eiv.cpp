@@ -350,7 +350,7 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 	
 
 	bool marginalize = TRUE;
-	NumericVector t1(1,0.0);NumericVector t2(1,0.0);
+/*	NumericVector t1(1,0.0);NumericVector t2(1,0.0);
 	for(int i = 0; i < m_samps; i++){
 		L11[0] = s11[0]/std::sqrt(V1[i]); L22[0] = s22[0]/std::sqrt(V3[i]); L12[0] = (s12[0] - V2[i]*L22[0])/std::sqrt(V1[i]); 
 		t1[0] = (std::pow(L11[0],2) / del[0]) - std::pow(L12[0],2) - std::pow(L22[0],2);
@@ -362,9 +362,9 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 			marginalize = FALSE;	
 		}
 	}
+*/	
 	
-	
-	if(marginalize){
+/*	if(marginalize){
 		if(intercept){
 			NumericVector plaus_intcpt(m_int, 0.0);
 			NumericVector Z(m_samps, 0.0); Z = Rcpp::rnorm(m_samps,0.0,1.0/std::sqrt(df[0]+1.0));
@@ -417,7 +417,7 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = thetaplaus,Rcpp::Named("thetas") = aux_var, Rcpp::Named("sxs") = sxs, Rcpp::Named("ses") = ses, Rcpp::Named("marginalize") = marginalize);					      		      
 		}
 	}else {
-		if(intercept){
+		*/if(intercept){
 			NumericVector plaus_intcpt_temp(1, 0.0);
 			NumericVector plaus_intcpt(m_int, 0.0);
 			NumericVector Z(m_samps, 0.0); Z = Rcpp::rnorm(m_samps,0.0,1.0/std::sqrt(df[0]+1.0));
@@ -478,7 +478,7 @@ Rcpp::List plausMCratio(NumericVector theta, NumericVector intcpt, NumericMatrix
 			}
 			result = Rcpp::List::create(Rcpp::Named("plauses.theta") = plaus_theta, Rcpp::Named("marginalize") = marginalize);
 		}
-	}	
+	//}	
 	
 	return result;
 	
